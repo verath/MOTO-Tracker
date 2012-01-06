@@ -1,7 +1,7 @@
-## Interface: 40100
+## Interface: 40300
 ## Title: MOTO Tracker
 ## Notes: Utilities for Malice of the One guild.
 ## Author: Peter Eliasson (Verath)
 ## Version: v0.0.1
 ## SavedVariables: MOTOTrackerDB
-MOTOTracker.lua
+MOTO-Tracker.lua
