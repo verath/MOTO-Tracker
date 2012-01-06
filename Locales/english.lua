@@ -1,7 +1,11 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("MOTOTracker", "enUS", true);
+local L = LibStub("AceLocale-3.0"):NewLocale("MOTOTracker", "enUS", true)
 
 if L then
-
-	L['LoadMessage'] = 'MOTO Tracker Loaded.';
+	-- Options
+	L['Show load message'] = true
+	
+	-- Core
+	L['MOTO Tracker loaded.'] = true
+	L['Version'] = true
 
 end
