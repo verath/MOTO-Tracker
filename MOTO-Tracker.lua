@@ -21,7 +21,7 @@ function A:OnInitialize()
 end
 
 function A:PlayerLogin()
-	if self.db.LoadMessage then
+	if self.db.char.LoadMessage then
 		A:Print(L['MOTO Tracker loaded.'])
 	end
 end
