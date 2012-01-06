@@ -15,13 +15,13 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 
 function A:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB")
+	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", MOTOTracker.defaults)
 
 	self:RegisterEvent('PLAYER_LOGIN', 'PlayerLogin')
 end
 
 function A:PlayerLogin()
-	if self.db.char.LoadMessage then
+	if self.db.LoadMessage then
 		A:Print(L['MOTO Tracker loaded.'])
 	end
 end
