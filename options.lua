@@ -21,8 +21,8 @@ A.options.args = {
 		order = 2,
 		type = 'toggle',
 		name = L['Show load message'],
-		get = function(info) return A.db.char.LoadMessage end,
-		set = function(info, value) A.db.char.LoadMessage = value end,
+		get = function(info) return A.db.char.loadMessage end,
+		set = function(info, value) A.db.char.loadMessage = value end,
 	},
 }
 
