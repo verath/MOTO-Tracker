@@ -4,4 +4,6 @@
 ## Author: Peter Eliasson (Verath)
 ## Version: v0.0.1
 ## SavedVariables: MOTOTrackerDB
+embeds.xml
+english.lua
 MOTO-Tracker.lua
