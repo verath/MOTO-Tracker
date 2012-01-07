@@ -7,7 +7,7 @@ function A:SetupDefaults()
 		global = {
 			core = {
 				GUI = {
-					mainAltTracker = {
+					rosterInfo = {
 						sortByPrimary = 'rankIndex',
 						sortBySecondary = 'name'
 					},

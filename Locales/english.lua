@@ -17,12 +17,18 @@ if L then
 	L['MOTO Tracker'] = true
 	L['MOTO Tracker enabled.'] = true
 	L['Version'] = true
-
+	L['Name'] = true
+	L['Main Spec'] = true
+	L['Off Spec'] = true
+	L['Guild Rank'] = true
+	L['Level'] = true
 
 	-- GUI
 	L['MOTO Tracker, version: %s'] = true
 	L['Members'] = true
 	L['<Not in a guild>'] = true
-	L['Main/Alt Tracker'] = true
+	L['Roster Info'] = true
 	L['Something Else'] = true
+	L['Primary sort by'] = true
+	L['Secondary sort by'] = true
 end
