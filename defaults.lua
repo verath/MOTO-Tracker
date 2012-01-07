@@ -8,7 +8,8 @@ function A:SetupDefaults()
 			core = {
 				GUI = {
 					mainAltTracker = {
-						sortBy = 'rankIndex',
+						sortByPrimary = 'rankIndex',
+						sortBySecondary = 'name'
 					},
 				},
 			},

@@ -4,6 +4,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 local tIns = table.insert
 local sUpper = string.upper
 
+
+-- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
 	local class = sUpper(class)
 	local classColor = RAID_CLASS_COLORS[class]
@@ -22,11 +24,16 @@ TGDraw["mainAltTracker"] = function(container)
 		i = i+1
 	end
 
-	-- Sort
-	local sortBy = A.db.global.core.GUI.mainAltTracker.sortBy
+	-- Sort by primary > secondary
+	local sortByPrimary = A.db.global.core.GUI.mainAltTracker.sortByPrimary
+	local sortBySecondary = A.db.global.core.GUI.mainAltTracker.sortBySecondary
 	sort(chars, function(a, b)
 		if a and b then
-			return a[sortBy] < b[sortBy]
+			if a[sortByPrimary] == b[sortByPrimary] then
+				return a[sortBySecondary] < b[sortBySecondary]
+			else
+				return a[sortByPrimary] < b[sortByPrimary]
+			end
 		end
 	end)
 	
