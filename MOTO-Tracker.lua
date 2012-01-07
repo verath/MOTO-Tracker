@@ -19,7 +19,7 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 --   Helper Functions
 --###################################
 
-function A:UpdateGuildRoster()
+local function UpdateGuildRoster()
 	
 end
 
@@ -32,14 +32,25 @@ end
 
 -- Called by ace3 once saved variables are available
 function A:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", MOTOTracker.defaults)
+	self:SetupDefaults()
+	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults)
 
-	self:RegisterEvent('PLAYER_LOGIN', 'PlayerLogin')
 end
 
--- When player enters world
-function A:PlayerLogin()
+-- Gets called during the PLAYER_LOGIN event or
+-- when addon is enabled.
+function A:OnEnable()
 	if self.db.char.loadMessage then
-		A:Print(L['MOTO Tracker loaded.'])
+		A:Print(L['MOTO Tracker enabled.'])
 	end
+
+	I.hasGuild = IsInGuild()
+
+	if I.hasGuild then
+		I.guildName, _ = GetGuildInfo("player")
+	end
+
+	self:SetupOptions()
 end
+
+

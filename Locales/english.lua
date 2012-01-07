@@ -6,7 +6,7 @@ if L then
 	
 	-- Core
 	L['MOTO Tracker'] = true
-	L['MOTO Tracker loaded.'] = true
+	L['MOTO Tracker enabled.'] = true
 	L['Version'] = true
 
 end
