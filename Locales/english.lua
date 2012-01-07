@@ -18,4 +18,11 @@ if L then
 	L['MOTO Tracker enabled.'] = true
 	L['Version'] = true
 
+
+	-- GUI
+	L['MOTO Tracker, version: %s'] = true
+	L['Members'] = true
+	L['<Not in a guild>'] = true
+	L['Main/Alt Tracker'] = true
+	L['Something Else'] = true
 end

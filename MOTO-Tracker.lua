@@ -29,7 +29,7 @@ end
 local function updateGuildMemeberFromRoster( index )
 	local name, rank, rankIndex, level, _, zone, note, officernote, _, _, class = GetGuildRosterInfo(index)
 
-	local P = A.db.global.guilds[I.guildName].players[name]
+	local P = A.db.global.guilds[I.guildName].chars[name]
 	
 	-- Update guild info
 	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class = name, rank, rankIndex, level, zone, note, class
@@ -43,17 +43,17 @@ end
 -- Checks local guild DB against roster and
 -- removes members no longer in the guild
 local function removeNoLongerGuildMemebers()
-	local players = A.db.global.guilds[I.guildName].players
+	local chars = A.db.global.guilds[I.guildName].chars
 	
 	-- Create a roster table with name as key
-	local playersInGuild = {}
+	local charsInGuild = {}
 	for i = 1, GetNumGuildMembers() do
-		playersInGuild[GetGuildRosterInfo(i)] = true
+		charsInGuild[GetGuildRosterInfo(i)] = true
 	end
 
-	for playerName, playerData in pairs(players) do
-		if not playersInGuild[playerName] then
-			players[playerName] = nil
+	for charName, charData in pairs(chars) do
+		if not charsInGuild[charName] then
+			chars[charName] = nil
 		end
 	end
 end
@@ -121,4 +121,6 @@ function A:OnGuildRosterUpdate( event, change )
 	for i = 1, numGuildMembers do
 		updateGuildMemeberFromRoster( i )
 	end
+
+	A:ShowMainFrame()
 end

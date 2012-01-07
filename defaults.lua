@@ -5,15 +5,21 @@ function A:SetupDefaults()
 	self.defaults = {
 		-- Global Data. All characters on the same account share this database.
 		global = {
-			core = {},
+			core = {
+				GUI = {
+					mainAltTracker = {
+						sortBy = 'rankIndex',
+					},
+				},
+			},
 
 			guilds = {
 				['*'] = {
-					players = {
+					chars = {
 						['*'] = {
 							name = '',
-							alts = {},
-							main = {},
+							alts = nil,
+							main = nil,
 							mainSpec = '',
 							offSpec = '',
 							rank = '',
