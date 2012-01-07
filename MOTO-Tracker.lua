@@ -23,7 +23,10 @@ local function UpdateGuildRoster()
 	
 end
 
-
+function A:SetupDB()
+	self:SetupDefaults()
+	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
+end
 
 
 --###################################
@@ -32,15 +35,13 @@ end
 
 -- Called by ace3 once saved variables are available
 function A:OnInitialize()
-	self:SetupDefaults()
-	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults)
-
+	self:SetupDB()
 end
 
 -- Gets called during the PLAYER_LOGIN event or
 -- when addon is enabled.
 function A:OnEnable()
-	if self.db.char.loadMessage then
+	if self.db.char.settings.loadMessage then
 		A:Print(L['MOTO Tracker enabled.'])
 	end
 

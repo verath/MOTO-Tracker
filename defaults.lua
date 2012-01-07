@@ -19,11 +19,17 @@ function A:SetupDefaults()
 					},
 				},
 			},
+			
+			settings = {
+				
+			},
 		},
 
 		-- Character-specific data. Every character has its own database.
 		char = {
-			loadMessage = true,
+			settings = {
+				loadMessage = true,
+			},
 		},
 	}
 
