@@ -19,9 +19,43 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 --   Helper Functions
 --###################################
 
+-- Initializes the DB
 function A:SetupDB()
 	self:SetupDefaults()
 	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
+end
+
+-- Updates/Adds guild memeber to our db
+local function updateGuildMemeberFromRoster( index )
+	local name, rank, rankIndex, level, _, zone, note, officernote, _, _, class = GetGuildRosterInfo(index)
+
+	local P = A.db.global.guilds[I.guildName].players[name]
+	
+	-- Update guild info
+	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class = name, rank, rankIndex, level, zone, note, class
+
+	if I.canViewOfficerNote then
+		P.officerNote = officerNote
+	end
+
+end
+
+-- Checks local guild DB against roster and
+-- removes members no longer in the guild
+local function removeNoLongerGuildMemebers()
+	local players = A.db.global.guilds[I.guildName].players
+	
+	-- Create a roster table with name as key
+	local playersInGuild = {}
+	for i = 1, GetNumGuildMembers() do
+		playersInGuild[GetGuildRosterInfo(i)] = true
+	end
+
+	for playerName, playerData in pairs(players) do
+		if not playersInGuild[playerName] then
+			players[playerName] = nil
+		end
+	end
 end
 
 
@@ -49,9 +83,6 @@ function A:OnEnable()
 
 	-- Static values
 	I.hasGuild = IsInGuild()
-	if I.hasGuild then
-		I.guildName, _ = GetGuildInfo("player")
-	end
 
 	-- Set up the options UI
 	self:SetupOptions()
@@ -73,10 +104,21 @@ function A:OnGuildRosterUpdate( event, change )
 	-- We only need to update our DB if a change did occur
 	-- or if this is first update after login.
 	if change == nil and firstRosterUpdate ~= true then return end
+	
+	-- Do once update on login
+	if firstRosterUpdate then
+		-- Get guild specific info now, as it should all be loaded
+		I.guildName, _ = GetGuildInfo("player")
+		I.canViewOfficerNote = CanViewOfficerNote()
+
+		removeNoLongerGuildMemebers()
+	end
+
 	firstRosterUpdate = false
 
 	local numGuildMembers, _ = GetNumGuildMembers()
-	A:Print(numGuildMembers)
-	A:Print(change)
 
+	for i = 1, numGuildMembers do
+		updateGuildMemeberFromRoster( i )
+	end
 end

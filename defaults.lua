@@ -11,15 +11,23 @@ function A:SetupDefaults()
 				['*'] = {
 					players = {
 						['*'] = {
+							name = '',
 							alts = {},
 							main = {},
 							mainSpec = '',
 							offSpec = '',
+							rank = '',
+							rankIndex = -1,
+							level = -1,
+							zone = '',
+							note = '',
+							officerNote = '',
+							class = '',
 						},
 					},
 				},
 			},
-			
+
 			settings = {
 				
 			},
