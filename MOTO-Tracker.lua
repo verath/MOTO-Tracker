@@ -1,14 +1,13 @@
 --###################################
 --   Set Up
 --###################################
-MOTOTracker = {}
-MOTOTracker.addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0")
-MOTOTracker.locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true)
-
-MOTOTracker.info = {
-	versionName = '0.01a',
-	addonName = 'MOTOTracker',
-	addonNameSpace = 'MOTO Tracker',
+MOTOTracker = {
+	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0"),
+	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
+	info = { -- Static global values
+		versionName = '0.01a',
+		addonName = 'MOTOTracker',
+	}
 }
 
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info

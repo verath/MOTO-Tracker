@@ -5,6 +5,7 @@ if L then
 	L['Show load message'] = true
 	
 	-- Core
+	L['MOTO Tracker'] = true
 	L['MOTO Tracker loaded.'] = true
 	L['Version'] = true
 
