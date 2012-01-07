@@ -2,7 +2,7 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 function A:SetupDefaults()
 
-	A.defaults = {
+	self.defaults = {
 		-- Global Data. All characters on the same account share this database.
 		global = {
 			core = {},
