@@ -52,6 +52,7 @@ end
 -- Checks local guild DB against roster and
 -- removes members no longer in the guild
 local function removeNoLongerGuildMemebers()
+	if not I.hasGuild or not I.guildName then return end
 	local chars = A.db.global.guilds[I.guildName].chars
 	
 	-- Create a roster table with name as key
