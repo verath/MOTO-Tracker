@@ -58,7 +58,7 @@ local function removeNoLongerGuildMemebers()
 	-- Create a roster table with name as key
 	local charsInGuild = {}
 	for i = 1, GetNumGuildMembers() do
-		local name,_  = GetGuildRosterInfo(index)
+		local name,_ = GetGuildRosterInfo(i)
 		charsInGuild[name] = true
 	end
 

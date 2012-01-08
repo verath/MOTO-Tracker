@@ -26,6 +26,12 @@ function SelectGroup(container, event, group)
 	end
 end
 
+-- 
+function A.GUI:HideMainFrame()
+	A.GUI.mainFrame:Release()
+	A.GUI.mainFrame = nil
+end
+
 -- Shows the main frame, also creates it if it doesn't exist yet.
 function A.GUI:ShowMainFrame()
 	-- No point in creating it before we want to show it
@@ -44,10 +50,7 @@ function A.GUI:CreateMainFrame()
 	f:Hide()
 	f:SetTitle( format(L['MOTO Tracker, version: %s'], I.versionName) )
 	f:SetLayout("Fill")
-	f:SetCallback("OnClose", function(widget) 
-			AceGUI:Release(widget)
-			A.GUI.mainFrame = nil
-		end)
+	f:SetCallback("OnClose", A.GUI.HideMainFrame)
 
 	if I.hasGuild then
 		local numMembers = GetNumGuildMembers()

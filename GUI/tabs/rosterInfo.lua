@@ -287,7 +287,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	rosterInfoGenTree( treeG )
 end
 
--- Roster update
+-- On roster update
 function A.GUI.tabs.rosterInfo:OnRosterUpdate()
 	if treeGroupFrame then
 		rosterInfoGenTree(treeGroupFrame)
