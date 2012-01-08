@@ -44,7 +44,10 @@ function A.GUI:CreateMainFrame()
 	f:Hide()
 	f:SetTitle( format(L['MOTO Tracker, version: %s'], I.versionName) )
 	f:SetLayout("Fill")
-	f:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+	f:SetCallback("OnClose", function(widget) 
+			AceGUI:Release(widget)
+			A.GUI.mainFrame = nil
+		end)
 
 	if I.hasGuild then
 		local numMembers = GetNumGuildMembers()
