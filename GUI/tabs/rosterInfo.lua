@@ -24,7 +24,7 @@ local function formatOnlineStatusText( online, status )
 	local str = ''
 	if online ~= nil then
 		str = GREEN_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
-		if status ~= '' then
+		if status and status ~= '' then
 			str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
 		end
 	else
@@ -157,13 +157,14 @@ local function rosterInfoGenTree( treeG )
 	-- Generate the tree
 	tree = {}
 	for _, charData in ipairs(chars) do	
+		-- If searching; skip some filters, don't group main/alts
 		if isSearching then
 			if sFind( sUpper(charData.name), searchString) ~= nil then
 				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
 					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
 						local charEntry = {
 							value = charData.name,
-							text = formatClassColor(charData.name, charData.class),
+							text = formatClassColor(charData.name, charData.class) .. (charData.online and ' - ' .. formatOnlineStatusText(true) or ''),
 							children = nil,
 						}
 						tIns(tree, charEntry)
@@ -175,22 +176,28 @@ local function rosterInfoGenTree( treeG )
 			if charData.main == nil then
 				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
 					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
-						local charEntry = {
-							value = charData.name,
-							text = formatClassColor(charData.name, charData.class),
-							children = nil,
-						}
-
+						local charEntry = { value='', text='' }
+						local hasAltOnline = false
+						
 						-- If char doesn't have a main (is a main itself) and have alts
 						if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
 							charEntry.children = {}
-							for _, alt in ipairs(charData.alts) do 
+							for _, alt in ipairs(charData.alts) do
+								alt = A.db.global.guilds[I.guildName].chars[alt]
+								hasAltOnline = (alt.online and true or hasAltOnline)
 								tIns(charEntry.children, {
 									value = alt.name, 
-									text = formatClassColor(alt.name, alt.class)
+									text = formatClassColor(alt.name, alt.class) .. (alt.online and ' - ' .. formatOnlineStatusText(true) or ''),
 								})
 							end
 						end
+						
+						-- We want to show main as online if an alt is online
+						local showCharOnline = charData.online or hasAltOnline
+
+						charEntry.value = charData.name
+						charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true) or ''),
+						
 						tIns(tree, charEntry)
 					end
 				end

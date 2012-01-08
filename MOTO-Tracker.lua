@@ -52,6 +52,7 @@ end
 -- Checks local guild DB against roster and
 -- removes members no longer in the guild
 local function removeNoLongerGuildMemebers()
+	print("Removing memebers")
 	if not I.hasGuild or not I.guildName then return end
 	local chars = A.db.global.guilds[I.guildName].chars
 	
@@ -65,6 +66,7 @@ local function removeNoLongerGuildMemebers()
 	for charName, charData in pairs(chars) do
 		if not charsInGuild[charName] then
 			chars[charName] = nil
+			print("removed" .. charName)
 		end
 	end
 end
