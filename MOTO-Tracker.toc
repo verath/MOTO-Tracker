@@ -9,4 +9,4 @@ Locales\english.lua
 MOTO-Tracker.lua
 defaults.lua
 options.lua
-GUI.lua
+GUI\loadGUI.xml
