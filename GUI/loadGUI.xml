@@ -1,0 +1,4 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	<Script file="GUI.lua" />
+	<Script file="tabs/rosterInfo.lua" />
+</Ui>
