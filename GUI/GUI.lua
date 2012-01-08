@@ -66,7 +66,6 @@ function A.GUI:CreateMainFrame()
 	tab:SetLayout("Flow")
 	tab:SetTabs({
 		{text=L['Roster Info'], value="rosterInfo"}, 
-		{text=L['Something Else'], value="SomethingElse"} 
 	})
 	tab:SetCallback("OnGroupSelected", SelectGroup)
 	tab:SelectTab("rosterInfo")
