@@ -33,6 +33,7 @@ function A.GUI:ShowMainFrame()
 	-- create it every time.
 	self:CreateMainFrame()
 	self.mainFrame:Show()
+	AceTimer:ScheduleTimer(GuildRoster, 10)
 end
 
 function A.GUI:CreateMainFrame()
@@ -104,8 +105,4 @@ function A.GUI:OnRosterUpdate()
 		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 10)
 
 	end
-
-	
-
 end
-

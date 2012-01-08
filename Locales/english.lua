@@ -37,6 +37,7 @@ if L then
 	L['General'] = true
 	L['Guild Note'] = true
 	L['Officer Note'] = true
+	L['Private Note'] = true
 	L['Online'] = true
 	L['Offline'] = true
 	L['Away'] = true

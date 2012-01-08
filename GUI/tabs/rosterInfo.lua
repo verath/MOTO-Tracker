@@ -67,21 +67,21 @@ local function drawMainTreeArea( treeContainer, charName )
 	do -- General info container
 		generalInfoContainer =  AceGUI:Create("InlineGroup")
 		generalInfoContainer:SetLayout("Flow")
-		generalInfoContainer:SetTitle(L['General'])
+		generalInfoContainer:SetTitle('')
 		generalInfoContainer:SetFullWidth(true)
 		container:AddChild(generalInfoContainer)
 
 		do -- Guild Note
 			local label = AceGUI:Create("Label")
 			label:SetText(L['Guild Note'] .. ':')
-			label:SetRelativeWidth(0.5)
+			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.note)
 			editBox:SetDisabled(not I.canEditPublicNote)
 			editBox:SetMaxLetters(31)
-			editBox:SetRelativeWidth(0.5)
+			editBox:SetRelativeWidth(0.7)
 			local index = charData.guildIndex
 			editBox:SetCallback("OnEnterPressed", function(container, event, val)
 					if index ~= -1 then GuildRosterSetPublicNote(index, val) end
@@ -92,17 +92,36 @@ local function drawMainTreeArea( treeContainer, charName )
 		do -- Officer Note
 			local label = AceGUI:Create("Label")
 			label:SetText(L['Officer Note'] .. ':')
-			label:SetRelativeWidth(0.5)
+			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.officerNote)
 			editBox:SetDisabled(not I.canEditOfficerNote)
 			editBox:SetMaxLetters(31)
-			editBox:SetRelativeWidth(0.5)
+			editBox:SetRelativeWidth(0.7)
 			local index = charData.guildIndex
 			editBox:SetCallback("OnEnterPressed", function(container, event, val)
 					if index ~= -1 then GuildRosterSetOfficerNote(index, val) end
+				end)
+			generalInfoContainer:AddChild(editBox)
+		end
+
+		do -- Private Note
+			local label = AceGUI:Create("Label")
+			label:SetText(L['Private Note'] .. ':')
+			label:SetRelativeWidth(0.3)
+			generalInfoContainer:AddChild(label)
+
+			local editBox = AceGUI:Create("MultiLineEditBox")
+			editBox:SetText(charData.privateNote)
+			editBox:SetNumLines(4)
+			editBox:SetMaxLetters(300)
+			editBox:SetRelativeWidth(0.7)
+			editBox:DisableButton(true)
+			editBox:SetLabel('')
+			editBox:SetCallback("OnTextChanged", function(container, event, val)
+					charData.privateNote = val
 				end)
 			generalInfoContainer:AddChild(editBox)
 		end

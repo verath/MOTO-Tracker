@@ -32,6 +32,7 @@ function A:SetupDefaults()
 							zone = '',
 							note = '',
 							officerNote = '',
+							privateNote = '',
 							online = nil,
 							status = '',
 							class = '',
