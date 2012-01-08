@@ -1,3 +1,6 @@
+local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+local AceGUI = LibStub("AceGUI-3.0")
+
 --###################################
 --	Roster Info tab
 --###################################
