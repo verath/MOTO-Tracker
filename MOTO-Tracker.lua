@@ -88,6 +88,8 @@ function A:OnEnable()
 	-- Start listening for events
 	A:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
 	A:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
+	A:RegisterChatCommand('MOTOT', "SlashHandler")
+	A:RegisterChatCommand('MOTOTracker', "SlashHandler")
 	
 	-- Request guild roster from server
 	GuildRoster()
@@ -102,9 +104,11 @@ end
 
 -- Gets called if the addon is disabled
 function A:OnDisable()
-
 	-- Unregister Events
 	A:UnregisterEvent('GUILD_ROSTER_UPDATE')
+	A:UnregisterEvent('PLAYER_GUILD_UPDATE')
+	A:UnregisterChatCommand('MOTOT')
+	A:UnregisterChatCommand('MOTOTracker')
 end
 
 
@@ -128,11 +132,15 @@ function A:OnGuildRosterUpdate( event,_ )
 		A:UpdateGuildRoster()
 	end
 
+	-- Pass event onto the GUI handler
 	A.GUI:OnRosterUpdate()
 
-
-	if firstRosterUpdate then A.GUI:ShowMainFrame() end
-	firstRosterUpdate = false
 end
 
+-- Slash handler
+function A:SlashHandler(input)
+	if input == '' then
+		A.GUI:ShowMainFrame()
+	end
+end
 
