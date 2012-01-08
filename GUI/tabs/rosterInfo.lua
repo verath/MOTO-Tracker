@@ -185,7 +185,6 @@ end
 -- Draw the tab
 local treeGroupFrame
 function A.GUI.tabs.rosterInfo:DrawTab(container)
-	GuildRoster()
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
 	do -- Setup the tree element

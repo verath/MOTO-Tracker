@@ -27,7 +27,6 @@ if L then
 	L['MOTO Tracker, version: %s'] = true
 	L['Members'] = true
 	L['<Not in a guild>'] = true
-	L['updated at: '] = true
 	L['Roster Info'] = true
 	L['Something Else'] = true
 	L['Primary sort by'] = true
@@ -40,5 +39,6 @@ if L then
 	L['Officer Note'] = true
 	L['Online'] = true
 	L['Offline'] = true
+	L['Away'] = true
 	L['Refresh'] = true
 end

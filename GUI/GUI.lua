@@ -1,5 +1,6 @@
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceGUI = LibStub("AceGUI-3.0")
+local AceTimer = LibStub("AceTimer-3.0")
 
 local sFormat = string.format
 local date = date
@@ -68,13 +69,28 @@ end
 
 -- Will get called by main addon when an event 
 -- that could affect the roster triggers. Max every 10 sec.
+local updateRosterTimer
 function A.GUI:OnRosterUpdate()
 	-- Update if our frame is shown
 	if self.mainFrame and self.mainFrame.IsVisible and self.mainFrame:IsVisible() then
 		if I.hasGuild then
 			local f = self.mainFrame
 			local numMembers = GetNumGuildMembers()
-			f:SetStatusText(I.guildName .. ' - ' .. numMembers .. ' ' .. L['Members'].. ' - ' .. L['updated at: '] .. date("%H:%M:%S") )
+
+			-- Get numOnline and numAfk
+			local numOnline, numAfk = 0, 0
+			for i = 1, numMembers do
+				local _, _, _, _, _, _, _, _, online, status = GetGuildRosterInfo(i)
+				if online then 
+					if status == '<Away>' then 
+						numAfk = numAfk+1 
+					else
+						numOnline = numOnline+1
+					end 
+				end
+			end
+
+			f:SetStatusText(I.guildName .. ' - ' .. numMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. numOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. numAfk .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 		else
 			f:SetStatusText(L['<Not in a guild>'])
 		end
@@ -82,6 +98,14 @@ function A.GUI:OnRosterUpdate()
 		if shownTab == 'rosterInfo' then
 			A.GUI.tabs.rosterInfo:OnRosterUpdate()
 		end
+
+		-- Make sure we do update it every 10 sec if our window is open
+		if updateRosterTimer then AceTimer:CancelTimer(updateRosterTimer, true)	end
+		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 10)
+
 	end
+
+	
+
 end
 
