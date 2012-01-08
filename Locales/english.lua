@@ -32,8 +32,12 @@ if L then
 	L['Primary sort by'] = true
 	L['Secondary sort by'] = true
 	L['Only 85s'] = true
+	L['Hide offline'] = true
 	L['Search'] = true
 	L['General'] = true
 	L['Guild Note'] = true
 	L['Officer Note'] = true
+	L['Online'] = true
+	L['Offline'] = true
+	L['Refresh'] = true
 end

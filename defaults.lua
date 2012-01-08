@@ -10,6 +10,7 @@ function A:SetupDefaults()
 					rosterInfo = {
 						showAlts = true,
 						showOnlyMaxLvl = false,
+						hideOffline = false,
 						sortByPrimary = 'rankIndex',
 						sortBySecondary = 'name'
 					},
@@ -31,7 +32,10 @@ function A:SetupDefaults()
 							zone = '',
 							note = '',
 							officerNote = '',
+							online = nil,
+							status = '',
 							class = '',
+							guildIndex = -1
 						},
 					},
 				},

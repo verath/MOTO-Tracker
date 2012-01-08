@@ -26,18 +26,27 @@ function A:SetupDB()
 end
 
 -- Updates/Adds guild memeber to our db
-local function updateGuildMemeberFromRoster( index )
-	local name, rank, rankIndex, level, _, zone, note, officernote, _, _, class = GetGuildRosterInfo(index)
+function A:UpdateGuildMemeberFromRoster( index )
+	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
 
 	local P = A.db.global.guilds[I.guildName].chars[name]
 	
 	-- Update guild info
-	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class = name, rank, rankIndex, level, zone, note, class
+	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class, P.guildIndex, P.online, P.status = name, rank, rankIndex, level, zone, note, class, index, online, status
 
 	if I.canViewOfficerNote then
 		P.officerNote = officerNote
 	end
 
+end
+
+-- Updates the entier guild roster (Do not use too much...)
+function A:UpdateGuildRoster()
+	local numGuildMembers, _ = GetNumGuildMembers()
+
+	for i = 1, numGuildMembers do
+		A:UpdateGuildMemeberFromRoster( i )
+	end
 end
 
 -- Checks local guild DB against roster and
@@ -110,20 +119,18 @@ function A:OnGuildRosterUpdate( event, change )
 	if firstRosterUpdate then
 		-- Get guild specific info now, as it should all be loaded
 		I.guildName, _ = GetGuildInfo("player")
-		I.canViewOfficerNote = CanViewOfficerNote()
-		I.canEditOfficerNote = CanEditOfficerNote()
-		I.canEditPublicNote = CanEditPublicNote()
+		I.canViewOfficerNote = CanViewOfficerNote() ~= nil and true or false
+		I.canEditOfficerNote = CanEditOfficerNote() ~= nil and true or false
+		I.canEditPublicNote = CanEditPublicNote() ~= nil and true or false
 
 		removeNoLongerGuildMemebers()
 	end
 
 	firstRosterUpdate = false
 
-	local numGuildMembers, _ = GetNumGuildMembers()
-
-	for i = 1, numGuildMembers do
-		updateGuildMemeberFromRoster( i )
-	end
+	A:UpdateGuildRoster()
 
 	A:ShowMainFrame()
 end
+
+

@@ -20,8 +20,24 @@ local function formatClassColor( str, class )
 	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
 
+local function formatOnlineStatusText( online, status )
+	local str = ''
+	if online ~= nil then
+		str = GREEN_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
+		if status ~= '' then
+			str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
+		end
+	else
+		str = RED_FONT_COLOR_CODE .. L['Offline'] .. FONT_COLOR_CODE_CLOSE
+	end
+
+	return str
+end
+
 -- Draw the main area when a character is selected
 local function drawMainTreeArea( treeContainer, charName )
+	GuildRoster()
+
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	local classColor = RAID_CLASS_COLORS[charData.class]
 
@@ -41,7 +57,8 @@ local function drawMainTreeArea( treeContainer, charName )
 	
 
 	do -- Header
-		local headerText = format('%s %s (%s %d)', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level)
+		-- Rank Name (level level) - online/offline (status)
+		local headerText = sFormat('%s %s (%s %d) - %s', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level, formatOnlineStatusText(charData.online, charData.status))
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Large)
 		headerLabel:SetText(headerText)
@@ -64,9 +81,12 @@ local function drawMainTreeArea( treeContainer, charName )
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.note)
-			editBox:SetDisabled(I.canEditPublicNote)
+			editBox:SetDisabled(not I.canEditPublicNote)
 			editBox:SetMaxLetters(31)
 			editBox:SetRelativeWidth(0.5)
+			editBox:SetCallback("OnEnterPressed", function(container, event, val)
+					if charData.guildIndex ~= -1 then GuildRosterSetPublicNote(charData.guildIndex, val) end
+				end)
 			generalInfoContainer:AddChild(editBox)
 		end
 
@@ -78,17 +98,12 @@ local function drawMainTreeArea( treeContainer, charName )
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.officerNote)
-			editBox:SetDisabled(I.canEditOfficerNote)
+			editBox:SetDisabled(not I.canEditOfficerNote)
 			editBox:SetMaxLetters(31)
 			editBox:SetRelativeWidth(0.5)
 			generalInfoContainer:AddChild(editBox)
 		end
-	end
-	
-
-	
-	
-	
+	end	
 end
 
 -- Generates the tree element, alts under mains + sorting.
@@ -123,36 +138,39 @@ local function rosterInfoGenTree( treeG )
 		if isSearching then
 			if sFind( sUpper(charData.name), searchString) ~= nil then
 				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
-					local charEntry = {
-						value = charData.name,
-						text = formatClassColor(charData.name, charData.class),
-						children = nil,
-					}
-					tIns(tree, charEntry)
+					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
+						local charEntry = {
+							value = charData.name,
+							text = formatClassColor(charData.name, charData.class),
+							children = nil,
+						}
+						tIns(tree, charEntry)
+					end
 				end
 			end
 		else
 			-- Only add an entry if not an alt (alts are added under mains)
 			if charData.main == nil then
 				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
-					local charEntry = {
-						value = charData.name,
-						text = formatClassColor(charData.name, charData.class),
-						children = nil,
-					}
+					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
+						local charEntry = {
+							value = charData.name,
+							text = formatClassColor(charData.name, charData.class),
+							children = nil,
+						}
 
-					-- If char doesn't have a main (is a main itself) and have alts
-					if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
-						charEntry.children = {}
-						for _, alt in ipairs(charData.alts) do 
-							tIns(charEntry.children, {
-								value = alt.name, 
-								text = formatClassColor(alt.name, alt.class)
-							})
+						-- If char doesn't have a main (is a main itself) and have alts
+						if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
+							charEntry.children = {}
+							for _, alt in ipairs(charData.alts) do 
+								tIns(charEntry.children, {
+									value = alt.name, 
+									text = formatClassColor(alt.name, alt.class)
+								})
+							end
 						end
+						tIns(tree, charEntry)
 					end
-					tIns(tree, charEntry)
-
 				end
 			end
 		end
@@ -163,6 +181,7 @@ end
 
 -- Draw the tab
 A.GUI.DrawTab["RosterInfo"] = function(container)
+	GuildRoster()
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
 	do -- Setup the tree element
@@ -221,6 +240,16 @@ A.GUI.DrawTab["RosterInfo"] = function(container)
 		container:AddChild(onlyMaxCheckbox)	
 	end
 
+	do -- Hide offline checkbox
+		local hideOfflineCheckbox = AceGUI:Create("CheckBox")
+		hideOfflineCheckbox:SetLabel(L['Hide offline'])
+		hideOfflineCheckbox:SetValue(rosterInfoDB.hideOffline)
+		hideOfflineCheckbox:SetCallback("OnValueChanged", function(container, event, val)
+				rosterInfoDB.hideOffline = val
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(hideOfflineCheckbox)	
+	end
 
 	-- Add the TreeGroup element
 	container:AddChild(treeG)
