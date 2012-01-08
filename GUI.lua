@@ -156,6 +156,15 @@ TGDraw["rosterInfo"] = function(container)
 
 	-- Add the TreeGroup element
 	container:AddChild(treeG)
+
+	local editbox = AceGUI:Create("EditBox")
+	editbox:SetLabel("Insert text:")
+	editbox:SetWidth(200)
+	treeG:AddChild(editbox)
+
+	treeG:SetCallback("OnGroupSelected", function(group)
+		print(group.localstatus.selected)
+	end)
 	
 	-- Generate the tree for the TreeGroup
 	rosterInfoGenTree( treeG )
