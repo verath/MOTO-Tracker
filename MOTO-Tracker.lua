@@ -16,7 +16,7 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 
 --###################################
---   Helper Functions
+--	Helper Functions
 --###################################
 
 -- Initializes the DB
@@ -60,7 +60,7 @@ end
 
 
 --###################################
---   Event functions
+--	Event functions
 --###################################
 
 -- Called by ace3 once saved variables are available

@@ -16,11 +16,13 @@ end
 local TGDraw = {}
 
 
---
--- Roster Info  tab
---
+--###################################
+--	Roster Info tab
+--###################################
+
 local rosterInfoDB = {}
 local searchString = ''
+
 -- Generates the tree element, alts under mains + sorting.
 local function rosterInfoGenTree( treeG )
 	local isSearching = (searchString ~= '') and true or false
@@ -91,7 +93,6 @@ local function rosterInfoGenTree( treeG )
 	treeG:SetTree(tree)
 end
 
-
 -- Draw the tab
 TGDraw["rosterInfo"] = function(container)
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
@@ -161,9 +162,9 @@ TGDraw["rosterInfo"] = function(container)
 end
 
 
---
+--###################################
 --	Main Frame
---
+--###################################
 
 -- Callback function for OnGroupSelected
 function SelectGroup(container, event, group)
