@@ -97,23 +97,23 @@ end
 TGDraw["rosterInfo"] = function(container)
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
-	do -- Search EditBox
-		local searchTextbox = AceGUI:Create("EditBox")
-		searchTextbox:SetLabel(L['Search'])
-		searchTextbox:SetText('')
-		searchTextbox:DisableButton(true)
-		searchTextbox:SetCallback("OnTextChanged", function(obj)
-				searchString = obj:GetText()
-				rosterInfoGenTree( treeG )
-			end)
-		container:AddChild(searchTextbox)
-	end
-
 	do -- Setup the tree element
 		treeG = AceGUI:Create("TreeGroup")
 		treeG:SetTree(tree)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
+	end
+
+	do -- Search EditBox
+		local searchTextbox = AceGUI:Create("EditBox")
+		searchTextbox:SetLabel(L['Search'])
+		searchTextbox:SetText('')
+		searchTextbox:DisableButton(true)
+		searchTextbox:SetCallback("OnTextChanged", function(container, event, val)
+				searchString = val
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(searchTextbox)
 	end
 	
 	do -- Dropdown for primary sorting
@@ -122,8 +122,8 @@ TGDraw["rosterInfo"] = function(container)
 		primarySortDropdown:SetValue(rosterInfoDB.sortByPrimary)
 		primarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortByPrimary])
 		primarySortDropdown:SetList(I.guildSortableBy)
-		primarySortDropdown:SetCallback("OnValueChanged", function(key,_)
-				rosterInfoDB.sortByPrimary = key.value
+		primarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
+				rosterInfoDB.sortByPrimary = val
 				rosterInfoGenTree( treeG )
 			end)
 		container:AddChild(primarySortDropdown)
@@ -135,8 +135,8 @@ TGDraw["rosterInfo"] = function(container)
 		secondarySortDropdown:SetValue(rosterInfoDB.sortBySecondary)
 		secondarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortBySecondary])
 		secondarySortDropdown:SetList(I.guildSortableBy)
-		secondarySortDropdown:SetCallback("OnValueChanged", function(key,_)
-				rosterInfoDB.sortBySecondary = key.value 
+		secondarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
+				rosterInfoDB.sortBySecondary = val
 				rosterInfoGenTree( treeG )
 			end)
 		container:AddChild(secondarySortDropdown)
@@ -146,8 +146,8 @@ TGDraw["rosterInfo"] = function(container)
 		local onlyMaxCheckbox = AceGUI:Create("CheckBox")
 		onlyMaxCheckbox:SetLabel(L['Only 85s'])
 		onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
-		onlyMaxCheckbox:SetCallback("OnValueChanged", function(val)
-				rosterInfoDB.showOnlyMaxLvl = val.checked
+		onlyMaxCheckbox:SetCallback("OnValueChanged", function(container, event, val)
+				rosterInfoDB.showOnlyMaxLvl = val
 				rosterInfoGenTree( treeG )
 			end)
 		container:AddChild(onlyMaxCheckbox)	
@@ -162,8 +162,9 @@ TGDraw["rosterInfo"] = function(container)
 	editbox:SetWidth(200)
 	treeG:AddChild(editbox)
 
-	treeG:SetCallback("OnGroupSelected", function(group)
-		print(group.localstatus.selected)
+	treeG:SetCallback("OnGroupSelected", function(container, event, group)
+		print(group)
+		-- Saniera?Illier
 	end)
 	
 	-- Generate the tree for the TreeGroup
