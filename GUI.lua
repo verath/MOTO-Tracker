@@ -3,6 +3,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local tIns = table.insert
 local sUpper = string.upper
+local sFind = string.find
 
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
@@ -19,9 +20,12 @@ local TGDraw = {}
 -- Roster Info  tab
 --
 local rosterInfoDB = {}
-
+local searchString = ''
 -- Generates the tree element, alts under mains + sorting.
 local function rosterInfoGenTree( treeG )
+	local isSearching = (searchString ~= '') and true or false
+	searchString = isSearching and sUpper(searchString) or ''
+
 	-- Sorting
 	-- Needs to be numeric key to sort
 	local i, chars = 1, {}
@@ -46,27 +50,40 @@ local function rosterInfoGenTree( treeG )
 	-- Generate the tree
 	tree = {}
 	for _, charData in ipairs(chars) do	
-		-- Only add an entry if not an alt (alts are added under mains)
-		if charData.main == nil then
-			if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
-				local charEntry = {
-					value = charData.name,
-					text = formatClassColor(charData.name, charData.class),
-					children = nil,
-				}
-
-				-- If char doesn't have a main (is a main itself) and have alts
-				if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
-					charEntry.children = {}
-					for _, alt in ipairs(charData.alts) do 
-						tIns(charEntry.children, {
-							value = alt.name, 
-							text = formatClassColor(alt.name, alt.class)
-						})
-					end
+		if isSearching then
+			if sFind( sUpper(charData.name), searchString) ~= nil then
+				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
+					local charEntry = {
+						value = charData.name,
+						text = formatClassColor(charData.name, charData.class),
+						children = nil,
+					}
+					tIns(tree, charEntry)
 				end
-				
-				tIns(tree, charEntry)
+			end
+		else
+			-- Only add an entry if not an alt (alts are added under mains)
+			if charData.main == nil then
+				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
+					local charEntry = {
+						value = charData.name,
+						text = formatClassColor(charData.name, charData.class),
+						children = nil,
+					}
+
+					-- If char doesn't have a main (is a main itself) and have alts
+					if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
+						charEntry.children = {}
+						for _, alt in ipairs(charData.alts) do 
+							tIns(charEntry.children, {
+								value = alt.name, 
+								text = formatClassColor(alt.name, alt.class)
+							})
+						end
+					end
+					tIns(tree, charEntry)
+
+				end
 			end
 		end
 	end
@@ -79,45 +96,63 @@ end
 TGDraw["rosterInfo"] = function(container)
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
-	-- Setup the tree element
-	treeG = AceGUI:Create("TreeGroup")
-	treeG:SetTree(tree)
-	treeG:SetFullWidth(true)
-	treeG:SetFullHeight(true)
-	
-	-- Drop down for sorting
-	local primarySortDropdown = AceGUI:Create("Dropdown")
-	primarySortDropdown:SetLabel(L['Primary sort by'])
-	primarySortDropdown:SetValue(rosterInfoDB.sortByPrimary)
-	primarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortByPrimary])
-	primarySortDropdown:SetList(I.guildSortableBy)
-	primarySortDropdown:SetCallback("OnValueChanged", function(key,_)
-			rosterInfoDB.sortByPrimary = key.value
-			rosterInfoGenTree( treeG )
-		end)
-	container:AddChild(primarySortDropdown)
+	do -- Search EditBox
+		local searchTextbox = AceGUI:Create("EditBox")
+		searchTextbox:SetLabel(L['Search'])
+		searchTextbox:SetText('')
+		searchTextbox:DisableButton(true)
+		searchTextbox:SetCallback("OnTextChanged", function(obj)
+				searchString = obj:GetText()
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(searchTextbox)
+	end
 
-	local secondarySortDropdown = AceGUI:Create("Dropdown")
-	secondarySortDropdown:SetLabel(L['Secondary sort by'])
-	secondarySortDropdown:SetValue(rosterInfoDB.sortBySecondary)
-	secondarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortBySecondary])
-	secondarySortDropdown:SetList(I.guildSortableBy)
-	secondarySortDropdown:SetCallback("OnValueChanged", function(key,_)
-			rosterInfoDB.sortBySecondary = key.value 
-			rosterInfoGenTree( treeG )
-		end)
-	container:AddChild(secondarySortDropdown)
-
-	-- Hide below 85 checkbox
-	local onlyMaxCheckbox = AceGUI:Create("CheckBox")
-	onlyMaxCheckbox:SetLabel(L['Only 85s'])
-	onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
-	onlyMaxCheckbox:SetCallback("OnValueChanged", function(val)
-			rosterInfoDB.showOnlyMaxLvl = val.checked
-			rosterInfoGenTree( treeG )
-		end)
-	container:AddChild(onlyMaxCheckbox)	
+	do -- Setup the tree element
+		treeG = AceGUI:Create("TreeGroup")
+		treeG:SetTree(tree)
+		treeG:SetFullWidth(true)
+		treeG:SetFullHeight(true)
+	end
 	
+	do -- Dropdown for primary sorting
+		local primarySortDropdown = AceGUI:Create("Dropdown")
+		primarySortDropdown:SetLabel(L['Primary sort by'])
+		primarySortDropdown:SetValue(rosterInfoDB.sortByPrimary)
+		primarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortByPrimary])
+		primarySortDropdown:SetList(I.guildSortableBy)
+		primarySortDropdown:SetCallback("OnValueChanged", function(key,_)
+				rosterInfoDB.sortByPrimary = key.value
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(primarySortDropdown)
+	end
+
+	do -- Dropdown for secondary sorting
+		local secondarySortDropdown = AceGUI:Create("Dropdown")
+		secondarySortDropdown:SetLabel(L['Secondary sort by'])
+		secondarySortDropdown:SetValue(rosterInfoDB.sortBySecondary)
+		secondarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortBySecondary])
+		secondarySortDropdown:SetList(I.guildSortableBy)
+		secondarySortDropdown:SetCallback("OnValueChanged", function(key,_)
+				rosterInfoDB.sortBySecondary = key.value 
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(secondarySortDropdown)
+	end
+
+	do -- Hide below 85 checkbox
+		local onlyMaxCheckbox = AceGUI:Create("CheckBox")
+		onlyMaxCheckbox:SetLabel(L['Only 85s'])
+		onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
+		onlyMaxCheckbox:SetCallback("OnValueChanged", function(val)
+				rosterInfoDB.showOnlyMaxLvl = val.checked
+				rosterInfoGenTree( treeG )
+			end)
+		container:AddChild(onlyMaxCheckbox)	
+	end
+
+
 	-- Add the TreeGroup element
 	container:AddChild(treeG)
 	
