@@ -12,7 +12,7 @@ A.GUI = { DrawTab = {}, mainFrame = {} }
 function SelectGroup(container, event, group)
 	container:ReleaseChildren()
 	if group == 'rosterInfo' then
-		A.GUI.DrawTab['RosterInfo']( container )
+		--A.GUI.DrawTab['RosterInfo']( container )
 	end
 end
 

@@ -1,7 +1,6 @@
 --###################################
 --	Roster Info tab
 --###################################
-
 local tIns = table.insert
 local sUpper = string.upper
 local sFind = string.find
