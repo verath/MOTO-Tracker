@@ -127,8 +127,10 @@ function A:OnGuildRosterUpdate( event,_ )
 		A:UpdateGuildRoster()
 	end
 
+	A.GUI:OnRosterUpdate()
 
-	if firstRosterUpdate then A:ShowMainFrame() end
+
+	if firstRosterUpdate then A.GUI:ShowMainFrame() end
 	firstRosterUpdate = false
 end
 

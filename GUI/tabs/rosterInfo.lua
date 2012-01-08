@@ -186,7 +186,8 @@ local function rosterInfoGenTree( treeG )
 end
 
 -- Draw the tab
-A.GUI.DrawTab["RosterInfo"] = function(container)
+local treeGroupFrame
+function A.GUI.tabs.rosterInfo:DrawTab(container)
 	GuildRoster()
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
@@ -196,6 +197,7 @@ A.GUI.DrawTab["RosterInfo"] = function(container)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
 	end
+	treeGroupFrame = treeG
 
 	do -- Search EditBox
 		local searchTextbox = AceGUI:Create("EditBox")
@@ -268,4 +270,11 @@ A.GUI.DrawTab["RosterInfo"] = function(container)
 	
 	-- Generate the tree for the TreeGroup
 	rosterInfoGenTree( treeG )
+end
+
+-- Roster update
+function A.GUI.tabs.rosterInfo:OnRosterUpdate()
+	if treeGroupFrame then
+		rosterInfoGenTree(treeGroupFrame)
+	end
 end
