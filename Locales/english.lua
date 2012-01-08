@@ -33,4 +33,7 @@ if L then
 	L['Secondary sort by'] = true
 	L['Only 85s'] = true
 	L['Search'] = true
+	L['General'] = true
+	L['Guild Note'] = true
+	L['Officer Note'] = true
 end

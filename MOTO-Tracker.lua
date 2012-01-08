@@ -111,6 +111,8 @@ function A:OnGuildRosterUpdate( event, change )
 		-- Get guild specific info now, as it should all be loaded
 		I.guildName, _ = GetGuildInfo("player")
 		I.canViewOfficerNote = CanViewOfficerNote()
+		I.canEditOfficerNote = CanEditOfficerNote()
+		I.canEditPublicNote = CanEditPublicNote()
 
 		removeNoLongerGuildMemebers()
 	end

@@ -8,16 +8,88 @@ local tIns = table.insert
 local sUpper = string.upper
 local sFind = string.find
 local sSub = string.sub
+local sFormat = string.format
+
+local rosterInfoDB = {}
+local searchString = ''
 
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
 	local class = sUpper(class)
 	local classColor = RAID_CLASS_COLORS[class]
-	return "|c" .. format("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
+	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
 
-local rosterInfoDB = {}
-local searchString = ''
+-- Draw the main area when a character is selected
+local function drawMainTreeArea( treeContainer, charName )
+	local charData = A.db.global.guilds[I.guildName].chars[charName]
+	local classColor = RAID_CLASS_COLORS[charData.class]
+
+	treeContainer:ReleaseChildren()
+	treeContainer:SetLayout("Fill")
+
+	local container
+	do -- Add an inner scrolling container
+		local scrollContainer = AceGUI:Create("ScrollFrame")
+		scrollContainer:SetLayout("Flow")
+		scrollContainer:SetFullWidth(true)
+		treeContainer:AddChild(scrollContainer)
+
+		-- The scroll frame should be the container
+		container = scrollContainer
+	end
+	
+
+	do -- Header
+		local headerText = format('%s %s (%s %d)', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level)
+		local headerLabel = AceGUI:Create("Label")
+		headerLabel:SetFontObject(SystemFont_Large)
+		headerLabel:SetText(headerText)
+		headerLabel:SetFullWidth(true)
+		container:AddChild(headerLabel)
+	end
+
+	do -- General info container
+		generalInfoContainer =  AceGUI:Create("InlineGroup")
+		generalInfoContainer:SetLayout("Flow")
+		generalInfoContainer:SetTitle(L['General'])
+		generalInfoContainer:SetFullWidth(true)
+		container:AddChild(generalInfoContainer)
+
+		do -- Guild Note
+			local label = AceGUI:Create("Label")
+			label:SetText(L['Guild Note'] .. ':')
+			label:SetRelativeWidth(0.5)
+			generalInfoContainer:AddChild(label)
+
+			local editBox = AceGUI:Create("EditBox")
+			editBox:SetText(charData.note)
+			editBox:SetDisabled(I.canEditPublicNote)
+			editBox:SetMaxLetters(31)
+			editBox:SetRelativeWidth(0.5)
+			generalInfoContainer:AddChild(editBox)
+		end
+
+		do -- Officer Note
+			local label = AceGUI:Create("Label")
+			label:SetText(L['Officer Note'] .. ':')
+			label:SetRelativeWidth(0.5)
+			generalInfoContainer:AddChild(label)
+
+			local editBox = AceGUI:Create("EditBox")
+			editBox:SetText(charData.officerNote)
+			editBox:SetDisabled(I.canEditOfficerNote)
+			editBox:SetMaxLetters(31)
+			editBox:SetRelativeWidth(0.5)
+			generalInfoContainer:AddChild(editBox)
+		end
+	end
+	
+
+	
+	
+	
+end
 
 -- Generates the tree element, alts under mains + sorting.
 local function rosterInfoGenTree( treeG )
@@ -153,15 +225,10 @@ A.GUI.DrawTab["RosterInfo"] = function(container)
 	-- Add the TreeGroup element
 	container:AddChild(treeG)
 
-	local editbox = AceGUI:Create("EditBox")
-	editbox:SetLabel("Insert text:")
-	editbox:SetWidth(200)
-	treeG:AddChild(editbox)
-
 	treeG:SetCallback("OnGroupSelected", function(container, event, group)
 		local isSubLvl = sFind(group, "\001")
 		local charName = isSubLvl and sSub(group, isSubLvl+1) or group
-		print(charName)
+		drawMainTreeArea(container, charName)
 	end)
 	
 	-- Generate the tree for the TreeGroup
