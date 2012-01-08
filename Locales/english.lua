@@ -31,4 +31,5 @@ if L then
 	L['Something Else'] = true
 	L['Primary sort by'] = true
 	L['Secondary sort by'] = true
+	L['Show only 85s'] = true
 end

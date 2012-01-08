@@ -8,6 +8,8 @@ function A:SetupDefaults()
 			core = {
 				GUI = {
 					rosterInfo = {
+						showAlts = true,
+						showOnlyMaxLvl = false,
 						sortByPrimary = 'rankIndex',
 						sortBySecondary = 'name'
 					},

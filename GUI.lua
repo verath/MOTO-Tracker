@@ -18,7 +18,7 @@ local TGDraw = {}
 --
 -- Roster Info  tab
 --
-local rosterInfoDB = A.db.global.core.GUI.rosterInfo
+local rosterInfoDB = {}
 
 -- Generates the tree element, alts under mains + sorting.
 local function rosterInfoGenTree( treeG )
@@ -48,24 +48,26 @@ local function rosterInfoGenTree( treeG )
 	for _, charData in ipairs(chars) do	
 		-- Only add an entry if not an alt (alts are added under mains)
 		if charData.main == nil then
-			local charEntry = {
-				value = charData.name,
-				text = formatClassColor(charData.name, charData.class),
-				children = nil,
-			}
+			if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
+				local charEntry = {
+					value = charData.name,
+					text = formatClassColor(charData.name, charData.class),
+					children = nil,
+				}
 
-			-- If char doesn't have a main (is a main itself) and have alts
-			if charData.main == nil and charData.alts ~= nil and  then
-				charEntry.children = {}
-				for _, alt in ipairs(charData.alts) do 
-					tIns(charEntry.children, {
-						value = alt.name, 
-						text = formatClassColor(alt.name, alt.class)
-					})
+				-- If char doesn't have a main (is a main itself) and have alts
+				if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
+					charEntry.children = {}
+					for _, alt in ipairs(charData.alts) do 
+						tIns(charEntry.children, {
+							value = alt.name, 
+							text = formatClassColor(alt.name, alt.class)
+						})
+					end
 				end
+				
+				tIns(tree, charEntry)
 			end
-			
-			tIns(tree, charEntry)
 		end
 	end
 
@@ -75,6 +77,13 @@ end
 
 -- Draw the tab
 TGDraw["rosterInfo"] = function(container)
+	rosterInfoDB = A.db.global.core.GUI.rosterInfo
+
+	-- Setup the tree element
+	treeG = AceGUI:Create("TreeGroup")
+	treeG:SetTree(tree)
+	treeG:SetFullWidth(true)
+	treeG:SetFullHeight(true)
 	
 	-- Drop down for sorting
 	local primarySortDropdown = AceGUI:Create("Dropdown")
@@ -100,14 +109,16 @@ TGDraw["rosterInfo"] = function(container)
 	container:AddChild(secondarySortDropdown)
 
 	-- Hide below 85 checkbox
-
-	
+	local onlyMaxCheckbox = AceGUI:Create("CheckBox")
+	onlyMaxCheckbox:SetLabel(L['Only 85s'])
+	onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
+	onlyMaxCheckbox:SetCallback("OnValueChanged", function(val)
+			rosterInfoDB.showOnlyMaxLvl = val.checked
+			rosterInfoGenTree( treeG )
+		end)
+	container:AddChild(onlyMaxCheckbox)	
 	
 	-- Add the TreeGroup element
-	treeG = AceGUI:Create("TreeGroup")
-	treeG:SetTree(tree)
-	treeG:SetFullWidth(true)
-	treeG:SetFullHeight(true)
 	container:AddChild(treeG)
 	
 	-- Generate the tree for the TreeGroup
