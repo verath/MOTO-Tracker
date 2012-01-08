@@ -86,6 +86,7 @@ function A:OnEnable()
 
 	-- Start listening for events
 	A:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
+	A:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
 	
 	-- Request guild roster from server
 	GuildRoster()
@@ -108,15 +109,11 @@ end
 
 -- When guild roster is updated
 local firstRosterUpdate = true
-function A:OnGuildRosterUpdate( event, change )
+function A:OnGuildRosterUpdate( event,_ )
 	if not I.hasGuild then return end
-
-	-- We only need to update our DB if a change did occur
-	-- or if this is first update after login.
-	if change == nil and firstRosterUpdate ~= true then return end
 	
 	-- Do once update on login
-	if firstRosterUpdate then
+	if firstRosterUpdate or event == 'PLAYER_GUILD_UPDATE' then
 		-- Get guild specific info now, as it should all be loaded
 		I.guildName, _ = GetGuildInfo("player")
 		I.canViewOfficerNote = CanViewOfficerNote() ~= nil and true or false
@@ -126,11 +123,13 @@ function A:OnGuildRosterUpdate( event, change )
 		removeNoLongerGuildMemebers()
 	end
 
+	if event == 'GUILD_ROSTER_UPDATE' then
+		A:UpdateGuildRoster()
+	end
+
+
+	if firstRosterUpdate then A:ShowMainFrame() end
 	firstRosterUpdate = false
-
-	A:UpdateGuildRoster()
-
-	A:ShowMainFrame()
 end
 
 

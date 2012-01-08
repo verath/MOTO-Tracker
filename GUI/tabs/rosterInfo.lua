@@ -36,10 +36,11 @@ end
 
 -- Draw the main area when a character is selected
 local function drawMainTreeArea( treeContainer, charName )
-	GuildRoster()
-
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	local classColor = RAID_CLASS_COLORS[charData.class]
+
+	GuildRoster()
+	--A:UpdateGuildMemeberFromRoster( charData.guildIndex )
 
 	treeContainer:ReleaseChildren()
 	treeContainer:SetLayout("Fill")
@@ -84,8 +85,9 @@ local function drawMainTreeArea( treeContainer, charName )
 			editBox:SetDisabled(not I.canEditPublicNote)
 			editBox:SetMaxLetters(31)
 			editBox:SetRelativeWidth(0.5)
+			local index = charData.guildIndex
 			editBox:SetCallback("OnEnterPressed", function(container, event, val)
-					if charData.guildIndex ~= -1 then GuildRosterSetPublicNote(charData.guildIndex, val) end
+					if index ~= -1 then GuildRosterSetPublicNote(index, val); GuildRoster() end
 				end)
 			generalInfoContainer:AddChild(editBox)
 		end
@@ -101,6 +103,10 @@ local function drawMainTreeArea( treeContainer, charName )
 			editBox:SetDisabled(not I.canEditOfficerNote)
 			editBox:SetMaxLetters(31)
 			editBox:SetRelativeWidth(0.5)
+			local index = charData.guildIndex
+			editBox:SetCallback("OnEnterPressed", function(container, event, val)
+					if index ~= -1 then GuildRosterSetOfficerNote(index, val); GuildRoster() end
+				end)
 			generalInfoContainer:AddChild(editBox)
 		end
 	end	
