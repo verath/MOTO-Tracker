@@ -135,6 +135,8 @@ function A:OnGuildRosterUpdate( event,_ )
 	-- Pass event onto the GUI handler
 	A.GUI:OnRosterUpdate()
 
+	firstRosterUpdate = false
+
 end
 
 -- Slash handler
