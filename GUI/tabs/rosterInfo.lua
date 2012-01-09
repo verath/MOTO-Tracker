@@ -50,9 +50,9 @@ end
 local function altsToString( altList )
 	local s = ''
 	for _,v in ipairs(altList) do 
-		s = s .. ' ' .. v .. ','
+		s = s .. v .. ', '
 	end
-	return sSub(s, 1, -2)
+	return sSub(s, 1, -3)
 end
 
 -- Sets/updates a characters main and that main's alt table
