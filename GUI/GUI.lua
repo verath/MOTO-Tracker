@@ -34,11 +34,17 @@ end
 
 -- Shows the main frame, also creates it if it doesn't exist yet.
 function A.GUI:ShowMainFrame()
+	-- Only show if it isn't shown already
+	if A.GUI.mainFrame ~= nil then return end
+
 	-- No point in creating it before we want to show it
 	-- And since it is realease on close we need to
 	-- create it every time.
 	self:CreateMainFrame()
 	self.mainFrame:Show()
+	
+	-- Update GuildRoster as soon as we can (min time now, max in 10 sec)
+	GuildRoster()
 	AceTimer:ScheduleTimer(GuildRoster, 10)
 end
 
