@@ -1,9 +1,11 @@
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
-local AceGUI = LibStub("AceGUI-3.0")
-
 --###################################
 --	Roster Info tab
 --###################################
+
+local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+local AceGUI = LibStub("AceGUI-3.0")
+
+-- Local versions of global functions
 local tIns = table.insert
 local tRemove = table.remove
 local sUpper = string.upper
