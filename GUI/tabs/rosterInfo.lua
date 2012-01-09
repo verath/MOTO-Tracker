@@ -47,9 +47,12 @@ local function autoCompleteCharData( str, targetAttr, strModFunc )
 end
 
 -- Takes a list of alts and returns it as a comma-seperated string
-local function altsToString( altList )
+local function altsToString( altList, highlightOnline )
 	local s = ''
-	for _,v in ipairs(altList) do 
+	for _,v in ipairs(altList) do
+		if A.db.global.guilds[I.guildName].chars[v].online and highlightOnline then
+			v = GREEN_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
+		end
 		s = s .. v .. ', '
 	end
 	return sSub(s, 1, -3)
@@ -136,6 +139,22 @@ local function drawMainTreeArea( treeContainer, charName )
 		headerLabel:SetFullWidth(true)
 		container:AddChild(headerLabel)
 	end
+	
+	do -- SubHeader
+		-- Zone info
+		local headerText = ''
+		if charData.online then
+			headerText = L['Currently in']
+		else
+			headerText = L['Last seen in']
+		end
+		headerText = headerText .. ': ' .. LIGHTYELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+		local headerLabel = AceGUI:Create("Label")
+		headerLabel:SetFontObject(SystemFont_Med1)
+		headerLabel:SetText(headerText)
+		headerLabel:SetFullWidth(true)
+		container:AddChild(headerLabel)
+	end
 
 	do -- General info container
 		generalInfoContainer =  AceGUI:Create("InlineGroup")
@@ -189,11 +208,10 @@ local function drawMainTreeArea( treeContainer, charName )
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
 
-				local editBox = AceGUI:Create("EditBox")
-				editBox:SetText(altsToString(charData.alts))
-				editBox:SetDisabled(true)
+				local editBox = AceGUI:Create("Label")
+				editBox:SetText('  ' .. altsToString(charData.alts, true))
+				--editBox:SetDisabled(true)
 				editBox:SetRelativeWidth(0.7)
-				editBox:SetCallback("OnEnterPressed", changeMain)
 				generalInfoContainer:AddChild(editBox)
 			end
 		end

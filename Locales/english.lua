@@ -44,4 +44,6 @@ if L then
 	L['Refresh'] = true
 	L['Main'] = true
 	L['Alts'] = true
+	L['Currently in'] = true
+	L['Last seen in'] = true
 end
