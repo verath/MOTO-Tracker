@@ -56,7 +56,7 @@ local function removeNoLongerGuildMemebers()
 	
 	-- Seems like we don't always get the numbere here.
 	local numMembers = GetNumGuildMembers()
-	if numMemebers == 0 then return end
+	if numMembers == 0 then return end
 
 	local chars = A.db.global.guilds[I.guildName].chars
 	
