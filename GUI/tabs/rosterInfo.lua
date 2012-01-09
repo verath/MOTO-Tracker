@@ -161,6 +161,7 @@ local function drawMainTreeArea( treeContainer, charName )
 					c:SetText(charData.main)
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
+				editBox:DisableButton( A.db.global.settings.GUI.useAutoComplete )
 				-- AutoComplete
 				editBox:SetUserData('prevText', editBox:GetText())
 				editBox:SetUserData('isAutoCompleting', false)
@@ -170,7 +171,12 @@ local function drawMainTreeArea( treeContainer, charName )
 						if A.db.global.settings.GUI.useAutoComplete and #value > #prevText then
 							c:SetUserData('isAutoCompleting', true)
 							local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
-							if aCResult ~= value then c:SetText(aCResult) end
+							if aCResult ~= value then 
+								changeMain(charData, aCResult) -- Change main to value
+								c:SetText(charData.main)
+								c:ClearFocus()
+								A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
+							end
 							c:SetUserData('isAutoCompleting', false)
 						end
 					end
