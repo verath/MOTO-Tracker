@@ -153,6 +153,9 @@ end
 
 -- Draw the main area when a character is selected
 local function drawMainTreeArea( treeContainer, charName )
+	-- Request update of GuildRoster
+	GuildRoster()
+
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	local classColor = RAID_CLASS_COLORS[charData.class]
 
