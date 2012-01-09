@@ -389,6 +389,6 @@ end
 -- On roster update
 function A.GUI.tabs.rosterInfo:OnRosterUpdate()
 	if treeGroupFrame then
-		rosterInfoGenTree()
+		self:GenerateTreeStructure()
 	end
 end
