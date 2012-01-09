@@ -84,7 +84,11 @@ local function altsToString( altList, highlightOnline )
 	local s = ''
 	for _,v in ipairs(sortedAlts) do
 		if A.db.global.guilds[I.guildName].chars[v].online and highlightOnline then
-			v = GREEN_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
+			if A.db.global.guilds[I.guildName].chars[v].status ~= '' then
+				v = LIGHTYELLOW_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
+			else
+				v = GREEN_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
+			end
 		end
 		s = s .. v .. ', '
 	end
@@ -129,12 +133,16 @@ local function formatClassColor( str, class )
 end
 
 -- Returns a color coded Online/Offline (Status)
-local function formatOnlineStatusText( online, status )
+local function formatOnlineStatusText( online, status, shortStatus )
 	local str = ''
 	if online ~= nil then
 		str = GREEN_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
 		if status and status ~= '' then
-			str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
+			if shortStatus then -- Just change color of online
+				str = LIGHTYELLOW_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
+			else
+				str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
+			end
 		end
 	else
 		str = RED_FONT_COLOR_CODE .. L['Offline'] .. FONT_COLOR_CODE_CLOSE
@@ -331,12 +339,14 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	for _, charData in ipairs(chars) do
 		-- Used for main coloring when online alts
 		local mainHasAltOnline = false
+		-- Also used later for main coloring by alt status
+		local mainHasAltStatus = ''
 
 		-- MainChar list-item
 		local charEntry = {
 			value = charData.name,
 			text = formatClassColor(charData.name, charData.class) .. 
-					(charData.online and ' - ' .. formatOnlineStatusText(true) or ''),
+					(charData.online and ' - ' .. formatOnlineStatusText(true, charData.status, true) or ''),
 			children = nil,
 		}
 
@@ -352,11 +362,12 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 				local altEntry = {
 					value = alt.name, 
 					text = formatClassColor(alt.name, alt.class) .. 
-							(alt.online and ' - ' .. formatOnlineStatusText(true) or ''),
+							(alt.online and ' - ' .. formatOnlineStatusText(true, alt.status, true) or ''),
 				}
 
 				tIns(charEntry.children, altEntry)
 				mainHasAltOnline = (alt.online and true or mainHasAltOnline)
+				mainHasAltStatus = (alt.online and alt.status or mainHasAltStatus)
 			end
 		end
 
@@ -390,7 +401,8 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			else
 				-- Update main list-item with online color of alt
 				local showCharOnline = charData.online or mainHasAltOnline
-				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true) or '')
+				local showCharStatus = mainHasAltStatus ~= '' and mainHasAltStatus or charData.status
+				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true, showCharStatus, true) or '')
 			end
 
 			tIns(tree, charEntry)
