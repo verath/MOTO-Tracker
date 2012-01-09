@@ -156,7 +156,69 @@ local function rosterInfoGenTree( treeG )
 
 	-- Generate the tree
 	tree = {}
-	for _, charData in ipairs(chars) do	
+	for _, charData in ipairs(chars) do
+		-- Used for main coloring when online alts
+		local mainHasAltOnline = false
+		
+		-- MainChar list-item
+		local charEntry = {
+			value = charData.name,
+			text = formatClassColor(charData.name, charData.class) .. 
+					(charData.online and ' - ' .. formatOnlineStatusText(true) or ''),
+			children = nil,
+		}
+
+		-- Alts, below MainChar
+		if charData.alts ~= nil then
+			charEntry.children = {}
+			for _, alt in ipairs(charData.alts) do
+				local alt = A.db.global.guilds[I.guildName].chars[alt]			
+				local altEntry = {
+					value = alt.name, 
+					text = formatClassColor(alt.name, alt.class) .. 
+							(alt.online and ' - ' .. formatOnlineStatusText(true) or ''),
+				}
+
+				tIns(charEntry.children, altEntry)
+				mainHasAltOnline = (alt.online and true or mainHasAltOnline)
+			end
+		end
+
+		-- Filter checking
+		local passedFilters = (function()
+			-- showOnlyMaxLvl
+			if (rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then return false end
+					
+			-- Searching
+			if isSearching then
+				-- HideOffline, when searching alt-main relations are disregarded
+				if ( rosterInfoDB.hideOffline and not(charData.online) ) then return false end
+				-- SearchString in name
+				return ( sFind(sUpper(charData.name), searchString) ~= nil )
+			end
+
+			-- hideOffline, include online status of adds
+			if ( rosterInfoDB.hideOffline and not(charData.online or mainHasAltOnline ) ) then return false end
+
+			-- Only display mains, alts are grouped
+			if charData.main == nil then return true end
+
+		end)()
+
+		if passedFilters then
+			if isSearching then
+				-- Don't want alt sub-items when searching
+				charEntry.children = nil
+			else
+				-- Update main list-item with online color of alt
+				local showCharOnline = charData.online or mainHasAltOnline
+				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true) or '')
+			end
+
+			tIns(tree, charEntry)
+		end
+
+		--[[
 		-- If searching; skip some filters, don't group main/alts
 		if isSearching then
 			if sFind( sUpper(charData.name), searchString) ~= nil then
@@ -203,6 +265,7 @@ local function rosterInfoGenTree( treeG )
 				end
 			end
 		end
+		]]
 	end
 
 	treeG:SetTree(tree)
