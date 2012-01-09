@@ -80,11 +80,13 @@ local function drawMainTreeArea( treeContainer, charName )
 				
 				-- Remove alt from old main
 				if currentMain and currentMain.alts then
-					for i, v in ipairs(currentMain.alts) do
-						if v == charData.name then
-							currentMain.alts[i] = nil
+					local newAltTable = {}
+					for i = 1, #currentMain.alts do
+						if currentMain.alts[i] ~= charData.name then
+							tIns(newAltTable, currentMain.alts[i])
 						end
 					end
+					currentMain.alts = newAltTable
 				end
 				
 				-- Clear current main data
@@ -295,6 +297,8 @@ local treeGroupFrame
 function A.GUI.tabs.rosterInfo:DrawTab(container)
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
+	searchString = ''
+
 	do -- Setup the tree element
 		treeG = AceGUI:Create("TreeGroup")
 		treeG:SetTree(tree)
@@ -306,7 +310,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	do -- Search EditBox
 		local searchTextbox = AceGUI:Create("EditBox")
 		searchTextbox:SetLabel(L['Search'])
-		searchTextbox:SetText('')
+		searchTextbox:SetText()
 		searchTextbox:DisableButton(true)
 		searchTextbox:SetCallback("OnTextChanged", function(container, event, val)
 				searchString = val
