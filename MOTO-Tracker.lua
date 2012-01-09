@@ -53,11 +53,16 @@ end
 -- removes members no longer in the guild
 local function removeNoLongerGuildMemebers()
 	if not I.hasGuild or not I.guildName then return end
+	
+	-- Seems like we don't always get the numbere here.
+	local numMembers = GetNumGuildMembers()
+	if numMemebers == 0 then return
+
 	local chars = A.db.global.guilds[I.guildName].chars
 	
 	-- Create a roster table with name as key
 	local charsInGuild = {}
-	for i = 1, GetNumGuildMembers() do
+	for i = 1, numMembers do
 		local name,_ = GetGuildRosterInfo(i)
 		charsInGuild[name] = true
 	end
