@@ -22,7 +22,7 @@ if L then
 	L['Off Spec'] = true
 	L['Guild Rank'] = true
 	L['Level'] = true
-
+	L['Class'] = true
 	-- GUI
 	L['MOTO Tracker, version: %s'] = true
 	L['Members'] = true

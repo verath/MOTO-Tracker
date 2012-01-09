@@ -20,13 +20,23 @@ local treeGroupFrame
 
 -- Sorts by primary > secondary
 local function primarySecondarySort( a, b )
-	local sortByPrimary = rosterInfoDB.sortByPrimary
-	local sortBySecondary = rosterInfoDB.sortBySecondary
+	local sortByPrimary = rosterInfoDB.sortByPrimary.value
+	local sortBySecondary = rosterInfoDB.sortBySecondary.value
+	local primaryInvert = rosterInfoDB.sortByPrimary.invert
+	local secondaryInvert = rosterInfoDB.sortBySecondary.invert
 	if a and b then
 		if a[sortByPrimary] == b[sortByPrimary] and sortByPrimary ~= sortBySecondary then
-			return a[sortBySecondary] < b[sortBySecondary]
+			if secondaryInver then
+				return a[sortBySecondary] > b[sortBySecondary]
+			else
+				return a[sortBySecondary] < b[sortBySecondary]
+			end
 		else
-			return a[sortByPrimary] < b[sortByPrimary]
+			if primaryInvert then
+				return a[sortByPrimary] > b[sortByPrimary]
+			else
+				return a[sortByPrimary] < b[sortByPrimary]
+			end
 		end
 	end
 end

@@ -102,7 +102,7 @@ function A:OnEnable()
 
 	-- Static values
 	I.hasGuild = IsInGuild()
-	I.guildSortableBy = {name = L['Name'], mainSpec = L['Main Spec'], offSpec = L['Off Spec'], rankIndex = L['Guild Rank']}
+	I.guildSortableBy = {name = L['Name'], rankIndex = L['Guild Rank'], class = L['Class'], level = L['Level']}
 
 	-- Set up the options UI
 	self:SetupOptions()
