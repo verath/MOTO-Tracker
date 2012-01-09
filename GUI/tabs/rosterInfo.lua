@@ -134,7 +134,7 @@ local function rosterInfoGenTree( treeG )
 	searchString = isSearching and sUpper(searchString) or ''
 
 	-- Sorting
-	-- Needs to be numeric key to sort
+	-- Needs to be numeric keys to sort
 	local i, chars = 1, {}
 	for charName, charData in pairs(A.db.global.guilds[I.guildName].chars) do
 		chars[i] = charData
@@ -217,55 +217,6 @@ local function rosterInfoGenTree( treeG )
 
 			tIns(tree, charEntry)
 		end
-
-		--[[
-		-- If searching; skip some filters, don't group main/alts
-		if isSearching then
-			if sFind( sUpper(charData.name), searchString) ~= nil then
-				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
-					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
-						local charEntry = {
-							value = charData.name,
-							text = formatClassColor(charData.name, charData.class) .. (charData.online and ' - ' .. formatOnlineStatusText(true) or ''),
-							children = nil,
-						}
-						tIns(tree, charEntry)
-					end
-				end
-			end
-		else
-			-- Only add an entry if not an alt (alts are added under mains)
-			if charData.main == nil then
-				if not(rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then
-					if not( rosterInfoDB.hideOffline and not(charData.online) ) then
-						local charEntry = { value='', text='' }
-						local hasAltOnline = false
-						
-						-- If char doesn't have a main (is a main itself) and have alts
-						if charData.main == nil and charData.alts ~= nil and rosterInfoDB.showAlts then
-							charEntry.children = {}
-							for _, alt in ipairs(charData.alts) do
-								alt = A.db.global.guilds[I.guildName].chars[alt]
-								hasAltOnline = (alt.online and true or hasAltOnline)
-								tIns(charEntry.children, {
-									value = alt.name, 
-									text = formatClassColor(alt.name, alt.class) .. (alt.online and ' - ' .. formatOnlineStatusText(true) or ''),
-								})
-							end
-						end
-						
-						-- We want to show main as online if an alt is online
-						local showCharOnline = charData.online or hasAltOnline
-
-						charEntry.value = charData.name
-						charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true) or ''),
-						
-						tIns(tree, charEntry)
-					end
-				end
-			end
-		end
-		]]
 	end
 
 	treeG:SetTree(tree)
