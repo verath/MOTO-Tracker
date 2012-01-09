@@ -42,4 +42,6 @@ if L then
 	L['Offline'] = true
 	L['Away'] = true
 	L['Refresh'] = true
+	L['Main'] = true
+	L['Alts'] = true
 end

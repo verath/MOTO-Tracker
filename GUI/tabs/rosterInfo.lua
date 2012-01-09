@@ -5,6 +5,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 --	Roster Info tab
 --###################################
 local tIns = table.insert
+local tRemove = table.remove
 local sUpper = string.upper
 local sFind = string.find
 local sSub = string.sub
@@ -17,6 +18,7 @@ local searchString = ''
 local function formatClassColor( str, class )
 	local class = sUpper(class)
 	local classColor = RAID_CLASS_COLORS[class]
+	if not classColor then return str end
 	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
 
@@ -70,6 +72,70 @@ local function drawMainTreeArea( treeContainer, charName )
 		generalInfoContainer:SetTitle('')
 		generalInfoContainer:SetFullWidth(true)
 		container:AddChild(generalInfoContainer)
+
+		do -- Main or alt editbox
+			-- TODO: More UI help
+			local function changeMain(container, event, val)
+				local currentMain = A.db.global.guilds[I.guildName].chars[charData.main]
+				
+				-- Remove alt from old main
+				if currentMain and currentMain.alts then
+					for i, v in ipairs(currentMain.alts) do
+						if v == charData.name then
+							currentMain.alts[i] = nil
+						end
+					end
+				end
+				
+				-- Clear current main data
+				charData.main = nil
+
+				-- Validate new main
+				local newMain = A.db.global.guilds[I.guildName].chars[val]
+				if newMain.name == '' then return end
+				if newMain.main ~= nil then return end
+				
+				-- Set new main-alt data
+				charData.main = val
+				if newMain.alts == nil then newMain.alts = {} end
+				tIns(newMain.alts, charData.name)
+			end
+
+			local function altsToString( altList )
+				local s = ''
+				for _,v in ipairs(altList) do 
+					s = s .. ' ' .. v .. ','
+				end
+				return sSub(s, 1, -2)
+			end
+
+			if charData.alts == nil or #charData.alts == 0 then
+				local label = AceGUI:Create("Label")
+				label:SetText(L['Main'] .. ':')
+				label:SetRelativeWidth(0.3)
+				generalInfoContainer:AddChild(label)
+
+				local editBox = AceGUI:Create("EditBox")
+				editBox:SetText(charData.main)
+				--editBox:SetDisabled(not I.canEditPublicNote)
+				editBox:SetMaxLetters(12)
+				editBox:SetRelativeWidth(0.7)
+				editBox:SetCallback("OnEnterPressed", changeMain)
+				generalInfoContainer:AddChild(editBox)
+			else
+				local label = AceGUI:Create("Label")
+				label:SetText(L['Alts'] .. ':')
+				label:SetRelativeWidth(0.3)
+				generalInfoContainer:AddChild(label)
+
+				local editBox = AceGUI:Create("EditBox")
+				editBox:SetText(altsToString(charData.alts))
+				editBox:SetDisabled(true)
+				editBox:SetRelativeWidth(0.7)
+				editBox:SetCallback("OnEnterPressed", changeMain)
+				generalInfoContainer:AddChild(editBox)
+			end
+		end
 
 		do -- Guild Note
 			local label = AceGUI:Create("Label")
@@ -159,7 +225,7 @@ local function rosterInfoGenTree( treeG )
 	for _, charData in ipairs(chars) do
 		-- Used for main coloring when online alts
 		local mainHasAltOnline = false
-		
+
 		-- MainChar list-item
 		local charEntry = {
 			value = charData.name,
@@ -169,10 +235,10 @@ local function rosterInfoGenTree( treeG )
 		}
 
 		-- Alts, below MainChar
-		if charData.alts ~= nil then
+		if charData.alts ~= nil and #charData.alts >= 1 then
 			charEntry.children = {}
-			for _, alt in ipairs(charData.alts) do
-				local alt = A.db.global.guilds[I.guildName].chars[alt]			
+			for _, altName in ipairs(charData.alts) do
+				local alt = A.db.global.guilds[I.guildName].chars[altName]			
 				local altEntry = {
 					value = alt.name, 
 					text = formatClassColor(alt.name, alt.class) .. 
@@ -186,6 +252,9 @@ local function rosterInfoGenTree( treeG )
 
 		-- Filter checking
 		local passedFilters = (function()
+			-- Some errorChecking
+			if charData.name == '' then return false end
+
 			-- showOnlyMaxLvl
 			if (rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then return false end
 					
