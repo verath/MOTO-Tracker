@@ -22,11 +22,21 @@ local treeGroupFrame
 local function primarySecondarySort( a, b )
 	local sortByPrimary = rosterInfoDB.sortByPrimary
 	local sortBySecondary = rosterInfoDB.sortBySecondary
+	local invertPrimary = rosterInfoDB.sortByPrimaryInvert
+	local invertSecondary = rosterInfoDB.sortBySecondaryInvert
 	if a and b then
 		if a[sortByPrimary] == b[sortByPrimary] and sortByPrimary ~= sortBySecondary then
-			return a[sortBySecondary] < b[sortBySecondary]
+			if invertSecondary then
+				return a[sortBySecondary] > b[sortBySecondary]
+			else
+				return a[sortBySecondary] < b[sortBySecondary]
+			end
 		else
-			return a[sortByPrimary] < b[sortByPrimary]
+			if invertPrimary then
+				return a[sortByPrimary] > b[sortByPrimary]
+			else
+				return a[sortByPrimary] < b[sortByPrimary]
+			end
 		end
 	end
 end
@@ -401,6 +411,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		treeG:SetTree(tree)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
+		treeG:EnableButtonTooltips(false)
 	end
 	treeGroupFrame = treeG
 
@@ -417,26 +428,30 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	end
 	
 	do -- Dropdown for primary sorting
+		local selPrim = rosterInfoDB.sortByPrimaryInvert and 'INVERT'..rosterInfoDB.sortByPrimary or rosterInfoDB.sortByPrimary
 		local primarySortDropdown = AceGUI:Create("Dropdown")
 		primarySortDropdown:SetLabel(L['Primary sort by'])
-		primarySortDropdown:SetValue(rosterInfoDB.sortByPrimary)
-		primarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortByPrimary])
-		primarySortDropdown:SetList(I.guildSortableBy)
+		primarySortDropdown:SetValue(selPrim)
+		primarySortDropdown:SetText(I.guildSortableBy[selPrim])
+		primarySortDropdown:SetList(I.guildSortableBy, I.guidSortableByOrder)
 		primarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
-				rosterInfoDB.sortByPrimary = val
+				rosterInfoDB.sortByPrimaryInvert = sFind(val, 'INVERT') and true or false
+				rosterInfoDB.sortByPrimary = sFind(val, 'INVERT') and sSub(val, 7) or val
 				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(primarySortDropdown)
 	end
 
 	do -- Dropdown for secondary sorting
+		local selSec = rosterInfoDB.sortBySecondaryInvert and 'INVERT'..rosterInfoDB.sortBySecondary or rosterInfoDB.sortBySecondary
 		local secondarySortDropdown = AceGUI:Create("Dropdown")
 		secondarySortDropdown:SetLabel(L['Secondary sort by'])
-		secondarySortDropdown:SetValue(rosterInfoDB.sortBySecondary)
-		secondarySortDropdown:SetText(I.guildSortableBy[rosterInfoDB.sortBySecondary])
-		secondarySortDropdown:SetList(I.guildSortableBy)
+		secondarySortDropdown:SetValue(selSec)
+		secondarySortDropdown:SetText(I.guildSortableBy[selSec])
+		secondarySortDropdown:SetList(I.guildSortableBy, I.guidSortableByOrder)
 		secondarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
-				rosterInfoDB.sortBySecondary = val
+				rosterInfoDB.sortBySecondaryInvert = sFind(val, 'INVERT') and true or false
+				rosterInfoDB.sortBySecondary = sFind(val, 'INVERT') and sSub(val, 7) or val
 				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(secondarySortDropdown)

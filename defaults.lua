@@ -12,7 +12,9 @@ function A:SetupDefaults()
 						showOnlyMaxLvl = false,
 						hideOffline = false,
 						sortByPrimary = 'rankIndex',
-						sortBySecondary = 'name'
+						sortBySecondary = 'name',
+						sortByPrimaryInvert = false,
+						sortBySecondaryInvert = false,
 					},
 				},
 			},

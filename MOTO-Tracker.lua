@@ -102,7 +102,17 @@ function A:OnEnable()
 
 	-- Static values
 	I.hasGuild = IsInGuild()
-	I.guildSortableBy = {name = L['Name'], rankIndex = L['Guild Rank'], class = L['Class'], level = L['Level']}
+	I.guildSortableBy = {
+		name = L['Name'] .. ' (' .. L['A-Z'] .. ')',
+		INVERTname = L['Name'] .. ' (' .. L['Z-A'] .. ')',
+		rankIndex = L['Guild Rank'] .. ' (' .. L['High'] .. ')', 
+		INVERTrankIndex = L['Guild Rank'] .. ' (' .. L['Low'] .. ')', 
+		class = L['Class'] .. ' (' .. L['A-Z'] .. ')',
+		INVERTclass = L['Class'] .. ' (' .. L['Z-A'] .. ')',
+		level = L['Level']  .. ' (' .. L['Low'] .. ')', 
+		INVERTlevel = L['Level'] .. ' (' .. L['High'] .. ')', 
+	}
+	I.guidSortableByOrder = {'name', 'INVERTname', 'rankIndex', 'INVERTrankIndex', 'class', 'INVERTclass', 'INVERTlevel', 'level'}
 
 	-- Set up the options UI
 	self:SetupOptions()

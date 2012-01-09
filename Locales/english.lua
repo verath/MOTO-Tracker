@@ -23,7 +23,12 @@ if L then
 	L['Guild Rank'] = true
 	L['Level'] = true
 	L['Class'] = true
+
 	-- GUI
+	L['A-Z'] = true
+	L['Z-A'] = true
+	L['High'] = true
+	L['Low'] = true
 	L['MOTO Tracker, version: %s'] = true
 	L['Members'] = true
 	L['<Not in a guild>'] = true
