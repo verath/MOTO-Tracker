@@ -7,6 +7,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local tIns = table.insert
 local tRemove = table.remove
 local sUpper = string.upper
+local sLower = string.lower
 local sFind = string.find
 local sSub = string.sub
 local sFormat = string.format
@@ -15,6 +16,35 @@ local rosterInfoDB = {}
 local searchString = ''
 local treeGroupFrame
 
+-- Word capitalizes a string (every word will start with a big letter)
+local function wordCapitalize( str )
+	return str:gsub("(%a)([%w_']*)", function( first, rest )
+		return sUpper(first)..sLower(rest)
+	end)
+end
+
+-- Auto complete words
+local function autoCompleteCharData( str, targetAttr, strModFunc )
+	local chars = A.db.global.guilds[I.guildName].chars
+	
+	-- 2 or less is probably not enough to find
+	if #str <= 2 then return str end
+
+	local searchStr = strModFunc(str)
+	local searchStrLen = #searchStr
+	local matches = {}
+
+	for _, char in pairs(chars) do		
+		if sSub(char[targetAttr], 1, searchStrLen) == searchStr then
+			tIns(matches, char[targetAttr])
+		end
+	end
+
+	if #matches == 1 then
+		return matches[1]
+	end
+	return str
+end
 
 -- Takes a list of alts and returns it as a comma-seperated string
 local function altsToString( altList )
@@ -128,7 +158,23 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetRelativeWidth(0.7)
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
 					changeMain(charData, value) -- Change main to value
+					c:SetText(charData.main)
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
+				end)
+				-- AutoComplete
+				editBox:SetUserData('prevText', editBox:GetText())
+				editBox:SetUserData('isAutoCompleting', false)
+				editBox:SetCallback("OnTextChanged", function( c, e, value )
+					local prevText = c:GetUserData('prevText')
+					if not c:GetUserData('isAutoCompleting') then
+						if A.db.global.settings.GUI.useAutoComplete and #value > #prevText then
+							c:SetUserData('isAutoCompleting', true)
+							local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
+							if aCResult ~= value then c:SetText(aCResult) end
+							c:SetUserData('isAutoCompleting', false)
+						end
+					end
+					c:SetUserData('prevText', value)
 				end)
 				generalInfoContainer:AddChild(editBox)
 			else -- If the char is a main, show alts but don't allow editing.

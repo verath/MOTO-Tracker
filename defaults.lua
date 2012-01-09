@@ -43,6 +43,9 @@ function A:SetupDefaults()
 			},
 
 			settings = {
+				GUI = {
+					useAutoComplete = true
+				}
 				
 			},
 		},
