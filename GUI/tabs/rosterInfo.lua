@@ -293,6 +293,10 @@ local function drawMainTreeArea( treeContainer, charName )
 				end)
 			generalInfoContainer:AddChild(editBox)
 		end
+
+		do -- Main/Offspec
+			
+		end
 	end	
 end
 
