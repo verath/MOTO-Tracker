@@ -202,7 +202,6 @@ local function rosterInfoGenTree( treeG )
 
 			-- Only display mains, alts are grouped
 			if charData.main == nil then return true end
-
 		end)()
 
 		if passedFilters then
