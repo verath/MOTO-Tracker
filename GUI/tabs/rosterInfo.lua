@@ -13,6 +13,8 @@ local sFormat = string.format
 
 local rosterInfoDB = {}
 local searchString = ''
+local treeGroupFrame
+
 
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
@@ -22,6 +24,7 @@ local function formatClassColor( str, class )
 	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
 
+-- Returns a color coded Online/Offline (Status)
 local function formatOnlineStatusText( online, status )
 	local str = ''
 	if online ~= nil then
@@ -197,7 +200,7 @@ local function drawMainTreeArea( treeContainer, charName )
 end
 
 -- Generates the tree element, alts under mains + sorting.
-local function rosterInfoGenTree( treeG )
+local function generateTreeStructure()
 	local isSearching = (searchString ~= '') and true or false
 	searchString = isSearching and sUpper(searchString) or ''
 
@@ -289,11 +292,10 @@ local function rosterInfoGenTree( treeG )
 		end
 	end
 
-	treeG:SetTree(tree)
+	treeGroupFrame:SetTree(tree)
 end
 
 -- Draw the tab
-local treeGroupFrame
 function A.GUI.tabs.rosterInfo:DrawTab(container)
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
@@ -314,7 +316,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		searchTextbox:DisableButton(true)
 		searchTextbox:SetCallback("OnTextChanged", function(container, event, val)
 				searchString = val
-				rosterInfoGenTree( treeG )
+				generateTreeStructure()
 			end)
 		container:AddChild(searchTextbox)
 	end
@@ -327,7 +329,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		primarySortDropdown:SetList(I.guildSortableBy)
 		primarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.sortByPrimary = val
-				rosterInfoGenTree( treeG )
+				generateTreeStructure()
 			end)
 		container:AddChild(primarySortDropdown)
 	end
@@ -340,7 +342,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		secondarySortDropdown:SetList(I.guildSortableBy)
 		secondarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.sortBySecondary = val
-				rosterInfoGenTree( treeG )
+				generateTreeStructure()
 			end)
 		container:AddChild(secondarySortDropdown)
 	end
@@ -351,7 +353,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
 		onlyMaxCheckbox:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.showOnlyMaxLvl = val
-				rosterInfoGenTree( treeG )
+				generateTreeStructure()
 			end)
 		container:AddChild(onlyMaxCheckbox)	
 	end
@@ -362,27 +364,27 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		hideOfflineCheckbox:SetValue(rosterInfoDB.hideOffline)
 		hideOfflineCheckbox:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.hideOffline = val
-				rosterInfoGenTree( treeG )
+				generateTreeStructure()
 			end)
 		container:AddChild(hideOfflineCheckbox)	
 	end
 
 	-- Add the TreeGroup element
-	container:AddChild(treeG)
+	container:AddChild(treeGroupFrame)
 
-	treeG:SetCallback("OnGroupSelected", function(container, event, group)
+	treeGroupFrame:SetCallback("OnGroupSelected", function(container, event, group)
 		local isSubLvl = sFind(group, "\001")
 		local charName = isSubLvl and sSub(group, isSubLvl+1) or group
 		drawMainTreeArea(container, charName)
 	end)
 	
 	-- Generate the tree for the TreeGroup
-	rosterInfoGenTree( treeG )
+	generateTreeStructure()
 end
 
 -- On roster update
 function A.GUI.tabs.rosterInfo:OnRosterUpdate()
 	if treeGroupFrame then
-		rosterInfoGenTree(treeGroupFrame)
+		rosterInfoGenTree()
 	end
 end
