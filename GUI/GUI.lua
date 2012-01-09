@@ -111,9 +111,9 @@ function A.GUI:OnRosterUpdate()
 			A.GUI.tabs.rosterInfo:OnRosterUpdate()
 		end
 
-		-- Make sure we do update it every 10 sec if our window is open
+		-- Make sure we do update it every at least every minute if our window is open
 		if updateRosterTimer then AceTimer:CancelTimer(updateRosterTimer, true)	end
-		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 10)
+		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 60)
 
 	end
 end
