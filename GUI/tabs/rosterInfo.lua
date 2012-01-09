@@ -128,7 +128,8 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetRelativeWidth(0.7)
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
 					changeMain(charData, value) -- Change main to value
-					generateTreeStructure( true ) -- Update tree
+					print("Click")
+					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
 				generalInfoContainer:AddChild(editBox)
 			else -- If the char is a main, show alts but don't allow editing.
@@ -204,7 +205,7 @@ local function drawMainTreeArea( treeContainer, charName )
 end
 
 -- Generates the tree element, alts under mains + sorting.
-local function generateTreeStructure( forceTreeRedraw )
+function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	local isSearching = (searchString ~= '') and true or false
 	searchString = isSearching and sUpper(searchString) or ''
 
@@ -296,11 +297,6 @@ local function generateTreeStructure( forceTreeRedraw )
 		end
 	end
 
-	if forceTreeRedraw then
-		--print("REDRAWING")
-		treeGroupFrame:SetTree({})
-	end
-
 	treeGroupFrame:SetTree(tree)
 end
 
@@ -325,7 +321,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		searchTextbox:DisableButton(true)
 		searchTextbox:SetCallback("OnTextChanged", function(container, event, val)
 				searchString = val
-				generateTreeStructure()
+				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(searchTextbox)
 	end
@@ -338,7 +334,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		primarySortDropdown:SetList(I.guildSortableBy)
 		primarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.sortByPrimary = val
-				generateTreeStructure()
+				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(primarySortDropdown)
 	end
@@ -351,7 +347,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		secondarySortDropdown:SetList(I.guildSortableBy)
 		secondarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.sortBySecondary = val
-				generateTreeStructure()
+				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(secondarySortDropdown)
 	end
@@ -362,7 +358,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
 		onlyMaxCheckbox:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.showOnlyMaxLvl = val
-				generateTreeStructure()
+				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(onlyMaxCheckbox)	
 	end
@@ -373,7 +369,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		hideOfflineCheckbox:SetValue(rosterInfoDB.hideOffline)
 		hideOfflineCheckbox:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.hideOffline = val
-				generateTreeStructure()
+				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(hideOfflineCheckbox)	
 	end
@@ -388,7 +384,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	end)
 	
 	-- Generate the tree for the TreeGroup
-	generateTreeStructure()
+	A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 end
 
 -- On roster update
