@@ -128,7 +128,6 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetRelativeWidth(0.7)
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
 					changeMain(charData, value) -- Change main to value
-					print("Click")
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
 				generalInfoContainer:AddChild(editBox)
