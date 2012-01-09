@@ -16,6 +16,44 @@ local searchString = ''
 local treeGroupFrame
 
 
+-- Takes a list of alts and returns it as a comma-seperated string
+local function altsToString( altList )
+	local s = ''
+	for _,v in ipairs(altList) do 
+		s = s .. ' ' .. v .. ','
+	end
+	return sSub(s, 1, -2)
+end
+
+-- Sets/updates a characters main and that main's alt table
+local function changeMain( charData, newMainName )
+	local currentMain = A.db.global.guilds[I.guildName].chars[charData.main]
+	
+	-- Remove alt from old main
+	if currentMain and currentMain.alts then
+		local newAltTable = {}
+		for i = 1, #currentMain.alts do
+			if currentMain.alts[i] ~= charData.name then
+				tIns(newAltTable, currentMain.alts[i])
+			end
+		end
+		currentMain.alts = newAltTable
+	end
+	
+	-- Clear current main data
+	charData.main = nil
+
+	-- Validate new main
+	local newMain = A.db.global.guilds[I.guildName].chars[newMainName]
+	if newMain.name == '' then return end
+	if newMain.main ~= nil then return end
+	
+	-- Set new main-alt data
+	charData.main = newMainName
+	if newMain.alts == nil then newMain.alts = {} end
+	tIns(newMain.alts, charData.name)
+end
+
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
 	local class = sUpper(class)
@@ -77,43 +115,7 @@ local function drawMainTreeArea( treeContainer, charName )
 		container:AddChild(generalInfoContainer)
 
 		do -- Main or alt editbox
-			-- TODO: More UI help
-			local function changeMain(container, event, val)
-				local currentMain = A.db.global.guilds[I.guildName].chars[charData.main]
-				
-				-- Remove alt from old main
-				if currentMain and currentMain.alts then
-					local newAltTable = {}
-					for i = 1, #currentMain.alts do
-						if currentMain.alts[i] ~= charData.name then
-							tIns(newAltTable, currentMain.alts[i])
-						end
-					end
-					currentMain.alts = newAltTable
-				end
-				
-				-- Clear current main data
-				charData.main = nil
-
-				-- Validate new main
-				local newMain = A.db.global.guilds[I.guildName].chars[val]
-				if newMain.name == '' then return end
-				if newMain.main ~= nil then return end
-				
-				-- Set new main-alt data
-				charData.main = val
-				if newMain.alts == nil then newMain.alts = {} end
-				tIns(newMain.alts, charData.name)
-			end
-
-			local function altsToString( altList )
-				local s = ''
-				for _,v in ipairs(altList) do 
-					s = s .. ' ' .. v .. ','
-				end
-				return sSub(s, 1, -2)
-			end
-
+			-- If char doesn't have any alts, only then can a main be choosen.
 			if charData.alts == nil or #charData.alts == 0 then
 				local label = AceGUI:Create("Label")
 				label:SetText(L['Main'] .. ':')
@@ -122,12 +124,14 @@ local function drawMainTreeArea( treeContainer, charName )
 
 				local editBox = AceGUI:Create("EditBox")
 				editBox:SetText(charData.main)
-				--editBox:SetDisabled(not I.canEditPublicNote)
 				editBox:SetMaxLetters(12)
 				editBox:SetRelativeWidth(0.7)
-				editBox:SetCallback("OnEnterPressed", changeMain)
+				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
+					changeMain(charData, value) -- Change main to value
+					generateTreeStructure( true ) -- Update tree
+				end)
 				generalInfoContainer:AddChild(editBox)
-			else
+			else -- If the char is a main, show alts but don't allow editing.
 				local label = AceGUI:Create("Label")
 				label:SetText(L['Alts'] .. ':')
 				label:SetRelativeWidth(0.3)
@@ -200,14 +204,14 @@ local function drawMainTreeArea( treeContainer, charName )
 end
 
 -- Generates the tree element, alts under mains + sorting.
-local function generateTreeStructure()
+local function generateTreeStructure( forceTreeRedraw )
 	local isSearching = (searchString ~= '') and true or false
 	searchString = isSearching and sUpper(searchString) or ''
 
 	-- Sorting
 	-- Needs to be numeric keys to sort
 	local i, chars = 1, {}
-	for charName, charData in pairs(A.db.global.guilds[I.guildName].chars) do
+	for _, charData in pairs(A.db.global.guilds[I.guildName].chars) do
 		chars[i] = charData
 		i = i+1
 	end
@@ -290,6 +294,11 @@ local function generateTreeStructure()
 
 			tIns(tree, charEntry)
 		end
+	end
+
+	if forceTreeRedraw then
+		--print("REDRAWING")
+		treeGroupFrame:SetTree({})
 	end
 
 	treeGroupFrame:SetTree(tree)
