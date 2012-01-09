@@ -16,6 +16,25 @@ local rosterInfoDB = {}
 local searchString = ''
 local treeGroupFrame
 
+-- Sorts by primary > secondary
+local function primarySecondarySort( a, b )
+	local sortByPrimary = rosterInfoDB.sortByPrimary
+	local sortBySecondary = rosterInfoDB.sortBySecondary
+	if a and b then
+		if a[sortByPrimary] == b[sortByPrimary] and sortByPrimary ~= sortBySecondary then
+			return a[sortBySecondary] < b[sortBySecondary]
+		else
+			return a[sortByPrimary] < b[sortByPrimary]
+		end
+	end
+end
+
+-- Finds the charData for an alt and then sorts
+local function primarySecondarySortAlts( a, b )
+	local chars = A.db.global.guilds[I.guildName].chars
+	return primarySecondarySort(chars[a], chars[b])
+end
+
 -- Word capitalizes a string (every word will start with a big letter)
 local function wordCapitalize( str )
 	return str:gsub("(%a)([%w_']*)", function( first, rest )
@@ -48,8 +67,10 @@ end
 
 -- Takes a list of alts and returns it as a comma-seperated string
 local function altsToString( altList, highlightOnline )
+	local sortedAlts = altList
+	sort(sortedAlts, primarySecondarySortAlts)
 	local s = ''
-	for _,v in ipairs(altList) do
+	for _,v in ipairs(sortedAlts) do
 		if A.db.global.guilds[I.guildName].chars[v].online and highlightOnline then
 			v = GREEN_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
 		end
@@ -287,17 +308,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	end
 
 	-- Sort by primary > secondary
-	local sortByPrimary = rosterInfoDB.sortByPrimary
-	local sortBySecondary = rosterInfoDB.sortBySecondary
-	sort(chars, function(a, b)
-		if a and b then
-			if a[sortByPrimary] == b[sortByPrimary] and sortByPrimary ~= sortBySecondary then
-				return a[sortBySecondary] < b[sortBySecondary]
-			else
-				return a[sortByPrimary] < b[sortByPrimary]
-			end
-		end
-	end)
+	sort(chars, primarySecondarySort)
 
 	-- Generate the tree
 	tree = {}
@@ -315,8 +326,12 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 
 		-- Alts, below MainChar
 		if charData.alts ~= nil and #charData.alts >= 1 then
+			local alts = charData.alts
+			-- Sort by primary > secondary
+			sort(alts, primarySecondarySortAlts)
+
 			charEntry.children = {}
-			for _, altName in ipairs(charData.alts) do
+			for _, altName in ipairs(alts) do
 				local alt = A.db.global.guilds[I.guildName].chars[altName]			
 				local altEntry = {
 					value = alt.name, 
