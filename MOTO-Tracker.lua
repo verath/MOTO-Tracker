@@ -77,7 +77,7 @@ end
 
 -- Returns the name of tree in group (primary/secondary spec) 
 -- with most points
-local function getTalentSpecForGroup( talentGroup, inspect )
+function A:GetTalentSpecForGroup( talentGroup, inspect )
 	if GetNumTalentGroups(inspect, false) < talentGroup then return nil end
 	
 	local mostPoints, spec = 0, nil
@@ -106,8 +106,8 @@ function A:UpdatePlayerTalents()
 	if not A.db.global.settings.general.updateOwnSpec then return end
 	
 	local class = I.charClass
-	local mainSpec = getTalentSpecForGroup( 1, false )
-	local offSpec = getTalentSpecForGroup( 2, false )
+	local mainSpec = A:GetTalentSpecForGroup( 1, false )
+	local offSpec = A:GetTalentSpecForGroup( 2, false )
 
 	-- For now I got no good way to handle localized talent names,
 	-- so if not in table they will not get updated. Sorry.
