@@ -91,4 +91,8 @@ if L then
 	L['Last seen in'] = true
 	L['Main Spec/Off Spec'] = true
 	L['Send Char'] = true
+
+	-- Sync
+	L['%s is sharing data for %s.|n Do you want to recceive this data (this will overwrite your own data for %s)?'] = true
+	L['Already sharing a character!|n|nPlease wait at least 15 seconds after sending a character before sending another one.'] = true
 end

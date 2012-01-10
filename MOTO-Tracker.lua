@@ -2,7 +2,7 @@
 --   Set Up
 --###################################
 MOTOTracker = {
-	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0"),
+	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0"),
 	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
 	info = { -- Static global values
 		versionName = '0.01a',
@@ -151,6 +151,9 @@ function A:OnEnable()
 	
 	-- Set up the options UI
 	self:SetupOptions()
+
+	-- Set up the syncing
+	A.sync:SetupSync()
 end
 
 -- Gets called if the addon is disabled

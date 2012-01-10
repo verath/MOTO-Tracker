@@ -1,6 +1,5 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<!-- Load Ace3 modules we want to use -->
-
 	<!-- Core -->
 	<Script file="Libs\LibStub\LibStub.lua" />
 	<Include file="Libs\AceAddon-3.0\AceAddon-3.0.xml" />
@@ -18,4 +17,11 @@
 	<Include file="Libs\AceConsole-3.0\AceConfig-3.0.xml" />
 	<Include file="Libs\AceConsole-3.0\AceConfigDialog-3.0.xml" />
 	<Include file="Libs\AceConsole-3.0\AceConfigRegistry-3.0.xml" />
+	<!-- Comm, for sending addon messages -->
+	<Include file="Libs\AceComm-3.0\AceComm-3.0.xml" />
+	<!-- Serialize -->
+	<Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml" />
+
+	<!-- LibCompress, for smaller addon sync messages -->
+	<Include file="Libs\LibCompress.lua" />
 </Ui>
