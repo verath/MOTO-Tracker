@@ -92,6 +92,8 @@ function A:OnEnable()
 	-- Start listening for events
 	A:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
 	A:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
+	A:RegisterEvent('PLAYER_ENTERING_WORLD', 'OnPlayerEnteringWorld')
+	A:RegisterEvent('PLAYER_TALENT_UPDATE', 'OnPlayerTalentUpdate')
 	A:RegisterChatCommand('MOTOT', "SlashHandler")
 	A:RegisterChatCommand('MOTOTracker', "SlashHandler")
 	
@@ -141,6 +143,19 @@ function A:OnGuildRosterUpdate( event,_ )
 	firstRosterUpdate = false
 
 end
+
+function A:UpdatePlayerTalents()
+	
+end
+
+function A:OnPlayerEnteringWorld( ... )
+	A:UpdatePlayerTalents()
+end
+
+function A:OnPlayerTalentUpdate( ... )
+	A:UpdatePlayerTalents()
+end
+
 
 -- Slash handler
 function A:SlashHandler(input)

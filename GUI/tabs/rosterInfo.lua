@@ -315,7 +315,36 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- Main/Offspec
-			
+			local label = AceGUI:Create("Label")
+			label:SetText(L['Main Spec/Off Spec'] .. ':')
+			label:SetRelativeWidth(0.3)
+			generalInfoContainer:AddChild(label)
+
+			local class = sUpper(charData.class)
+			local charMSVal = sUpper(charData.mainSpec)
+			local charOSVal = sUpper(charData.offSpec)
+			local charMSText = I.classSpecDropdownList[class][charMSVal].text
+			local charOSText = I.classSpecDropdownList[class][charOSVal].text
+
+			local mainSpec = AceGUI:Create("Dropdown")
+			mainSpec:SetList(I.classSpecDropdownList[class], I.classSpecDropdownListOrder[class])
+			mainSpec:SetText(charMSText)
+			mainSpec:SetValue(charMSVal)
+			mainSpec:SetRelativeWidth(0.35)
+			mainSpec:SetCallback("OnValueChanged", function(container, event, val)
+				charData.mainSpec = val
+			end)
+			generalInfoContainer:AddChild(mainSpec)
+
+			local offSpec = AceGUI:Create("Dropdown")
+			offSpec:SetList(I.classSpecDropdownList[class], I.classSpecDropdownListOrder[class])
+			offSpec:SetText(charOSText)
+			offSpec:SetValue(charOSVal)
+			offSpec:SetRelativeWidth(0.35)
+			offSpec:SetCallback("OnValueChanged", function(container, event, val)
+				charData.offSpec = val
+			end)
+			generalInfoContainer:AddChild(offSpec)
 		end
 	end	
 end

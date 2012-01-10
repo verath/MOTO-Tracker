@@ -4,6 +4,8 @@
 
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
+local tIns = table.insert
+
 -- Calls on initialization of the addon,
 -- loads/sets most static values (some are set later as not all are available)
 function A:LoadStaticValues()
@@ -76,5 +78,20 @@ function A:LoadStaticValues()
 			MARKSMANSHIP = { text = L['Marksmanship'], role = "DAMAGER" }, 
 		},
 	}
+
+	-- List that can be used with dropdwons for each class
+	I.classSpecDropdownList = {}
+	I.classSpecDropdownListOrder = {}
+	(function ()
+		
+		for class, specs in pairs(I.classSpecs) do
+			I.classSpecDropdownList[class] = { NONE = L['NONE'] }
+			I.classSpecDropdownListOrder[class] = {'NONE'}
+			for spec, specValues in pairs( specs )do
+				I.classSpecDropdownList[class][spec] = specValues.text
+				tIns(I.classSpecDropdownListOrder[class], spec)
+			end
+		end	
+	end)()
 
 end

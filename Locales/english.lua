@@ -30,6 +30,7 @@ if L then
 	L['Beast Mastery'] = true
 	L['Survival'] = true
 	L['Marksmanship'] = true
+	L['NONE'] = true
 
 
 	-- Options
@@ -82,4 +83,5 @@ if L then
 	L['Alts'] = true
 	L['Currently in'] = true
 	L['Last seen in'] = true
+	L['Main Spec/Off Spec'] = true
 end
