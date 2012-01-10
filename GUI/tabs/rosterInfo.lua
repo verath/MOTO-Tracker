@@ -185,6 +185,7 @@ local function drawMainTreeArea( treeContainer, charName )
 
 		local sendBtn = AceGUI:Create("Button")
 		sendBtn:SetText(L['Send Char'])
+		sendBtn:SetDisabled( not A.db.global.settings.sync.enabled )
 		sendBtn:SetRelativeWidth(0.3)
 		sendBtn:SetCallback('OnClick', function(container, event)
 			A.sync:SendChar(charData.name)
