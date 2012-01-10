@@ -45,7 +45,14 @@ function A:SetupOptions()
 				name = L['Global Settings'],
 				type = "group",
 				args = {
-					
+					UpdateOwnSpec = {
+						order = 1,
+						type = 'toggle',
+						name = L['Auto update own specs'],
+						desc = L['Automatically updates your characters main spec and off spec to your current talent specs when loggin in and/or changing specs.'],
+						get = function(info) return A.db.global.settings.general.updateOwnSpec end,
+						set = function(info, value) A.db.global.settings.general.updateOwnSpec = value end,
+					},
 				},
 				order = 20,
 			},

@@ -46,9 +46,12 @@ function A:SetupDefaults()
 
 			settings = {
 				GUI = {
-					useAutoComplete = true
+					useAutoComplete = true,
+				},
+				general = {
+					updateOwnSpec = true,
+					updateSpecsOnInspect = true,
 				}
-				
 			},
 		},
 

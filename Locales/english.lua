@@ -44,6 +44,9 @@ if L then
 	L['Reset Database'] = true
 	L['Resets the whole database (including settings).'] = true
 	L['Are you sure you want to reset the whole database? This can not be undone!'] = true
+	L['Auto update own specs'] = true
+	L['Automatically updates your characters main spec and off spec to your current talent specs when loggin in and/or changing specs.'] = true
+
 	
 	-- Core
 	L['MOTO Tracker'] = true

@@ -10,6 +10,8 @@ local tIns = table.insert
 -- loads/sets most static values (some are set later as not all are available)
 function A:LoadStaticValues()
 	I.hasGuild = IsInGuild()
+	I.charName = select(1, UnitName("player"))
+	I.charClass = select(2, UnitClass("player")); -- Unlocalized
 
 	-- For dropdown lists that sorts roster
 	I.guildSortableBy = {

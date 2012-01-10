@@ -9,9 +9,12 @@ MOTOTracker = {
 		addonName = 'MOTOTracker',
 	}
 }
+local AceTimer = LibStub("AceTimer-3.0")
 
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
+local sSub = string.sub
+local sUpper = string.upper
 
 --###################################
 --	Helper Functions
@@ -72,6 +75,50 @@ local function removeNoLongerGuildMemebers()
 	end
 end
 
+-- Returns the name of tree in group (primary/secondary spec) 
+-- with most points
+local function getTalentSpecForGroup( talentGroup, inspect )
+	if GetNumTalentGroups(inspect, false) < talentGroup then return nil end
+	
+	local mostPoints, spec = 0, nil
+	for i = 1, GetNumTalentTabs(inspect, false) do
+		local pointSpent = select(5, GetTalentTabInfo(i, inspect, false, talentGroup)) 
+		local tabName = select(2, GetTalentTabInfo(i, inspect, false, talentGroup)) -- TODO: Localize
+		if pointSpent and pointSpent > mostPoints then 
+			spec = sUpper(tabName)
+			mostPoints = pointSpent
+		end
+	end
+
+	return spec
+end
+
+-- Updates the current characters main spec and off spec by looking at
+-- talent trees
+function A:UpdatePlayerTalents()
+	if not I.hasGuild then return end
+	if not I.guildName then
+		-- Delay check untill we have a guildName (after logged in)
+		local that = self
+		AceTimer:ScheduleTimer((function() that:UpdatePlayerTalents() end), 2) 
+		return
+	end
+	if not A.db.global.settings.general.updateOwnSpec then return end
+	
+	local class = I.charClass
+	local mainSpec = getTalentSpecForGroup( 1, false )
+	local offSpec = getTalentSpecForGroup( 2, false )
+
+	-- For now I got no good way to handle localized talent names,
+	-- so if not in table they will not get updated. Sorry.
+	if mainSpec and I.classSpecs[class][mainSpec] then
+		A.db.global.guilds[I.guildName].chars[I.charName].mainSpec = mainSpec
+	end
+	if offSpec and I.classSpecs[class][offSpec] then
+		A.db.global.guilds[I.guildName].chars[I.charName].offSpec = offSpec
+	end
+
+end
 
 --###################################
 --	Event functions
@@ -89,19 +136,18 @@ function A:OnEnable()
 		A:Print(L['MOTO Tracker enabled.'])
 	end
 
+	-- Static values
+	self:LoadStaticValues()
+
 	-- Start listening for events
 	A:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
 	A:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
-	A:RegisterEvent('PLAYER_ENTERING_WORLD', 'OnPlayerEnteringWorld')
 	A:RegisterEvent('PLAYER_TALENT_UPDATE', 'OnPlayerTalentUpdate')
 	A:RegisterChatCommand('MOTOT', "SlashHandler")
 	A:RegisterChatCommand('MOTOTracker', "SlashHandler")
 	
 	-- Request guild roster from server
 	GuildRoster()
-
-	-- Static values
-	self:LoadStaticValues()
 	
 	-- Set up the options UI
 	self:SetupOptions()
@@ -142,14 +188,6 @@ function A:OnGuildRosterUpdate( event,_ )
 
 	firstRosterUpdate = false
 
-end
-
-function A:UpdatePlayerTalents()
-	
-end
-
-function A:OnPlayerEnteringWorld( ... )
-	A:UpdatePlayerTalents()
 end
 
 function A:OnPlayerTalentUpdate( ... )
