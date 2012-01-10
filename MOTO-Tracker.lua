@@ -5,7 +5,7 @@ MOTOTracker = {
 	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0"),
 	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
 	info = { -- Static global values
-		versionName = '0.02a',
+		versionName = '1.0.0-beta',
 		addonName = 'MOTOTracker',
 	}
 }
