@@ -95,47 +95,6 @@ local function altsToString( altList, highlightOnline )
 	return sSub(s, 1, -3)
 end
 
-function A:RemoveAltFromMain( altName, mainName )
-	-- First unset the main data of the alt
-	local altData = A.db.global.guilds[I.guildName].chars[altName]
-	altData.main = nil
-
-	-- Now remove our alt from the alt data of the main
-	local mainData = A.db.global.guilds[I.guildName].chars[mainName]
-	if not mainData or not mainData.alts then return end
-
-	-- Find our alt and remove it
-	local i = 1;
-	while mainData.alts[i] do
-		if ( mainData.alts[i] == altName ) then
-			tRemove( mainData.alts, i )
-			break
-		end
-		i = i + 1;
-	end
-	
-	if #mainData.alts == 0 then
-		mainData.alts = nil
-	end
-end
-
-
--- Sets/updates a characters main and that main's alt table
-local function changeMain( charData, newMainName )
-	-- Remove alt from old main and main from alt
-	A:RemoveAltFromMain(charData.name, charData.main)
-
-	-- Validate new main
-	local newMain = A.db.global.guilds[I.guildName].chars[newMainName]
-	if newMain.name == '' then return end
-	if newMain.main ~= nil then return end
-	
-	-- Set new main-alt data
-	charData.main = newMainName
-	if newMain.alts == nil then newMain.alts = {} end
-	tInsert(newMain.alts, charData.name)
-end
-
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
 	local class = sUpper(class)
@@ -241,7 +200,7 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetMaxLetters(12)
 				editBox:SetRelativeWidth(0.7)
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
-					changeMain(charData, value) -- Change main to value
+					A:ChangeMain(charData.name, value) -- Change main to value
 					c:SetText(charData.main)
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
@@ -256,7 +215,7 @@ local function drawMainTreeArea( treeContainer, charName )
 							c:SetUserData('isAutoCompleting', true)
 							local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
 							if aCResult ~= value then 
-								changeMain(charData, aCResult) -- Change main to value
+								A:ChangeMain(charData.name, aCResult) -- Change main to value
 								c:SetText(charData.main)
 								c:ClearFocus()
 								A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree

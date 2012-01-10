@@ -13,6 +13,7 @@ local AceTimer = LibStub("AceTimer-3.0")
 
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
+local tRemove = table.remove
 local sSub = string.sub
 local sUpper = string.upper
 
@@ -49,6 +50,23 @@ function A:RemoveAltFromMain( altName, mainName )
 	if #mainData.alts == 0 then
 		mainData.alts = nil
 	end
+end
+
+-- Sets/updates a character's main and that main's alt table
+function A:ChangeMain( charName, newMainName )
+	local charData = A.db.global.guilds[I.guildName].chars[charName]
+	-- Remove alt from old main and main from alt
+	A:RemoveAltFromMain(charData.name, charData.main)
+
+	-- Validate new main
+	local newMain = A.db.global.guilds[I.guildName].chars[newMainName]
+	if newMain.name == '' then return end
+	if newMain.main ~= nil then return end
+	
+	-- Set new main-alt data
+	charData.main = newMainName
+	if newMain.alts == nil then newMain.alts = {} end
+	tInsert(newMain.alts, charData.name)
 end
 
 -- Updates/Adds guild memeber to our db
