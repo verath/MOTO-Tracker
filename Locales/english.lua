@@ -1,6 +1,37 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("MOTOTracker", "enUS", true)
 
 if L then
+	-- Static Values
+	L['Fury'] = true
+	L['Arms'] = true
+	L['Protection'] = true
+	L['Blood'] = true
+	L['Frost'] = true
+	L['Unholy'] = true
+	L['Holy'] = true
+	L['Retribution'] = true
+	L['Shadow'] = true
+	L['Discipline'] = true
+	L['Elemental'] = true
+	L['Enhancement'] = true
+	L['Restoration'] = true
+	L['Balance'] = true
+	L['Feral (Cat)'] = true
+	L['Feral (Bear)'] = true
+	L['Combat'] = true
+	L['Assassination'] = true
+	L['Subtlety'] = true
+	L['Fire'] = true
+	L['Frost'] = true
+	L['Arcane'] = true
+	L['Affliction'] = true
+	L['Demonology'] = true
+	L['Destruction'] = true
+	L['Beast Mastery'] = true
+	L['Survival'] = true
+	L['Marksmanship'] = true
+
+
 	-- Options
 	L['Show load message'] = true
 	L['Display a message when the addon is loaded or enabled.'] = true

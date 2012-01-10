@@ -36,29 +36,45 @@ function A:LoadStaticValues()
 		},
 		PALADIN = { 
 			HOLY = { text = L['Holy'], role = "HEALER" },
-			RETRIBUTION = { text = L[''], role = "" },
-			PROTECTION = { text = L[''], role = "" },
+			RETRIBUTION = { text = L['Retribution'], role = "DAMAGER" },
+			PROTECTION = { text = L['Protection'], role = "TANK" },
 		},
 		PRIEST = {
-			HOLY = { text = L[''], role = "" },
-			SHADOW = { text = L[''], role = "" },
-			DISCIPLINE = { text = L[''], role = "" },
+			HOLY = { text = L['Holy'], role = "HEALER" },
+			SHADOW = { text = L['Shadow'], role = "DAMAGER" },
+			DISCIPLINE = { text = L['Discipline'], role = "HEALER" },
 		},
 		SHAMAN = { 
-			ELEMENTAL = { text = L[''], role = "" },
-			ENHANCEMENT = { text = L[''], role = "" },
-			RESTORATION = { text = L[''], role = "" },
+			ELEMENTAL = { text = L['Elemental'], role = "DAMAGER" },
+			ENHANCEMENT = { text = L['Enhancement'], role = "DAMAGER" },
+			RESTORATION = { text = L['Restoration'], role = "HEALER" },
 		},
 		DRUID = { 
-			RESTORATION = { text = L[''], role = "" },
-			BALANCE = { text = L[''], role = "" },
-			FERAL_CAT = { text = L[''], role = "" },
-			FERAL_BEAR = { text = L[''], role = "" },
+			RESTORATION = { text = L['Restoration'], role = "HEALER" },
+			BALANCE = { text = L['Balance'], role = "DAMAGER" },
+			FERAL_CAT = { text = L['Feral (Cat)'], role = "DAMAGER" },
+			FERAL_BEAR = { text = L['Feral (Bear)'], role = "TANK" },
 		},
-		ROGUE = { },
-		MAGE = { },
-		WARLOCK = { },
-		HUNTER = { },
+		ROGUE = { 
+			COMBAT = { text = L['Combat'], role = "DAMAGER" },
+			ASSASSINATION = { text = L['Assassination'], role = "DAMAGER" },
+			SUBTLETY = { text = L[''], role = "DAMAGER" }, 
+		},
+		MAGE = {
+			FIRE = { text = L['Fire'], role = "DAMAGER" },
+			FROST = { text = L['Frost'], role = "DAMAGER" },
+			ARCANE = { text = L['Arcane'], role = "DAMAGER" },
+		},
+		WARLOCK = {
+			AFFLICTION = { text = L['Affliction'], role = "DAMAGER" },
+			DEMONOLOGY = { text = L['Demonology'], role = "DAMAGER" },
+			DESTRUCTION = { text = L['Destruction'], role = "DAMAGER" },
+		},
+		HUNTER = {
+			BEAST_MASTERY = { text = L['Beast Mastery'], role = "DAMAGER" }, 
+			SURVIVAL = { text = L['Survival'], role = "DAMAGER" },
+			MARKSMANSHIP = { text = L['Marksmanship'], role = "DAMAGER" }, 
+		},
 	}
 
 end
