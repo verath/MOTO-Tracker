@@ -26,6 +26,31 @@ function A:SetupDB()
 	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
 end
 
+-- Removes an alt/main relationship
+function A:RemoveAltFromMain( altName, mainName )
+	-- First unset the main data of the alt
+	local altData = A.db.global.guilds[I.guildName].chars[altName]
+	altData.main = nil
+
+	-- Now remove our alt from the alt data of the main
+	local mainData = A.db.global.guilds[I.guildName].chars[mainName]
+	if not mainData or not mainData.alts then return end
+
+	-- Find our alt and remove it
+	local i = 1;
+	while mainData.alts[i] do
+		if ( mainData.alts[i] == altName ) then
+			tRemove( mainData.alts, i )
+			break
+		end
+		i = i + 1;
+	end
+	
+	if #mainData.alts == 0 then
+		mainData.alts = nil
+	end
+end
+
 -- Updates/Adds guild memeber to our db
 function A:UpdateGuildMemeberFromRoster( index )
 	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)

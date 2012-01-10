@@ -95,23 +95,35 @@ local function altsToString( altList, highlightOnline )
 	return sSub(s, 1, -3)
 end
 
--- Sets/updates a characters main and that main's alt table
-local function changeMain( charData, newMainName )
-	local currentMain = A.db.global.guilds[I.guildName].chars[charData.main]
-	
-	-- Remove alt from old main
-	if currentMain and currentMain.alts then
-		local newAltTable = {}
-		for i = 1, #currentMain.alts do
-			if currentMain.alts[i] ~= charData.name then
-				tInsert(newAltTable, currentMain.alts[i])
-			end
+function A:RemoveAltFromMain( altName, mainName )
+	-- First unset the main data of the alt
+	local altData = A.db.global.guilds[I.guildName].chars[altName]
+	altData.main = nil
+
+	-- Now remove our alt from the alt data of the main
+	local mainData = A.db.global.guilds[I.guildName].chars[mainName]
+	if not mainData or not mainData.alts then return end
+
+	-- Find our alt and remove it
+	local i = 1;
+	while mainData.alts[i] do
+		if ( mainData.alts[i] == altName ) then
+			tRemove( mainData.alts, i )
+			break
 		end
-		currentMain.alts = newAltTable
+		i = i + 1;
 	end
 	
-	-- Clear current main data
-	charData.main = nil
+	if #mainData.alts == 0 then
+		mainData.alts = nil
+	end
+end
+
+
+-- Sets/updates a characters main and that main's alt table
+local function changeMain( charData, newMainName )
+	-- Remove alt from old main and main from alt
+	A:RemoveAltFromMain(charData.name, charData.main)
 
 	-- Validate new main
 	local newMain = A.db.global.guilds[I.guildName].chars[newMainName]
@@ -184,7 +196,7 @@ local function drawMainTreeArea( treeContainer, charName )
 		container:AddChild(headerLabel)
 
 		local sendBtn = AceGUI:Create("Button")
-		sendBtn:SetText(L['Send Char'])
+		sendBtn:SetText(L['Share Char'])
 		sendBtn:SetDisabled( not A.db.global.settings.sync.enabled )
 		sendBtn:SetRelativeWidth(0.3)
 		sendBtn:SetCallback('OnClick', function(container, event)
