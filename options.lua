@@ -42,7 +42,7 @@ function A:SetupOptions()
 			},
 			
 			Global = {
-				name = L['Global Settings'],
+				name = L['General Settings'],
 				type = "group",
 				args = {
 					UpdateOwnSpec = {
@@ -55,6 +55,22 @@ function A:SetupOptions()
 					},
 				},
 				order = 20,
+			},
+
+			Sync = {
+				name = L['Sync Settings'],
+				type = "group",
+				args = {
+					SyncEnabled = {
+						order = 1,
+						type = 'toggle',
+						name = L['Enabled'],
+						desc = L['Enable or disable syncing.'],
+						get = function(info) return A.db.global.settings.general.updateOwnSpec end,
+						set = function(info, value) A.db.global.settings.general.updateOwnSpec = value end,
+					},
+				},
+				order = 21,
 			},
 
 			CharSpecific = {

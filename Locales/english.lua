@@ -34,10 +34,11 @@ if L then
 
 
 	-- Options
+	L['Sync Settings'] = true
 	L['Show load message'] = true
 	L['Display a message when the addon is loaded or enabled.'] = true
 	L['Character Specific Settings'] = true
-	L['Global Settings'] = true
+	L['General Settings'] = true
 	L['Restore Defaults'] = true
 	L['Restores ALL settings to their default values. Does not clear the database.'] = true
 	L['Are you sure you want to restore ALL settings?'] = true
@@ -46,6 +47,8 @@ if L then
 	L['Are you sure you want to reset the whole database? This can not be undone!'] = true
 	L['Auto update own specs'] = true
 	L['Automatically updates your characters main spec and off spec to your current talent specs when loggin in and/or changing specs.'] = true
+	L['Enabled'] = true
+	L['Enable or disable syncing.'] = true
 
 	
 	-- Core
