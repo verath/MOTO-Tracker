@@ -6,7 +6,7 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Local versions of global functions
-local tIns = table.insert
+local tInsert = table.insert
 local tRemove = table.remove
 local sUpper = string.upper
 local sLower = string.lower
@@ -67,7 +67,7 @@ local function autoCompleteCharData( str, targetAttr, strModFunc )
 
 	for _, char in pairs(chars) do		
 		if sSub(char[targetAttr], 1, searchStrLen) == searchStr then
-			tIns(matches, char[targetAttr])
+			tInsert(matches, char[targetAttr])
 		end
 	end
 
@@ -104,7 +104,7 @@ local function changeMain( charData, newMainName )
 		local newAltTable = {}
 		for i = 1, #currentMain.alts do
 			if currentMain.alts[i] ~= charData.name then
-				tIns(newAltTable, currentMain.alts[i])
+				tInsert(newAltTable, currentMain.alts[i])
 			end
 		end
 		currentMain.alts = newAltTable
@@ -121,7 +121,7 @@ local function changeMain( charData, newMainName )
 	-- Set new main-alt data
 	charData.main = newMainName
 	if newMain.alts == nil then newMain.alts = {} end
-	tIns(newMain.alts, charData.name)
+	tInsert(newMain.alts, charData.name)
 end
 
 -- Returns a hex version of the class color codes provided by blizz
@@ -405,7 +405,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 							(alt.online and ' - ' .. formatOnlineStatusText(true, alt.status, true) or ''),
 				}
 
-				tIns(charEntry.children, altEntry)
+				tInsert(charEntry.children, altEntry)
 				mainHasAltOnline = (alt.online and true or mainHasAltOnline)
 				mainHasAltStatus = (alt.online and alt.status or mainHasAltStatus)
 			end
@@ -445,7 +445,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true, showCharStatus, true) or '')
 			end
 
-			tIns(tree, charEntry)
+			tInsert(tree, charEntry)
 		end
 	end
 
