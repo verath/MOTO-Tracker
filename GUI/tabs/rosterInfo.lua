@@ -252,11 +252,10 @@ local function drawMainTreeArea( treeContainer, charName )
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
 
-				local editBox = AceGUI:Create("Label")
-				editBox:SetText('  ' .. altsToString(charData.alts, true))
-				--editBox:SetDisabled(true)
-				editBox:SetRelativeWidth(0.7)
-				generalInfoContainer:AddChild(editBox)
+				local altsLabel = AceGUI:Create("Label")
+				altsLabel:SetText('  ' .. altsToString(charData.alts, true))
+				altsLabel:SetRelativeWidth(0.7)
+				generalInfoContainer:AddChild(altsLabel)
 			end
 		end
 
