@@ -6,9 +6,13 @@ local LibCompress = LibStub:GetLibrary("LibCompress")
 local LibCompressEncode = LibCompress:GetAddonEncodeTable()
 
 local tInsert = table.insert
+local sSub = string.sub
 
 A.sync = {}
 local syncSettings
+local sharedCharDataString = ''
+local sharedCharName = ''
+local isSharingChar = false
 
 -- Popups
 StaticPopupDialogs['MOTOTracker_Sync_Confirm_Receive'] = {
@@ -17,16 +21,25 @@ StaticPopupDialogs['MOTOTracker_Sync_Confirm_Receive'] = {
 	button2 = NO,
 	OnAccept = function() end,
 	OnCancel = function() end,
-	timeout = 30,
+	timeout = 15,
 	whileDead = true,
 	hideOnEscape = true,
 	preferredIndex = 3,
 }
 
 StaticPopupDialogs['MOTOTracker_Sync_Already_Sharing'] = {
-	text = L['Already sharing a character!|n|nPlease wait at least 15 seconds after sending a character before sending another one.'],
+	text = L['Already sharing a character!|n|nPlease wait at least 20 seconds after sending a character before sending another one.'],
 	button1 = OKAY,
-	timeout = 15,
+	timeout = 20,
+	whileDead = true,
+	hideOnEscape = true,
+	preferredIndex = 3,
+}
+
+StaticPopupDialogs['MOTOTracker_Sync_Sharing'] = {
+	button1 = CANCEL,
+	text = '',
+	timeout = 20,
 	whileDead = true,
 	hideOnEscape = true,
 	preferredIndex = 3,
@@ -38,7 +51,7 @@ local function decompressString( str )
 
 	--Decompress the decoded data
 	local decompressed, message = LibCompress:Decompress(decoded)
-	if(not two) then
+	if(not decompressed) then
 		A:Print("error decompressing: " .. message)
 		return nil
 	end
@@ -75,17 +88,41 @@ local function ConfirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	StaticPopup_Show('MOTOTracker_Sync_Confirm_Receive')
 end
 
-function A.sync:SetupSync()
-	syncSettings = A.db.global.settings.sync
-	A:RegisterComm('MOTOTracker', 'OnCommReceived')
+-- User wants the shared char, request it from the player sharing it
+local function requestSharedChar(charName, sharer)
+	local message = 'WantChar' .. charName
+	A:SendCommMessage('MOTOTChar', message, 'WHISPER', sharer, 'NORMAL')
 end
 
-local sharedCharDataString = ''
-local isSharingChar = false
-function A.sync:SendChar( charName )
+-- Someone is sharing a char, ask user if we want it
+local function charSharedWithMe( charName, sharedBy )
 	if not syncSettings.enabled then return end
 
-	A:SendCommMessage('MOTOTracker', 'TEsting testing', 'GUILD', '', prio)
+	ConfirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
+end
+
+-- Starts sharing a character
+local function startSharingChar()
+	-- Brodcast to guild that we are sharing
+	A:SendCommMessage('MOTOTChar', 'Sharing|' .. sharedCharName, 'GUILD', '', 'NORMAL')
+	-- Listen for incomming requests to get our shared data
+end
+
+-- Sends a shared char object to a player that requested it
+local function sendSharedCharTo( target )
+	if not isSharingChar then return end
+	A:Print( format(L['Sent data for %s to %s.'], sharedCharName, target) )
+	A:SendCommMessage('MOTOTCharData', sharedCharDataString, 'WHISPER', target, 'NORMAL')
+end
+
+-- Stops listening for requests for the char we were sharing
+function A.sync:StopSharingChar()
+	isSharingChar = false
+end
+
+-- Called when user clicks the share button in the ui.
+function A.sync:SendChar( charName )
+	if not syncSettings.enabled then return end
 
 	if isSharingChar then
 		-- We only allow sharing of one char at a time,
@@ -94,41 +131,98 @@ function A.sync:SendChar( charName )
 		return
 	end
 
+	do -- Display info pop-up while we are sharing.
+		StaticPopupDialogs['MOTOTracker_Sync_Sharing'].text = format(L['Sharing %s for 20 seconds.'], GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE)
+		-- OnAccept is on button one, and we only have one button.
+		StaticPopupDialogs['MOTOTracker_Sync_Sharing'].OnAccept = function() A.sync:StopSharingChar() end
+		StaticPopup_Show('MOTOTracker_Sync_Sharing')
+	end
+
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	-- TODO: Ask user for what to send
 	local keysToSend = {'name', 'alts', 'main', 'mainSpec', 'offSpec'}
 
 	local dataToSend = {}
 	for _, key in ipairs(keysToSend) do
-		tInsert(dataToSend, {[key] = charData[key]})
+		dataToSend[key] = charData[key]
 	end
 	
 	-- Serializes and compresses the object into a more
 	-- easily/faster sharable string
 	sharedCharDataString = compressObject(dataToSend)
-
+	sharedCharName = charName
+	
+	startSharingChar()
 	isSharingChar = true
-	AceTimer:ScheduleTimer( function() A.sync:StopSharing() end, 15)
-
+	
+	AceTimer:ScheduleTimer( function() A.sync:StopSharingChar() end, 20)
 end
 
--- Starts sharing a character
-function A.sync:StartSharing()
-	-- Brodcast to guild that we are sharing
-	--AceComm
-	-- Listen for incomming requests to get our shared data
+
+--Handler for receiving charData
+function A:OnCommCharReceived(prefix, message, distribution, sender)
+	local data = decompressString(message)
+	local charName = data.name
+	local localData = A.db.global.guilds[I.guildName].chars[charName]
+	
+	-- Handle alt/main
+	-- Remove our local char from any alt/main relations
+	if localData.main then
+		local mainName = localData.main
+		A:RemoveAltFromMain(charName, mainName)
+	end
+
+	-- If our local char has any alt data, unset them
+	if localData.alts then
+		for i, altName in ipairs(localData.alts) do
+			A:RemoveAltFromMain(altName, charName)
+		end
+	end
+
+	-- If char received has alts
+	if data.alts then
+		for _,alt in ipairs(data.alts) do
+			-- Set each alt to the char
+			A:ChangeMain(alt, charName)
+		end
+	elseif data.main then
+		-- If char received is an alt
+		A:ChangeMain(charName, data.main)	
+	end
+
+	-- Remove from our data table
+	data.main = nil
+	data.alts = nil
+	
+	-- Just loop trough the rest and set the values
+	for k,v in pairs(data) do
+		localData[k] = v
+	end
+
+	-- Update our frame
+	A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 end
 
--- Stops listening for requests for the char we were sharing
-function A.sync:StopSharing()
-	isSharingChar = false
-end
-
--- Handler for all received data
+-- Handler for all communication
 function A:OnCommReceived( prefix, message, distribution, sender )
-	print( prefix )
-	print( message )
-	print(distribution )
-	print(sender)
+	if prefix == 'MOTOTChar' then
+		if distribution == 'GUILD' then
+			if #message > 8 and sSub(message, 1, 8) == 'Sharing|' then 
+				-- Someone is sharing a char
+				charSharedWithMe( sSub(message, 9), sender )
+			end
+		elseif distribution == 'WHISPER' then
+			if isSharingChar and message == 'WantChar' .. sharedCharName then
+				-- Someone want the char we are sharing
+				sendSharedCharTo( sender )
+			end
+		end
+	end
+end
+
+function A.sync:SetupSync()
+	syncSettings = A.db.global.settings.sync
+	A:RegisterComm('MOTOTChar', 'OnCommReceived')
+	A:RegisterComm('MOTOTCharData', 'OnCommCharReceived')
 end
 

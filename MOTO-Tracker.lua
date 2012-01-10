@@ -14,6 +14,7 @@ local AceTimer = LibStub("AceTimer-3.0")
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 local tRemove = table.remove
+local tInsert = table.insert
 local sSub = string.sub
 local sUpper = string.upper
 
