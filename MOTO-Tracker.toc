@@ -7,6 +7,7 @@
 embeds.xml
 Locales\english.lua
 MOTO-Tracker.lua
+staticValues.lua
 defaults.lua
 options.lua
 GUI\loadGUI.xml

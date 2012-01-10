@@ -13,8 +13,6 @@ MOTOTracker = {
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 
-
-
 --###################################
 --	Helper Functions
 --###################################
@@ -101,19 +99,8 @@ function A:OnEnable()
 	GuildRoster()
 
 	-- Static values
-	I.hasGuild = IsInGuild()
-	I.guildSortableBy = {
-		name = L['Name'] .. ' (' .. L['A-Z'] .. ')',
-		INVERTname = L['Name'] .. ' (' .. L['Z-A'] .. ')',
-		rankIndex = L['Guild Rank'] .. ' (' .. L['High'] .. ')', 
-		INVERTrankIndex = L['Guild Rank'] .. ' (' .. L['Low'] .. ')', 
-		class = L['Class'] .. ' (' .. L['A-Z'] .. ')',
-		INVERTclass = L['Class'] .. ' (' .. L['Z-A'] .. ')',
-		level = L['Level']  .. ' (' .. L['Low'] .. ')', 
-		INVERTlevel = L['Level'] .. ' (' .. L['High'] .. ')', 
-	}
-	I.guidSortableByOrder = {'name', 'INVERTname', 'rankIndex', 'INVERTrankIndex', 'class', 'INVERTclass', 'INVERTlevel', 'level'}
-
+	self:LoadStaticValues()
+	
 	-- Set up the options UI
 	self:SetupOptions()
 end
