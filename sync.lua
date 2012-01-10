@@ -161,6 +161,9 @@ end
 
 --Handler for receiving charData
 function A:OnCommCharReceived(prefix, message, distribution, sender)
+	-- Don't want to react on our own messages
+	if sender == I.charName then return end
+
 	local data = decompressString(message)
 	local charName = data.name
 	local localData = A.db.global.guilds[I.guildName].chars[charName]
@@ -205,6 +208,9 @@ end
 
 -- Handler for all communication
 function A:OnCommReceived( prefix, message, distribution, sender )
+	-- Don't want to react on our own messages
+	if sender == I.charName then return end
+	
 	if prefix == 'MOTOTChar' then
 		if distribution == 'GUILD' then
 			if #message > 8 and sSub(message, 1, 8) == 'Sharing|' then 
