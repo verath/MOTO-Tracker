@@ -26,7 +26,7 @@ function A:LoadStaticValues()
 	I.classSpecs = {
 		WARRIOR = {
 			FURY = { text = L['Fury'], role = "DAMAGER" }, 
-			ARMS = { text = L['ARMS'], role = "DAMAGER" },
+			ARMS = { text = L['Arms'], role = "DAMAGER" },
 			PROTECTION = { text = L['Protection'], role = "TANK" },
 		}, 
 		DEATHKNIGHT = { 
@@ -58,7 +58,7 @@ function A:LoadStaticValues()
 		ROGUE = { 
 			COMBAT = { text = L['Combat'], role = "DAMAGER" },
 			ASSASSINATION = { text = L['Assassination'], role = "DAMAGER" },
-			SUBTLETY = { text = L[''], role = "DAMAGER" }, 
+			SUBTLETY = { text = L['Subtlety'], role = "DAMAGER" }, 
 		},
 		MAGE = {
 			FIRE = { text = L['Fire'], role = "DAMAGER" },
