@@ -174,14 +174,22 @@ local function drawMainTreeArea( treeContainer, charName )
 	end
 	
 
-	do -- Header
+	do -- Header and send player (sync)
 		-- Rank Name (level level) - online/offline (status)
 		local headerText = sFormat('%s %s (%s %d) - %s', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level, formatOnlineStatusText(charData.online, charData.status))
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Large)
 		headerLabel:SetText(headerText)
-		headerLabel:SetFullWidth(true)
+		headerLabel:SetRelativeWidth(0.7)
 		container:AddChild(headerLabel)
+
+		local sendBtn = AceGUI:Create("Button")
+		sendBtn:SetText(L['Send Char'])
+		sendBtn:SetRelativeWidth(0.3)
+		sendBtn:SetCallback('OnClick', function(container, event)
+			A.sync:SendChar(charData.name)
+		end)
+		container:AddChild(sendBtn)
 	end
 	
 	do -- SubHeader

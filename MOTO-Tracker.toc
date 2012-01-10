@@ -10,4 +10,5 @@ MOTO-Tracker.lua
 staticValues.lua
 defaults.lua
 options.lua
+sync.lua
 GUI\loadGUI.xml

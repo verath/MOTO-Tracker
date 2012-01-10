@@ -87,4 +87,5 @@ if L then
 	L['Currently in'] = true
 	L['Last seen in'] = true
 	L['Main Spec/Off Spec'] = true
+	L['Send Char'] = true
 end
