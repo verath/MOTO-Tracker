@@ -84,7 +84,7 @@ local function compressObject( data )
 end
 
 -- Asks user for confirmation for reccieving something from another player
-local function ConfirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
+local function confirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	if A.GUI.mainFrame == nil and A.db.global.settings.sync.onlyWhenFrame then 
 		OnCancel(); 
 		return 
@@ -101,6 +101,12 @@ end
 --###################################
 --   Char Sending
 --###################################
+
+-- Starts sharing a character
+local function startSharingChar()
+	-- Brodcast to guild that we are sharing
+	A:SendCommMessage('MOTOTChar', 'Sharing|' .. sharedCharName, 'GUILD', '', 'NORMAL')
+end
 
 -- Called when user clicks the share button in the ui.
 function A.sync:SendChar( charName )
@@ -140,12 +146,6 @@ function A.sync:SendChar( charName )
 	AceTimer:ScheduleTimer( function() A.sync:StopSharingChar() end, 20)
 end
 
--- Starts sharing a character
-local function startSharingChar()
-	-- Brodcast to guild that we are sharing
-	A:SendCommMessage('MOTOTChar', 'Sharing|' .. sharedCharName, 'GUILD', '', 'NORMAL')
-end
-
 -- Sends a shared char object to a player that requested it
 local function sendSharedCharTo( target )
 	if not isSharingChar then return end
@@ -163,17 +163,17 @@ end
 --   Char Receiving
 --###################################
 
--- Someone is sharing a char, ask user if we want it
-local function charSharedWithMe( charName, sharedBy )
-	if not syncSettings.enabled then return end
-
-	ConfirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
-end
-
 -- User wants the shared char, request it from the player sharing it
 local function requestSharedChar(charName, sharer)
 	local message = 'WantChar' .. charName
 	A:SendCommMessage('MOTOTChar', message, 'WHISPER', sharer, 'NORMAL')
+end
+
+-- Someone is sharing a char, ask user if we want it
+local function charSharedWithMe( charName, sharedBy )
+	if not syncSettings.enabled then return end
+
+	confirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
 end
 
 
