@@ -210,7 +210,7 @@ local function drawMainTreeArea( treeContainer, charName )
 		else
 			headerText = L['Last seen in']
 		end
-		headerText = headerText .. ': ' .. LIGHTYELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+		headerText = headerText .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Med1)
 		headerLabel:SetText(headerText)
