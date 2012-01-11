@@ -91,13 +91,15 @@ function A:ChangeMain( charName, newMainName )
 
 	-- Validate new main
 	local newMain = self.db.global.guilds[I.guildName].chars[newMainName]
-	if newMain.name == '' then return end
-	if newMain.main ~= nil then return end
+	if newMain.name == '' then return '' end
+	if newMain.main ~= nil then return '' end
 	
 	-- Set new main-alt data
 	charData.main = newMainName
 	if newMain.alts == nil then newMain.alts = {} end
 	tInsert(newMain.alts, charData.name)
+
+	return newMainName
 end
 
 -- Updates/Adds guild memeber to our db

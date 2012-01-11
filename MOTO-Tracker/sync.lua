@@ -225,6 +225,10 @@ function A:OnCommCharReceived(prefix, message, distribution, sender)
 	A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 end
 
+--###################################
+--   CommHandler
+--###################################
+
 -- Handler for all communication
 function A:OnCommReceived( prefix, message, distribution, sender )
 	-- Don't want to react on our own messages
@@ -244,6 +248,10 @@ function A:OnCommReceived( prefix, message, distribution, sender )
 		end
 	end
 end
+
+--###################################
+--   Set Up
+--###################################
 
 function A.sync:SetupSync()
 	syncSettings = A.db.global.settings.sync

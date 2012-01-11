@@ -5,7 +5,7 @@
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceGUI = LibStub("AceGUI-3.0")
 
--- Local versions of global functions
+-- Local versions of global functions are faster
 local tInsert = table.insert
 local tRemove = table.remove
 local sUpper = string.upper
@@ -17,6 +17,11 @@ local sFormat = string.format
 local rosterInfoDB = {}
 local searchString = ''
 local treeGroupFrame
+local treeTable
+
+--###################################
+--   Helper Functions
+--###################################
 
 -- Sorts by primary > secondary
 local function primarySecondarySort( a, b )
@@ -54,29 +59,6 @@ local function wordCapitalize( str )
 	end)
 end
 
--- Auto complete words
-local function autoCompleteCharData( str, targetAttr, strModFunc )
-	local chars = A.db.global.guilds[I.guildName].chars
-	
-	-- 2 or less is probably not enough to find
-	if #str <= 2 then return str end
-
-	local searchStr = strModFunc(str)
-	local searchStrLen = #searchStr
-	local matches = {}
-
-	for _, char in pairs(chars) do		
-		if sSub(char[targetAttr], 1, searchStrLen) == searchStr then
-			tInsert(matches, char[targetAttr])
-		end
-	end
-
-	if #matches == 1 then
-		return matches[1]
-	end
-	return str
-end
-
 -- Takes a list of alts and returns it as a comma-seperated string
 local function altsToString( altList, highlightOnline )
 	local sortedAlts = altList
@@ -106,12 +88,13 @@ end
 -- Returns a color coded Online/Offline (Status)
 local function formatOnlineStatusText( online, status, shortStatus )
 	local str = ''
-	if online ~= nil then
+	if online then
 		str = GREEN_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
+		
 		if status and status ~= '' then
 			if shortStatus then -- Just change color of online
 				str = LIGHTYELLOW_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
-			else
+			else -- Add status after online
 				str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
 			end
 		end
@@ -121,6 +104,61 @@ local function formatOnlineStatusText( online, status, shortStatus )
 
 	return str
 end
+
+-- Auto complete words
+local function autoCompleteCharData( str, targetAttr, strModFunc )
+	local chars = A.db.global.guilds[I.guildName].chars
+	
+	-- 2 or less is probably not enough to find
+	if #str <= 2 then return str end
+
+	local searchStr = strModFunc(str)
+	local searchStrLen = #searchStr
+	local matches = {}
+
+	for _, char in pairs(chars) do		
+		if sSub(char[targetAttr], 1, searchStrLen) == searchStr then
+			tInsert(matches, char[targetAttr])
+		end
+	end
+
+	if #matches == 1 then
+		return matches[1]
+	end
+	return str
+end
+
+-- Handles autocompletion for EditTexts
+function handleAutoCompleteEditText( c, e, value, charName, charMainName )
+	local useAutoComplete = A.db.global.settings.GUI.useAutoComplete
+	local prevText = c:GetUserData('prevText')
+
+	c:SetUserData('prevText', value)
+	
+	if not useAutoComplete then return end
+	if c:GetUserData('isAutoCompleting') then return end
+
+	-- Only autocomplete if we are writing, not when erasing
+	if #value > #prevText then
+		c:SetUserData('isAutoCompleting', true)
+		local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
+		
+		if aCResult ~= value then -- We found a match
+			local newMainName = A:ChangeMain(charName, aCResult) -- Change main to value
+			c:SetText(newMainName)
+			c:ClearFocus()
+			A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
+		end
+		
+		c:SetUserData('isAutoCompleting', false)
+	end
+
+	
+end
+
+--###################################
+--   Main Area (One char)
+--###################################
 
 -- Draw the main area when a character is selected
 local function drawMainTreeArea( treeContainer, charName )
@@ -205,26 +243,12 @@ local function drawMainTreeArea( treeContainer, charName )
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
 				editBox:DisableButton( A.db.global.settings.GUI.useAutoComplete )
+				
 				-- AutoComplete
 				editBox:SetUserData('prevText', editBox:GetText())
 				editBox:SetUserData('isAutoCompleting', false)
-				editBox:SetCallback("OnTextChanged", function( c, e, value )
-					local prevText = c:GetUserData('prevText')
-					if not c:GetUserData('isAutoCompleting') then
-						if A.db.global.settings.GUI.useAutoComplete and #value > #prevText then
-							c:SetUserData('isAutoCompleting', true)
-							local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
-							if aCResult ~= value then 
-								A:ChangeMain(charData.name, aCResult) -- Change main to value
-								c:SetText(charData.main)
-								c:ClearFocus()
-								A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
-							end
-							c:SetUserData('isAutoCompleting', false)
-						end
-					end
-					c:SetUserData('prevText', value)
-				end)
+				editBox:SetCallback("OnTextChanged", function(c, e, value) handleAutoCompleteEditText(c, e, value, charData.name, charData.main) end )
+				
 				generalInfoContainer:AddChild(editBox)
 			else -- If the char is a main, show alts but don't allow editing.
 				local label = AceGUI:Create("Label")
@@ -252,8 +276,8 @@ local function drawMainTreeArea( treeContainer, charName )
 			editBox:SetRelativeWidth(0.7)
 			local index = charData.guildIndex
 			editBox:SetCallback("OnEnterPressed", function(container, event, val)
-					if index ~= -1 then GuildRosterSetPublicNote(index, val) end
-				end)
+				if index ~= -1 then GuildRosterSetPublicNote(index, val) end
+			end)
 			generalInfoContainer:AddChild(editBox)
 		end
 
@@ -329,6 +353,10 @@ local function drawMainTreeArea( treeContainer, charName )
 	end	
 end
 
+--###################################
+--   Tree Container (list of chars)
+--###################################
+
 -- Generates the tree element, alts under mains + sorting.
 function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	local isSearching = (searchString ~= '') and true or false
@@ -346,7 +374,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	sort(chars, primarySecondarySort)
 
 	-- Generate the tree
-	tree = {}
+	treeTable = {}
 	for _, charData in ipairs(chars) do
 		-- Used for main coloring when online alts
 		local mainHasAltOnline = false
@@ -416,11 +444,11 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true, showCharStatus, true) or '')
 			end
 
-			tInsert(tree, charEntry)
+			tInsert(treeTable, charEntry)
 		end
 	end
 
-	treeGroupFrame:SetTree(tree)
+	treeGroupFrame:SetTree(treeTable)
 end
 
 -- Draw the tab
@@ -431,7 +459,6 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 
 	do -- Setup the tree element
 		treeG = AceGUI:Create("TreeGroup")
-		treeG:SetTree(tree)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
 		treeG:EnableButtonTooltips(false)

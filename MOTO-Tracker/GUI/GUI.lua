@@ -54,7 +54,7 @@ function A.GUI:ShowMainFrame()
 end
 
 -- Updates/Sets the status bar of our main frame
-local setMainFrameStatusBar()
+local function setMainFrameStatusBar()
 	if I.hasGuild then
 		local numMembers = GetNumGuildMembers()
 
