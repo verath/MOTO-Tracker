@@ -21,6 +21,8 @@
 	<Include file="Libs\AceComm-3.0\AceComm-3.0.xml" />
 	<!-- Serialize -->
 	<Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml" />
+	<!-- Hooking of functions -->
+	<Include file="Libs\AceSerializer-3.0\AceHook-3.0.xml" />
 
 	<!-- LibCompress, for smaller addon sync messages -->
 	<Include file="Libs\LibCompress.lua" />

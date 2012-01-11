@@ -5,6 +5,7 @@
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
+local AceHook = LibStub("AceHook-3.0")
 
 -- Local LUA functions is faster
 local sFormat = string.format
@@ -101,6 +102,12 @@ function A.GUI:CreateMainFrame()
 	tab:SelectTab("rosterInfo")
 
 	f:AddChild(tab)
+
+
+end
+
+function A.GUI:SetupGUI()
+	
 end
 
 -- Will get called when an event that could affect 
