@@ -100,6 +100,10 @@ if L then
 	L['months'] = true
 	L['days'] = true
 	L['hours'] = true
+	L['year'] = true
+	L['month'] = true
+	L['day'] = true
+	L['hour'] = true
 	L['ago'] = true
 	L['less than an hour ago'] = true
 

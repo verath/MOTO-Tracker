@@ -206,20 +206,21 @@ local function drawMainTreeArea( treeContainer, charName )
 		-- Zone info
 		local headerText = ''
 		if charData.online then
-			headerText = L['Currently in'] .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			headerText = L['Currently in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
 		else
 			local offFor = charData.offlineFor
-			headerText = L['Last seen in'] .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			headerText = L['Last seen in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			
 			if offFor.years and offFor.years > 0 then
-				headerText = headerText .. ' ' .. offFor.years .. ' ' .. L['years'] .. ' ' .. L['ago']
+				headerText = headerText .. ', ' .. offFor.years .. ' ' .. (offFor.years>1 and L['years'] or L['year']) .. ' ' .. L['ago']
 			elseif offFor.months and offFor.months > 0 then
-				headerText = headerText .. ' ' .. offFor.months .. ' ' .. L['months'] .. ' ' .. L['ago']
+				headerText = headerText .. ', ' .. offFor.months .. ' ' .. (offFor.months>1 and L['months'] or L['month']) .. ' ' .. L['ago']
 			elseif offFor.days and  offFor.days > 0 then
-				headerText = headerText .. ' ' .. offFor.days .. ' ' .. L['days'] .. ' ' .. L['ago']
+				headerText = headerText .. ', ' .. offFor.days .. ' ' .. (offFor.days>1 and L['days'] or L['day']) .. ' ' .. L['ago']
 			elseif offFor.hours and offFor.hours > 0 then
-				headerText = headerText .. ' ' .. offFor.hours .. ' ' .. L['hours'] .. ' ' .. L['ago']
+				headerText = headerText .. ', ' .. offFor.hours .. ' ' .. (offFor.hours>1 and L['hours'] or L['hour']) .. ' ' .. L['ago']
 			else
-				headerText = headerText .. ' ' .. L['less than an hour ago']
+				headerText = headerText .. ', ' .. L['less than an hour ago']
 			end
 		end
 
