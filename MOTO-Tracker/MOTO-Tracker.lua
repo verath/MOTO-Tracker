@@ -1,6 +1,7 @@
 --###################################
---   Set Up
+--   Core setups and functions
 --###################################
+
 MOTOTracker = {
 	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0"),
 	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
@@ -9,10 +10,10 @@ MOTOTracker = {
 		addonName = 'MOTOTracker',
 	}
 }
+local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceTimer = LibStub("AceTimer-3.0")
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
-
+-- Local versions are faster
 local tRemove = table.remove
 local tInsert = table.insert
 local sSub = string.sub
@@ -21,78 +22,6 @@ local sUpper = string.upper
 --###################################
 --	Helper Functions
 --###################################
-
--- Initializes the DB
-function A:SetupDB()
-	self:SetupDefaults()
-	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
-end
-
--- Removes an alt/main relationship
-function A:RemoveAltFromMain( altName, mainName )
-	-- First unset the main data of the alt
-	local altData = A.db.global.guilds[I.guildName].chars[altName]
-	altData.main = nil
-
-	-- Now remove our alt from the alt data of the main
-	local mainData = A.db.global.guilds[I.guildName].chars[mainName]
-	if not mainData or not mainData.alts then return end
-
-	-- Find our alt and remove it
-	local i = 1;
-	while mainData.alts[i] do
-		if ( mainData.alts[i] == altName ) then
-			tRemove( mainData.alts, i )
-			break
-		end
-		i = i + 1;
-	end
-	
-	if #mainData.alts == 0 then
-		mainData.alts = nil
-	end
-end
-
--- Sets/updates a character's main and that main's alt table
-function A:ChangeMain( charName, newMainName )
-	local charData = A.db.global.guilds[I.guildName].chars[charName]
-	-- Remove alt from old main and main from alt
-	A:RemoveAltFromMain(charData.name, charData.main)
-
-	-- Validate new main
-	local newMain = A.db.global.guilds[I.guildName].chars[newMainName]
-	if newMain.name == '' then return end
-	if newMain.main ~= nil then return end
-	
-	-- Set new main-alt data
-	charData.main = newMainName
-	if newMain.alts == nil then newMain.alts = {} end
-	tInsert(newMain.alts, charData.name)
-end
-
--- Updates/Adds guild memeber to our db
-function A:UpdateGuildMemeberFromRoster( index )
-	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
-
-	local P = A.db.global.guilds[I.guildName].chars[name]
-	
-	-- Update guild info
-	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class, P.guildIndex, P.online, P.status = name, rank, rankIndex, level, zone, note, class, index, online, status
-
-	if I.canViewOfficerNote then
-		P.officerNote = officerNote
-	end
-
-end
-
--- Updates the entier guild roster (Do not use too much...)
-function A:UpdateGuildRoster()
-	local numGuildMembers, _ = GetNumGuildMembers()
-
-	for i = 1, numGuildMembers do
-		A:UpdateGuildMemeberFromRoster( i )
-	end
-end
 
 -- Checks local guild DB against roster and
 -- removes members no longer in the guild
@@ -119,8 +48,84 @@ local function removeNoLongerGuildMemebers()
 	end
 end
 
--- Returns the name of tree in group (primary/secondary spec) 
--- with most points
+--###################################
+--	Global Core Methods
+--###################################
+
+-- Initializes the DB
+function A:SetupDB()
+	self:SetupDefaults()
+	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
+end
+
+-- Removes an alt/main relationship
+function A:RemoveAltFromMain( altName, mainName )
+	-- First unset the main data of the alt
+	local altData = self.db.global.guilds[I.guildName].chars[altName]
+	altData.main = nil
+
+	-- Now remove our alt from the alt data of the main
+	local mainData = self.db.global.guilds[I.guildName].chars[mainName]
+	if not mainData or not mainData.alts then return end
+
+	-- Find our alt and remove it
+	local i = 1;
+	while mainData.alts[i] do
+		if ( mainData.alts[i] == altName ) then
+			tRemove( mainData.alts, i )
+			break
+		end
+		i = i + 1;
+	end
+	
+	if #mainData.alts == 0 then
+		mainData.alts = nil
+	end
+end
+
+-- Sets/updates a character's main and that main's alt table
+function A:ChangeMain( charName, newMainName )
+	local charData = self.db.global.guilds[I.guildName].chars[charName]
+	-- Remove alt from old main and main from alt
+	self:RemoveAltFromMain(charData.name, charData.main)
+
+	-- Validate new main
+	local newMain = self.db.global.guilds[I.guildName].chars[newMainName]
+	if newMain.name == '' then return end
+	if newMain.main ~= nil then return end
+	
+	-- Set new main-alt data
+	charData.main = newMainName
+	if newMain.alts == nil then newMain.alts = {} end
+	tInsert(newMain.alts, charData.name)
+end
+
+-- Updates/Adds guild memeber to our db
+function A:UpdateGuildMemeberFromRoster( index )
+	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
+
+	local P = self.db.global.guilds[I.guildName].chars[name]
+	
+	-- Update guild info
+	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class, P.guildIndex, P.online, P.status = name, rank, rankIndex, level, zone, note, class, index, online, status
+
+	if I.canViewOfficerNote then
+		P.officerNote = officerNote
+	end
+
+end
+
+-- Updates the entier guild roster (Do not use too much...)
+function A:UpdateGuildRoster()
+	local numGuildMembers, _ = GetNumGuildMembers()
+
+	for i = 1, numGuildMembers do
+		self:UpdateGuildMemeberFromRoster(i)
+	end
+end
+
+-- Returns the name of the talent tree in group 
+-- (primary/secondary spec) with most points
 function A:GetTalentSpecForGroup( talentGroup, inspect )
 	if GetNumTalentGroups(inspect, false) < talentGroup then return nil end
 	
@@ -137,29 +142,29 @@ function A:GetTalentSpecForGroup( talentGroup, inspect )
 	return spec
 end
 
--- Updates the current characters main spec and off spec by looking at
--- talent trees
+-- Updates the current characters main spec and off spec by
+-- looking at talent trees
 function A:UpdatePlayerTalents()
 	if not I.hasGuild then return end
+	if not self.db.global.settings.general.updateOwnSpec then return end
 	if not I.guildName then
-		-- Delay check untill we have a guildName (after logged in)
+		-- Delay check until we have a guildName (after logged in)
 		local that = self
 		AceTimer:ScheduleTimer((function() that:UpdatePlayerTalents() end), 2) 
 		return
 	end
-	if not A.db.global.settings.general.updateOwnSpec then return end
 	
 	local class = I.charClass
-	local mainSpec = A:GetTalentSpecForGroup( 1, false )
-	local offSpec = A:GetTalentSpecForGroup( 2, false )
+	local mainSpec = self:GetTalentSpecForGroup( 1, false )
+	local offSpec = self:GetTalentSpecForGroup( 2, false )
 
 	-- For now I got no good way to handle localized talent names,
 	-- so if not in table they will not get updated. Sorry.
 	if mainSpec and I.classSpecs[class][mainSpec] then
-		A.db.global.guilds[I.guildName].chars[I.charName].mainSpec = mainSpec
+		self.db.global.guilds[I.guildName].chars[I.charName].mainSpec = mainSpec
 	end
 	if offSpec and I.classSpecs[class][offSpec] then
-		A.db.global.guilds[I.guildName].chars[I.charName].offSpec = offSpec
+		self.db.global.guilds[I.guildName].chars[I.charName].offSpec = offSpec
 	end
 
 end
@@ -184,11 +189,11 @@ function A:OnEnable()
 	self:LoadStaticValues()
 
 	-- Start listening for events
-	A:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
-	A:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
-	A:RegisterEvent('PLAYER_TALENT_UPDATE', 'OnPlayerTalentUpdate')
-	A:RegisterChatCommand('MOTOT', "SlashHandler")
-	A:RegisterChatCommand('MOTOTracker', "SlashHandler")
+	self:RegisterEvent('GUILD_ROSTER_UPDATE', 'OnGuildRosterUpdate')
+	self:RegisterEvent('PLAYER_GUILD_UPDATE', 'OnGuildRosterUpdate')
+	self:RegisterEvent('PLAYER_TALENT_UPDATE', 'OnPlayerTalentUpdate')
+	self:RegisterChatCommand('MOTOT', "SlashHandler")
+	self:RegisterChatCommand('MOTOTracker', "SlashHandler")
 	
 	-- Request guild roster from server
 	GuildRoster()
@@ -197,16 +202,17 @@ function A:OnEnable()
 	self:SetupOptions()
 
 	-- Set up the syncing
-	A.sync:SetupSync()
+	self.sync:SetupSync()
 end
 
 -- Gets called if the addon is disabled
 function A:OnDisable()
 	-- Unregister Events
-	A:UnregisterEvent('GUILD_ROSTER_UPDATE')
-	A:UnregisterEvent('PLAYER_GUILD_UPDATE')
-	A:UnregisterChatCommand('MOTOT')
-	A:UnregisterChatCommand('MOTOTracker')
+	self:UnregisterEvent('GUILD_ROSTER_UPDATE')
+	self:UnregisterEvent('PLAYER_GUILD_UPDATE')
+	self:UnregisterEvent('PLAYER_TALENT_UPDATE')
+	self:UnregisterChatCommand('MOTOT')
+	self:UnregisterChatCommand('MOTOTracker')
 end
 
 
@@ -238,14 +244,14 @@ function A:OnGuildRosterUpdate( event,_ )
 end
 
 function A:OnPlayerTalentUpdate( ... )
-	A:UpdatePlayerTalents()
+	self:UpdatePlayerTalents()
 end
 
 
 -- Slash handler
 function A:SlashHandler(input)
 	if input == '' then
-		A.GUI:ShowMainFrame()
+		self.GUI:ShowMainFrame()
 	end
 end
 

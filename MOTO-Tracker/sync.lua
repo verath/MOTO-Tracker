@@ -1,3 +1,7 @@
+--###################################
+--   Syncing (sending data between players)
+--###################################
+
 local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 
 local AceTimer = LibStub("AceTimer-3.0")
@@ -45,7 +49,12 @@ StaticPopupDialogs['MOTOTracker_Sync_Sharing'] = {
 	preferredIndex = 3,
 }
 
--- Reverse of compressForSending
+
+--###################################
+--   Helper Functions
+--###################################
+
+-- Reverse of compressObject
 local function decompressString( str )
 	local decoded = LibCompressEncode:Decode(str)
 
@@ -74,8 +83,7 @@ local function compressObject( data )
 	return final
 end
 
-
--- Asks user for confirmation for reccieving a char from another player
+-- Asks user for confirmation for reccieving something from another player
 local function ConfirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	-- We are not going to show pop-ups if our guild frame is not open.
 	if A.GUI.mainFrame == nil then OnCancel(); return end
@@ -88,37 +96,9 @@ local function ConfirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	StaticPopup_Show('MOTOTracker_Sync_Confirm_Receive')
 end
 
--- User wants the shared char, request it from the player sharing it
-local function requestSharedChar(charName, sharer)
-	local message = 'WantChar' .. charName
-	A:SendCommMessage('MOTOTChar', message, 'WHISPER', sharer, 'NORMAL')
-end
-
--- Someone is sharing a char, ask user if we want it
-local function charSharedWithMe( charName, sharedBy )
-	if not syncSettings.enabled then return end
-
-	ConfirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
-end
-
--- Starts sharing a character
-local function startSharingChar()
-	-- Brodcast to guild that we are sharing
-	A:SendCommMessage('MOTOTChar', 'Sharing|' .. sharedCharName, 'GUILD', '', 'NORMAL')
-	-- Listen for incomming requests to get our shared data
-end
-
--- Sends a shared char object to a player that requested it
-local function sendSharedCharTo( target )
-	if not isSharingChar then return end
-	A:Print( format(L['Sent data for %s to %s.'], sharedCharName, target) )
-	A:SendCommMessage('MOTOTCharData', sharedCharDataString, 'WHISPER', target, 'NORMAL')
-end
-
--- Stops listening for requests for the char we were sharing
-function A.sync:StopSharingChar()
-	isSharingChar = false
-end
+--###################################
+--   Char Sending
+--###################################
 
 -- Called when user clicks the share button in the ui.
 function A.sync:SendChar( charName )
@@ -158,6 +138,42 @@ function A.sync:SendChar( charName )
 	AceTimer:ScheduleTimer( function() A.sync:StopSharingChar() end, 20)
 end
 
+-- Starts sharing a character
+local function startSharingChar()
+	-- Brodcast to guild that we are sharing
+	A:SendCommMessage('MOTOTChar', 'Sharing|' .. sharedCharName, 'GUILD', '', 'NORMAL')
+end
+
+-- Sends a shared char object to a player that requested it
+local function sendSharedCharTo( target )
+	if not isSharingChar then return end
+	A:Print( format(L['Sent data for %s to %s.'], sharedCharName, target) )
+	A:SendCommMessage('MOTOTCharData', sharedCharDataString, 'WHISPER', target, 'NORMAL')
+end
+
+-- Stops listening for requests for the char we were sharing
+function A.sync:StopSharingChar()
+	isSharingChar = false
+end
+
+
+--###################################
+--   Char Receiving
+--###################################
+
+-- Someone is sharing a char, ask user if we want it
+local function charSharedWithMe( charName, sharedBy )
+	if not syncSettings.enabled then return end
+
+	ConfirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
+end
+
+-- User wants the shared char, request it from the player sharing it
+local function requestSharedChar(charName, sharer)
+	local message = 'WantChar' .. charName
+	A:SendCommMessage('MOTOTChar', message, 'WHISPER', sharer, 'NORMAL')
+end
+
 
 --Handler for receiving charData
 function A:OnCommCharReceived(prefix, message, distribution, sender)
@@ -165,37 +181,40 @@ function A:OnCommCharReceived(prefix, message, distribution, sender)
 	if sender == I.charName then return end
 
 	local data = decompressString(message)
+	if data == nil then return end
+
 	local charName = data.name
 	local localData = A.db.global.guilds[I.guildName].chars[charName]
 	
-	-- Handle alt/main
-	-- Remove our local char from any alt/main relations
-	if localData.main then
-		local mainName = localData.main
-		A:RemoveAltFromMain(charName, mainName)
-	end
-
-	-- If our local char has any alt data, unset them
-	if localData.alts then
-		for i, altName in ipairs(localData.alts) do
-			A:RemoveAltFromMain(altName, charName)
+	do-- Handle alt/main
+		-- Remove our local char from any alt/main relations
+		if localData.main then
+			local mainName = localData.main
+			A:RemoveAltFromMain(charName, mainName)
 		end
-	end
 
-	-- If char received has alts
-	if data.alts then
-		for _,alt in ipairs(data.alts) do
-			-- Set each alt to the char
-			A:ChangeMain(alt, charName)
+		-- If our local char has any alt data, unset them
+		if localData.alts then
+			for i, altName in ipairs(localData.alts) do
+				A:RemoveAltFromMain(altName, charName)
+			end
 		end
-	elseif data.main then
-		-- If char received is an alt
-		A:ChangeMain(charName, data.main)	
-	end
 
-	-- Remove from our data table
-	data.main = nil
-	data.alts = nil
+		-- If char received has alts
+		if data.alts then
+			for _,alt in ipairs(data.alts) do
+				-- Set each alt to the char
+				A:ChangeMain(alt, charName)
+			end
+		elseif data.main then
+			-- If char received is an alt
+			A:ChangeMain(charName, data.main)	
+		end
+
+		-- Remove from our data table
+		data.main = nil
+		data.alts = nil
+	end
 	
 	-- Just loop trough the rest and set the values
 	for k,v in pairs(data) do
@@ -203,7 +222,7 @@ function A:OnCommCharReceived(prefix, message, distribution, sender)
 	end
 
 	-- Update our frame
-	A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
+	A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 end
 
 -- Handler for all communication
