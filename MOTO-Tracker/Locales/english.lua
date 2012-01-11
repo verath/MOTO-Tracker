@@ -49,6 +49,10 @@ if L then
 	L['Automatically updates your characters main spec and off spec to your current talent specs when loggin in and/or changing specs.'] = true
 	L['Enabled'] = true
 	L['Enable or disable syncing.'] = true
+	L['Only receive when open'] = true
+	L['Only show popoups about sharing if the addon frame is opened.'] = true
+	L['Use auto-complete'] = true
+	L['Use auto-complete for a few fields in the addon (mostly when entering character names).'] = true
 
 	
 	-- Core
@@ -91,6 +95,7 @@ if L then
 	L['Last seen in'] = true
 	L['Main Spec/Off Spec'] = true
 	L['Share Char'] = true
+	L['Toggle Main Frame'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true

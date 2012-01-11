@@ -204,7 +204,7 @@ function A:OnEnable()
 	self:SetupOptions()
 
 	-- Set up the GUI
-	self:SetupGUI()
+	self.GUI:SetupGUI()
 
 	-- Set up the syncing
 	self.sync:SetupSync()

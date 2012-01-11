@@ -14,6 +14,7 @@ function A:SetupOptions()
 				width = "Full",
 			},
 
+
 			LoadMessage = {
 				order = 2,
 				type = 'toggle',
@@ -40,10 +41,11 @@ function A:SetupOptions()
 				confirm = function() return L['Are you sure you want to reset the whole database? This can not be undone!'] end,
 				func = function() A.db:ResetDB('Default'); A:SetupDB() end,
 			},
-			
-			Global = {
+
+			GeneralSettings = {
 				name = L['General Settings'],
 				type = "group",
+				inline = true,
 				args = {
 					UpdateOwnSpec = {
 						order = 1,
@@ -53,6 +55,15 @@ function A:SetupOptions()
 						get = function(info) return A.db.global.settings.general.updateOwnSpec end,
 						set = function(info, value) A.db.global.settings.general.updateOwnSpec = value end,
 					},
+					UseAutoComplete = {
+						order = 5,
+						type = 'toggle',
+						name = L['Use auto-complete'],
+						desc = L['Use auto-complete for a few fields in the addon (mostly when entering character names).'],
+						get = function(info) return A.db.global.settings.GUI.useAutoComplete end,
+						set = function(info, value) A.db.global.settings.GUI.useAutoComplete = value end,
+					},
+					
 				},
 				order = 20,
 			},
@@ -60,6 +71,7 @@ function A:SetupOptions()
 			Sync = {
 				name = L['Sync Settings'],
 				type = "group",
+				inline = true,
 				args = {
 					SyncEnabled = {
 						order = 1,
@@ -69,18 +81,27 @@ function A:SetupOptions()
 						get = function(info) return A.db.global.settings.sync.enabled end,
 						set = function(info, value) A.db.global.settings.sync.enabled = value end,
 					},
+					SyncOnlyWhenFrame = {
+						order = 1,
+						type = 'toggle',
+						name = L['Only receive when open'],
+						desc = L['Only show popoups about sharing if the addon frame is opened.'],
+						get = function(info) return A.db.global.settings.sync.onlyWhenFrame end,
+						set = function(info, value) A.db.global.settings.sync.onlyWhenFrame = value end,
+					},
 				},
 				order = 21,
 			},
 
-			CharSpecific = {
+			--[[CharSpecific = {
 				name = L["Character Specific Settings"],
 				type = "group",
+				inline = true,
 				args = {
 					
 				},
 				order = 25,
-			},
+			}, --]]
 		},
 	}
 	

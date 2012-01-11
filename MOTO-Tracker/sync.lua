@@ -85,8 +85,10 @@ end
 
 -- Asks user for confirmation for reccieving something from another player
 local function ConfirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
-	-- We are not going to show pop-ups if our guild frame is not open.
-	if A.GUI.mainFrame == nil then OnCancel(); return end
+	if A.GUI.mainFrame == nil and A.db.global.settings.sync.onlyWhenFrame then 
+		OnCancel(); 
+		return 
+	end
 
 	StaticPopupDialogs['MOTOTracker_Sync_Confirm_Receive'].text = format( L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'],  LIGHTYELLOW_FONT_COLOR_CODE .. sentBy .. FONT_COLOR_CODE_CLOSE, GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE, GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE)
 	

@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="MOTOTracker_TOGGLE" description="Toggles the MOTO Tracker main frame." header="MOTOTracker">
+		MOTOTracker.addon.GUI:ToggleMainFrame();
+	</Binding>
+</Bindings>

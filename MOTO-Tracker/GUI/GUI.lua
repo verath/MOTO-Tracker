@@ -54,6 +54,14 @@ function A.GUI:ShowMainFrame()
 	updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 10)
 end
 
+function A.GUI:ToggleMainFrame()
+	if self.mainFrame then 
+		self:HideMainFrame()
+	else
+		self:ShowMainFrame()
+	end
+end
+
 -- Updates/Sets the status bar of our main frame
 local function setMainFrameStatusBar()
 	if I.hasGuild then
@@ -107,7 +115,9 @@ function A.GUI:CreateMainFrame()
 end
 
 function A.GUI:SetupGUI()
-	
+	-- Set up bindings for toggeling the frame
+	BINDING_HEADER_MOTOTracker = L['MOTO Tracker']
+	BINDING_NAME_MOTOTracker_TOGGLE = L['Toggle Main Frame']
 end
 
 -- Will get called when an event that could affect 
