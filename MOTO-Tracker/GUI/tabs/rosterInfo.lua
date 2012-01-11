@@ -206,11 +206,23 @@ local function drawMainTreeArea( treeContainer, charName )
 		-- Zone info
 		local headerText = ''
 		if charData.online then
-			headerText = L['Currently in']
+			headerText = L['Currently in'] .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
 		else
-			headerText = L['Last seen in']
+			local offFor = charData.offlineFor
+			headerText = L['Last seen in'] .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			if offFor.years and offFor.years > 0 then
+				headerText = headerText .. ' ' .. offFor.years .. ' ' .. L['years'] .. ' ' .. L['ago']
+			elseif offFor.months and offFor.months > 0 then
+				headerText = headerText .. ' ' .. offFor.months .. ' ' .. L['months'] .. ' ' .. L['ago']
+			elseif offFor.days and  offFor.days > 0 then
+				headerText = headerText .. ' ' .. offFor.days .. ' ' .. L['days'] .. ' ' .. L['ago']
+			elseif offFor.hours and offFor.hours > 0 then
+				headerText = headerText .. ' ' .. offFor.hours .. ' ' .. L['hours'] .. ' ' .. L['ago']
+			else
+				headerText = headerText .. ' ' .. L['less than an hour ago']
+			end
 		end
-		headerText = headerText .. ': ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Med1)
 		headerLabel:SetText(headerText)

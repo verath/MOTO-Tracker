@@ -105,11 +105,20 @@ end
 -- Updates/Adds guild memeber to our db
 function A:UpdateGuildMemeberFromRoster( index )
 	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
-
+	local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(index);
 	local P = self.db.global.guilds[I.guildName].chars[name]
 	
 	-- Update guild info
 	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class, P.guildIndex, P.online, P.status = name, rank, rankIndex, level, zone, note, class, index, online, status
+
+	if not online then
+		P.offlineFor = {
+			hours = hoursOffline, 
+			days = daysOffline,
+			months = monthsOffline,
+			years = yearsOffline,
+		}
+	end
 
 	if I.canViewOfficerNote then
 		P.officerNote = officerNote

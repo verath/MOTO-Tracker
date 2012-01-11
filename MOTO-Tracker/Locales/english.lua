@@ -96,6 +96,12 @@ if L then
 	L['Main Spec/Off Spec'] = true
 	L['Share Char'] = true
 	L['Toggle Main Frame'] = true
+	L['years'] = true
+	L['months'] = true
+	L['days'] = true
+	L['hours'] = true
+	L['ago'] = true
+	L['less than an hour ago'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true

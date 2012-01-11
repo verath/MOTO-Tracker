@@ -36,9 +36,15 @@ function A:SetupDefaults()
 							officerNote = '',
 							privateNote = '',
 							online = nil,
+							offlineFor = {
+								hours = nil, 
+								days = nil,
+								months = nil,
+								years = nil,
+							},
 							status = '',
 							class = '',
-							guildIndex = -1
+							guildIndex = -1,
 						},
 					},
 				},
