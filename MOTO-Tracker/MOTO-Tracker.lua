@@ -83,6 +83,30 @@ function A:RemoveAltFromMain( altName, mainName )
 	end
 end
 
+-- Finds a char by a player (Main + alts) by looking for a specified value
+function A:FindPlayerChar( charName, key, value )
+	local charData = self.db.global.guilds[I.guildName].chars[charName]
+	if charData[key] and charData[key] == value then return charData.name end
+
+	-- Get the main
+	if charData.main ~= nil then
+		charData = A.db.global.guilds[I.guildName].chars[charData.main]
+		if charData[key] and charData[key] then return charData.name end
+	end
+
+	if charData.alts == nil then return false end
+
+	-- Go trough alts
+	local i = 1
+	while charData.alts[i] do
+		local alt = self.db.global.guilds[I.guildName].chars[charData.alts[i]]
+		if alt[key] and alt[key] == value then return alt.name end
+		i = i+1
+	end
+	
+	return false
+end
+
 -- Sets/updates a character's main and that main's alt table
 function A:ChangeMain( charName, newMainName )
 	local charData = self.db.global.guilds[I.guildName].chars[charName]
