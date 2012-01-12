@@ -106,6 +106,7 @@ if L then
 	L['hour'] = true
 	L['ago'] = true
 	L['less than an hour ago'] = true
+	L['Invite'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true
