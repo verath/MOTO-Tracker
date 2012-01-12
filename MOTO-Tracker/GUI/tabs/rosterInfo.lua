@@ -491,7 +491,13 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 				-- Update main list-item with online color of alt
 				local showCharOnline = charData.online or mainHasAltOnline
 				local showCharStatus = mainHasAltStatus ~= '' and mainHasAltStatus or charData.status
-				charEntry.text = formatClassColor(charData.name, charData.class) .. (showCharOnline and ' - ' .. formatOnlineStatusText(true, showCharStatus, true) or '')
+				charEntry.text = formatClassColor(charData.name, charData.class) 
+				if showCharOnline then
+					charEntry.text = charEntry.text .. ' - ' .. formatOnlineStatusText(true, showCharStatus, true)
+					if mainHasAltOnline then
+						charEntry.text = charEntry.text .. ' (A)'
+					end
+				end
 			end
 
 			tInsert(treeTable, charEntry)
