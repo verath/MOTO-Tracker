@@ -231,44 +231,6 @@ local function drawMainTreeArea( treeContainer, charName )
 		container:AddChild(headerLabel)
 	end
 
-	do -- Actions container (whisper, invite, ...)
-		if A:FindPlayerChar(charData.name, 'online', 1) ~= false then
-			
-			actionsContainer = AceGUI:Create("InlineGroup")
-			actionsContainer:SetLayout("Flow")
-			actionsContainer:SetTitle('')
-			actionsContainer:SetFullWidth(true)
-			container:AddChild(actionsContainer)
-
-			do -- Whisper player (main/alt that is online)
-				local whisperBtn = AceGUI:Create("Button")
-				whisperBtn:SetText(WHISPER .. ' ' .. PLAYER)
-				whisperBtn:SetRelativeWidth(0.33)
-				whisperBtn:SetCallback('OnClick', function(container, event)
-					local whispTo = A:FindPlayerChar(charData.name, 'online', 1)
-					if whispTo then
-						SetItemRef( "player:"..whispTo, ("|Hplayer:%1$s|h[%1$s]|h"):format(whispTo), "LeftButton" )
-					end
-				end)
-				actionsContainer:AddChild(whisperBtn)
-			end
-
-			do -- Invites player (main/alt that is online)
-				local inviteBtn = AceGUI:Create("Button")
-				inviteBtn:SetText(L['Invite'] .. ' ' .. PLAYER)
-				inviteBtn:SetRelativeWidth(0.33)
-				inviteBtn:SetCallback('OnClick', function(container, event)
-					local invWho = A:FindPlayerChar(charData.name, 'online', 1)
-					if invWho then
-						InviteUnit(invWho)
-					end
-				end)
-				actionsContainer:AddChild(inviteBtn)
-			end
-
-		end	
-	end
-
 	do -- General info container
 		generalInfoContainer =  AceGUI:Create("InlineGroup")
 		generalInfoContainer:SetLayout("Flow")
@@ -402,6 +364,43 @@ local function drawMainTreeArea( treeContainer, charName )
 			generalInfoContainer:AddChild(editBox)
 		end
 	end	
+	do -- Actions container (whisper, invite, ...)
+		if A:FindPlayerChar(charData.name, 'online', 1) ~= false then
+			
+			actionsContainer = AceGUI:Create("InlineGroup")
+			actionsContainer:SetLayout("Flow")
+			actionsContainer:SetTitle('')
+			actionsContainer:SetFullWidth(true)
+			container:AddChild(actionsContainer)
+
+			do -- Whisper player (main/alt that is online)
+				local whisperBtn = AceGUI:Create("Button")
+				whisperBtn:SetText(WHISPER .. ' ' .. PLAYER)
+				whisperBtn:SetRelativeWidth(0.5)
+				whisperBtn:SetCallback('OnClick', function(container, event)
+					local whispTo = A:FindPlayerChar(charData.name, 'online', 1)
+					if whispTo then
+						SetItemRef( "player:"..whispTo, ("|Hplayer:%1$s|h[%1$s]|h"):format(whispTo), "LeftButton" )
+					end
+				end)
+				actionsContainer:AddChild(whisperBtn)
+			end
+
+			do -- Invites player (main/alt that is online)
+				local inviteBtn = AceGUI:Create("Button")
+				inviteBtn:SetText(L['Invite'] .. ' ' .. PLAYER)
+				inviteBtn:SetRelativeWidth(0.5)
+				inviteBtn:SetCallback('OnClick', function(container, event)
+					local invWho = A:FindPlayerChar(charData.name, 'online', 1)
+					if invWho then
+						InviteUnit(invWho)
+					end
+				end)
+				actionsContainer:AddChild(inviteBtn)
+			end
+
+		end	
+	end
 end
 
 
