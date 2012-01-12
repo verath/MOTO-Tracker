@@ -91,8 +91,8 @@ if L then
 	L['Refresh'] = true
 	L['Main'] = true
 	L['Alts'] = true
-	L['Currently in'] = true
-	L['Last seen in'] = true
+	L['currently in'] = true
+	L['last seen in'] = true
 	L['Main Spec/Off Spec'] = true
 	L['Share Char'] = true
 	L['Toggle Main Frame'] = true

@@ -184,8 +184,8 @@ local function drawMainTreeArea( treeContainer, charName )
 	
 
 	do -- Header and send player (sync)
-		-- Rank Name (level level) - online/offline (status)
-		local headerText = sFormat('%s %s (%s %d) - %s', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level, formatOnlineStatusText(charData.online, charData.status))
+		-- Rank Name (level level)
+		local headerText = sFormat('%s %s (%s %d)', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level)
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Large)
 		headerLabel:SetText(headerText)
@@ -204,12 +204,12 @@ local function drawMainTreeArea( treeContainer, charName )
 	
 	do -- SubHeader
 		-- Zone info
-		local headerText = ''
+		local headerText = formatOnlineStatusText(charData.online, charData.status)
 		if charData.online then
-			headerText = L['Currently in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			headerText = headerText .. ' - ' .. L['currently in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
 		else
 			local offFor = charData.offlineFor
-			headerText = L['Last seen in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			headerText = headerText .. ' - ' .. L['last seen in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
 			
 			if offFor.years and offFor.years > 0 then
 				headerText = headerText .. ', ' .. offFor.years .. ' ' .. (offFor.years>1 and L['years'] or L['year']) .. ' ' .. L['ago']
@@ -237,6 +237,39 @@ local function drawMainTreeArea( treeContainer, charName )
 		generalInfoContainer:SetTitle('')
 		generalInfoContainer:SetFullWidth(true)
 		container:AddChild(generalInfoContainer)
+
+		do -- Whisper/inv buttons
+			local label = AceGUI:Create("Label")
+			label:SetText('Actions' .. ':')
+			label:SetRelativeWidth(0.3)
+			generalInfoContainer:AddChild(label)
+
+			do -- Whisper player (main/alt that is online)
+				local whisperBtn = AceGUI:Create("Button")
+				whisperBtn:SetText(WHISPER .. ' ' .. PLAYER)
+				whisperBtn:SetRelativeWidth(0.35)
+				whisperBtn:SetCallback('OnClick', function(container, event)
+					local whispTo = A:FindPlayerChar(charData.name, 'online', 1)
+					if whispTo then
+						SetItemRef( "player:"..whispTo, ("|Hplayer:%1$s|h[%1$s]|h"):format(whispTo), "LeftButton" )
+					end
+				end)
+				generalInfoContainer:AddChild(whisperBtn)
+			end
+
+			do -- Invites player (main/alt that is online)
+				local inviteBtn = AceGUI:Create("Button")
+				inviteBtn:SetText(L['Invite'] .. ' ' .. PLAYER)
+				inviteBtn:SetRelativeWidth(0.35)
+				inviteBtn:SetCallback('OnClick', function(container, event)
+					local invWho = A:FindPlayerChar(charData.name, 'online', 1)
+					if invWho then
+						InviteUnit(invWho)
+					end
+				end)
+				generalInfoContainer:AddChild(inviteBtn)
+			end
+		end
 
 		do -- Main or alt editbox
 			-- If char doesn't have any alts, only then can a main be choosen.
@@ -364,43 +397,9 @@ local function drawMainTreeArea( treeContainer, charName )
 			generalInfoContainer:AddChild(editBox)
 		end
 	end	
-	do -- Actions container (whisper, invite, ...)
-		if A:FindPlayerChar(charData.name, 'online', 1) ~= false then
-			
-			actionsContainer = AceGUI:Create("InlineGroup")
-			actionsContainer:SetLayout("Flow")
-			actionsContainer:SetTitle('')
-			actionsContainer:SetFullWidth(true)
-			container:AddChild(actionsContainer)
 
-			do -- Whisper player (main/alt that is online)
-				local whisperBtn = AceGUI:Create("Button")
-				whisperBtn:SetText(WHISPER .. ' ' .. PLAYER)
-				whisperBtn:SetRelativeWidth(0.5)
-				whisperBtn:SetCallback('OnClick', function(container, event)
-					local whispTo = A:FindPlayerChar(charData.name, 'online', 1)
-					if whispTo then
-						SetItemRef( "player:"..whispTo, ("|Hplayer:%1$s|h[%1$s]|h"):format(whispTo), "LeftButton" )
-					end
-				end)
-				actionsContainer:AddChild(whisperBtn)
-			end
-
-			do -- Invites player (main/alt that is online)
-				local inviteBtn = AceGUI:Create("Button")
-				inviteBtn:SetText(L['Invite'] .. ' ' .. PLAYER)
-				inviteBtn:SetRelativeWidth(0.5)
-				inviteBtn:SetCallback('OnClick', function(container, event)
-					local invWho = A:FindPlayerChar(charData.name, 'online', 1)
-					if invWho then
-						InviteUnit(invWho)
-					end
-				end)
-				actionsContainer:AddChild(inviteBtn)
-			end
-
-		end	
-	end
+	-- Refresh the scrollFrame after all childs are loaded
+	container:DoLayout()
 end
 
 
