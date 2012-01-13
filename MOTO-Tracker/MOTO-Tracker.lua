@@ -102,6 +102,38 @@ function A:ChangeCharMain( charName, newMainName )
 	return newMainName
 end
 
+-- Sets/Changes the main of a player
+function A:SetMainChar( charName ) 
+	local charData = self.db.global.guilds[I.guildName].chars[charName]
+
+	-- If the character is main or doesn't exist, stop
+	if charData.name == '' or charData.main == nil then return end
+
+	-- Get current main/alts
+	local oldMain = self.db.global.guilds[I.guildName].chars[charData.main]
+	local oldAlts = oldMain.alts
+	
+	local newAlts = {}
+	local i = 1
+	while oldAlts and oldAlts[i] do
+		if ( oldAlts[i] ~= charName ) then
+			-- Set the new main
+			self.db.global.guilds[I.guildName].chars[oldAlts[i]].main = charName
+			tInsert(newAlts, oldAlts[i])
+		end
+		i = i+1
+	end
+
+	-- Unset oldMain's alt table and add oldMain to alt table
+	tInsert(newAlts, oldMain.name)
+	oldMain.alts = nil
+	oldMain.main = charName
+
+	-- Set new mains alt table and unset its main value
+	charData.alts = newAlts
+	charData.main = nil
+end
+
 -- Finds a char by a player (Main + alts) by looking for a specified value
 function A:FindPlayerChar( charName, key, value )
 	local charData = self.db.global.guilds[I.guildName].chars[charName]
