@@ -240,7 +240,7 @@ local function drawMainTreeArea( treeContainer, charName )
 
 		do -- Whisper/inv buttons
 			local label = AceGUI:Create("Label")
-			label:SetText('Actions' .. ':')
+			label:SetText(L['Player actions'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
 
@@ -395,6 +395,27 @@ local function drawMainTreeArea( treeContainer, charName )
 					charData.privateNote = val
 				end)
 			generalInfoContainer:AddChild(editBox)
+		end
+
+		do -- Char actions (make main)
+			if charData.main ~= nil then 
+				local label = AceGUI:Create("Label")
+				label:SetText(L['Roster actions'] .. ':')
+				label:SetRelativeWidth(0.3)
+				generalInfoContainer:AddChild(label)
+
+				
+				do -- Make main button
+					local makeMainBtn = AceGUI:Create("Button")
+					makeMainBtn:SetText(L['Make Main'])
+					makeMainBtn:SetRelativeWidth(0.35)
+					makeMainBtn:SetCallback('OnClick', function(container, event)
+						A:SetMainChar( charName ) 
+						A.GUI.tabs.rosterInfo:GenerateTreeStructure()
+					end)
+					generalInfoContainer:AddChild(makeMainBtn)
+				end
+			end
 		end
 	end	
 
