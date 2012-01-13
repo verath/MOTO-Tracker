@@ -144,7 +144,7 @@ function handleAutoCompleteEditText( c, e, value, charName, charMainName )
 		local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
 		
 		if aCResult ~= value then -- We found a match
-			local newMainName = A:ChangeMain(charName, aCResult) -- Change main to value
+			local newMainName = A:ChangeCharMain(charName, aCResult) -- Change main to value
 			c:SetText(newMainName)
 			c:ClearFocus()
 			A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
@@ -284,7 +284,7 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetMaxLetters(12)
 				editBox:SetRelativeWidth(0.7)
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
-					A:ChangeMain(charData.name, value) -- Change main to value
+					A:ChangeCharMain(charData.name, value) -- Change main to value
 					c:SetText(charData.main)
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)

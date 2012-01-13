@@ -206,11 +206,11 @@ function A:OnCommCharReceived(prefix, message, distribution, sender)
 		if data.alts then
 			for _,alt in ipairs(data.alts) do
 				-- Set each alt to the char
-				A:ChangeMain(alt, charName)
+				A:ChangeCharMain(alt, charName)
 			end
 		elseif data.main then
 			-- If char received is an alt
-			A:ChangeMain(charName, data.main)	
+			A:ChangeCharMain(charName, data.main)	
 		end
 
 		-- Remove from our data table
