@@ -19,6 +19,7 @@ local updateRosterTimer
 A.GUI = { 
 	tabs = {
 		rosterInfo = {},
+		eventsInfo = {},
 	}, 
 	mainFrame = nil,
 }

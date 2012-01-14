@@ -10,7 +10,7 @@ local treeGroupFrame
 local eventsInfoDB = {}
 
 
-function A.GUI.tabs.events:DrawTab(container)
+function A.GUI.tabs.eventsInfo:DrawTab(container)
 	eventsInfoDB = A.db.global.core.GUI.eventsInfo
 
 	do -- Setup the tree element
@@ -18,6 +18,7 @@ function A.GUI.tabs.events:DrawTab(container)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
 		treeG:EnableButtonTooltips(false)
+		treeG:SetTree({})
 		treeGroupFrame = treeG
 	end
 

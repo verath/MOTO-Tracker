@@ -539,6 +539,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
 		treeG:EnableButtonTooltips(false)
+		treeG:SetTree({})
 		treeGroupFrame = treeG
 	end
 	
