@@ -535,12 +535,13 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	searchString = ''
 
 	do -- Setup the tree element
-		treeG = AceGUI:Create("TreeGroup")
+		local treeG = AceGUI:Create("TreeGroup")
 		treeG:SetFullWidth(true)
 		treeG:SetFullHeight(true)
 		treeG:EnableButtonTooltips(false)
+		treeGroupFrame = treeG
 	end
-	treeGroupFrame = treeG
+	
 
 	do -- Search EditBox
 		local searchTextbox = AceGUI:Create("EditBox")

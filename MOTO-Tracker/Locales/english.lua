@@ -110,6 +110,7 @@ if L then
 	L['Player actions'] = true
 	L['Roster actions'] = true
 	L['Make Main'] = true
+	L['Events'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true

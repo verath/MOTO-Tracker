@@ -29,6 +29,8 @@ function SelectGroup(container, event, group)
 	shownTab = group
 	if group == 'rosterInfo' then
 		A.GUI.tabs.rosterInfo:DrawTab( container )
+	elseif group == 'eventsInfo' then
+		A.GUI.tabs.eventsInfo:DrawTab( container )
 	end
 end
 
@@ -104,7 +106,8 @@ function A.GUI:CreateMainFrame()
 	local tab = AceGUI:Create("TabGroup")
 	tab:SetLayout("Flow")
 	tab:SetTabs({
-		{text=L['Roster Info'], value="rosterInfo"}, 
+		{text=L['Roster Info'], value="rosterInfo"},
+		{text=L['Events'], value='eventsInfo'} 
 	})
 	tab:SetCallback("OnGroupSelected", SelectGroup)
 	tab:SelectTab("rosterInfo")
