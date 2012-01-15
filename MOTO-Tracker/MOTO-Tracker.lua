@@ -142,7 +142,7 @@ function A:FindPlayerChar( charName, key, value )
 	-- Get the main
 	if charData.main ~= nil then
 		charData = A.db.global.guilds[I.guildName].chars[charData.main]
-		if charData[key] and charData[key] then return charData.name end
+		if charData[key] and charData[key] == value then return charData.name end
 	end
 
 	if charData.alts == nil then return false end
