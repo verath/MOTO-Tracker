@@ -160,9 +160,10 @@ end
 
 -- Returns the char with the highest value for key among main/alts of player
 -- The value in key must be compareable
-function A:GetPlayerCharsByValue( charName, key )
+function A:GetPlayerCharByCompareValue( charName, key, invert )
 	local highestValue = 0
 	local highestName = ''
+	local invert = invert and true or false
 	
 	-- Get the main
 	local charData = self.db.global.guilds[I.guildName].chars[charName]
