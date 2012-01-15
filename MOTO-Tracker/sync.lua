@@ -174,8 +174,8 @@ local function charSharedWithMe( charName, sharedBy )
 	if not syncSettings.enabled then return end
 	if syncSettings.onlyHighOrSameRank == true then 
 		local lowestRank = GuildControlGetNumRanks()
-		local _,senderRank = GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
-		local _,myRank = GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
+		local _,senderRank = A:GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
+		local _,myRank = A:GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
 
 		if senderRank < myRank then return end
 	end
