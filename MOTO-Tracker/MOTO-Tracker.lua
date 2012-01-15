@@ -160,8 +160,8 @@ end
 
 -- Returns the char with the highest value for key among main/alts of player
 -- The value in key must be compareable
-function A:GetPlayerCharByCompareValue( charName, key, invert )
-	local highestValue = 0
+function A:GetPlayerCharByCompareValue( charName, key, lowestValue, invert )
+	local highestValue = lowestValue or 0
 	local highestName = ''
 	local invert = invert and true or false
 	
@@ -172,9 +172,11 @@ function A:GetPlayerCharByCompareValue( charName, key, invert )
 	end
 
 	-- Test the main
-	if charData[key] and charData[key] > highestValue then 
-		highestValue = charData[key]
-		highestName	= charData.name
+	if charData[key] then
+		if (not invert and charData[key] > highestValue) or (invert and charData[key] < highestValue) then 
+			highestValue = charData[key]
+			highestName	= charData.name
+		end
 	end
 	
 	if charData.alts == nil then
@@ -185,9 +187,11 @@ function A:GetPlayerCharByCompareValue( charName, key, invert )
 	local i = 1
 	while charData.alts[i] do
 		local alt = self.db.global.guilds[I.guildName].chars[charData.alts[i]]
-		if alt[key] and alt[key] > highestValue then 
-			highestValue = alt[key]
-			highestName	= alt.name
+		if alt[key] then
+			if (not invert and alt[key] > highestValue) or (invert and alt[key] < highestValue) then
+				highestValue = alt[key]
+				highestName	= alt.name
+			end
 		end
 		i = i+1
 	end
