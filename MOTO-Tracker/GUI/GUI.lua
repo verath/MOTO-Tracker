@@ -94,9 +94,16 @@ function A.GUI:CreateMainFrame()
 	self.mainFrame = AceGUI:Create("Frame")
 	local f = self.mainFrame
 	
+	-- If there is a new update available
+	local canUpdate, newVersion = A:CheckVersion()
+
 	-- Main frame settings
 	f:Hide()
-	f:SetTitle( format(L['MOTO Tracker, version: %s'], I.versionName) )
+	if canUpdate and newVersion then
+		f:SetTitle( format(L['MOTO Tracker, version: %s'], I.versionName) .. ' ' .. GREEN_FONT_COLOR_CODE .. L['(Update Available!)'] .. FONT_COLOR_CODE_CLOSE )
+	else
+		f:SetTitle( format(L['MOTO Tracker, version: %s'], I.versionName) )
+	end
 	f:SetLayout("Fill")
 	f:SetCallback("OnClose", function() A.GUI:HideMainFrame() end)
 

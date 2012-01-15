@@ -18,10 +18,39 @@ local tRemove = table.remove
 local tInsert = table.insert
 local sSub = string.sub
 local sUpper = string.upper
+local sSplit = strsplit
+local tonumber = tonumber
 
 --###################################
 --	Helper Functions
 --###################################
+
+-- Parses a version string (major.minor.build-status)
+local function parseVersionString( versionString )
+	local versionString = versionString or I.versionName
+
+	local major, minor, buildStatus = sSplit('.', versionString)
+	local build, status = sSplit('-', buildStatus)
+
+	major, minor, build = tonumber(major), tonumber(minor), tonumber(build)
+
+	if status == 'release' or status == 'stable' then
+		status = 3
+	elseif status == 'beta' or status == 'b' then
+		status = 2
+	elseif status == 'alpha' or status == 'a' then
+		status = 1
+	else
+		status = -1
+	end
+
+	return {
+		major = major,
+		minor = minor,
+		build = build,
+		status = status,
+	}
+end
 
 -- Checks local guild DB against roster and
 -- removes members no longer in the guild
@@ -56,6 +85,43 @@ end
 function A:SetupDB()
 	self:SetupDefaults()
 	self.db = LibStub("AceDB-3.0"):New("MOTOTrackerDB", A.defaults, true)
+end
+
+-- Checks if we have a new version, or if version is provided
+-- compares it to our version and sets the new version flag
+function A:CheckVersion(version)
+	local version = version or self.db.global.core.newestVersion
+	if version == nil then return false end
+	
+	local localVersion = parseVersionString()
+	local newVersion = parseVersionString(version)
+
+	-- Release, Beta, Alpha
+	if newVersion.status < localVersion.status then return false end
+
+	-- MAJOR.minor.build
+	if localVersion.major < newVersion.major then 
+		self.db.global.core.newestVersion = version
+		return true, version 
+	elseif localVersion.major > newVersion.major then
+		return false
+	end
+
+	-- major.MINOR.build
+	if localVersion.minor < newVersion.minor then
+		self.db.global.core.newestVersion = version
+		return true, version
+	elseif localVersion.minor > newVersion.minor then
+		return false
+	end
+
+	-- major.minor.BUILD
+	if localVersion.build < newVersion.build then
+		self.db.global.core.newestVersion = version
+		return true, version
+	elseif localVersion.build > newVersion.build then
+		return false
+	end 
 end
 
 -- Removes an alt/main relationship

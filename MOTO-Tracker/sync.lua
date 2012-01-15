@@ -255,6 +255,11 @@ function A:OnCommReceived( prefix, message, distribution, sender )
 				sendSharedCharTo( sender )
 			end
 		end
+	elseif prefix == 'MOTOTInfo' then
+		if #message > 8 and sSub(message, 1, 8) == 'Version|' then 
+			-- Update string sent from someone in guild
+			A:CheckVersion( sSub(message, 9) )
+		end
 	end
 end
 
@@ -265,6 +270,10 @@ end
 function A.sync:SetupSync()
 	syncSettings = A.db.global.settings.sync
 	A:RegisterComm('MOTOTChar', 'OnCommReceived')
+	A:RegisterComm('MOTOTInfo', 'OnCommReceived')
 	A:RegisterComm('MOTOTCharData', 'OnCommCharReceived')
+
+	-- Send our version to the guild
+	A:SendCommMessage('MOTOTInfo', 'Version|' .. I.versionName, 'GUILD', '', 'NORMAL')
 end
 

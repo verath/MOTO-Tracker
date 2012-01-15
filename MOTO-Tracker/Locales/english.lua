@@ -73,6 +73,7 @@ if L then
 	L['High'] = true
 	L['Low'] = true
 	L['MOTO Tracker, version: %s'] = true
+	L['(Update Available!)'] = true
 	L['Members'] = true
 	L['<Not in a guild>'] = true
 	L['Roster Info'] = true

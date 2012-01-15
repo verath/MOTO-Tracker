@@ -6,6 +6,7 @@ function A:SetupDefaults()
 		-- Global Data. All characters on the same account share this database.
 		global = {
 			core = {
+				newestVersion = nil,
 				GUI = {
 					rosterInfo = {
 						showAlts = true,
