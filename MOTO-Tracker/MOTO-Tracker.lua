@@ -158,6 +158,43 @@ function A:FindPlayerChar( charName, key, value )
 	return false
 end
 
+-- Returns the char with the highest value for key among main/alts of player
+-- The value in key must be compareable
+function A:GetPlayerCharsByValue( charName, key )
+	local highestValue = 0
+	local highestName = ''
+	
+	-- Get the main
+	local charData = self.db.global.guilds[I.guildName].chars[charName]
+	if charData.main ~= nil then
+		charData = A.db.global.guilds[I.guildName].chars[charData.main]
+	end
+
+	-- Test the main
+	if charData[key] and charData[key] > highestValue then 
+		highestValue = charData[key]
+		highestName	= charData.name
+	end
+	
+	if charData.alts == nil then
+		return highestName, highestValue
+	end
+
+	-- Go trough alts
+	local i = 1
+	while charData.alts[i] do
+		local alt = self.db.global.guilds[I.guildName].chars[charData.alts[i]]
+		if alt[key] and alt[key] > highestValue then 
+			highestValue = alt[key]
+			highestName	= alt.name
+		end
+		i = i+1
+	end
+	
+
+	return highestName, highestValue
+end
+
 -- Updates/Adds guild memeber to our db
 function A:UpdateGuildMemeberFromRoster( index )
 	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
