@@ -172,6 +172,13 @@ end
 -- Someone is sharing a char, ask user if we want it
 local function charSharedWithMe( charName, sharedBy )
 	if not syncSettings.enabled then return end
+	if syncSettings.onlyHighOrSameRank == true then 
+		local lowestRank = GuildControlGetNumRanks()
+		local _,senderRank = GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
+		local _,myRank = GetPlayerCharByCompareValue(charName, 'guildIndex', lowestRank, true )
+
+		if senderRank < myRank then return end
+	end
 
 	confirmReceiveChar( charName, sharedBy, function() requestSharedChar(charName, sharedBy) end)
 end

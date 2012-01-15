@@ -57,6 +57,7 @@ function A:SetupDefaults()
 				sync = {
 					enabled = true,
 					onlyWhenFrame = true,
+					onlyHighOrSameRank = true,
 				},
 				general = {
 					updateOwnSpec = true,

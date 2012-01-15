@@ -76,13 +76,22 @@ function A:SetupOptions()
 					SyncEnabled = {
 						order = 1,
 						type = 'toggle',
+						width = 'full',
 						name = L['Enabled'],
 						desc = L['Enable or disable syncing.'],
 						get = function(info) return A.db.global.settings.sync.enabled end,
 						set = function(info, value) A.db.global.settings.sync.enabled = value end,
 					},
+					SyncOnlyHighOrSameRank = {
+						order = 2,
+						type = 'toggle',
+						name = L['Only my rank or higher'],
+						desc = L['Only receive data from players with the same or higher guild rank.'],
+						get = function(info) return A.db.global.settings.sync.onlyHighOrSameRank end,
+						set = function(info, value) A.db.global.settings.sync.onlyHighOrSameRank = value end,
+					},
 					SyncOnlyWhenFrame = {
-						order = 1,
+						order = 5,
 						type = 'toggle',
 						name = L['Only receive when open'],
 						desc = L['Only show popoups about sharing if the addon frame is opened.'],

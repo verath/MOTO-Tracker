@@ -53,7 +53,8 @@ if L then
 	L['Only show popoups about sharing if the addon frame is opened.'] = true
 	L['Use auto-complete'] = true
 	L['Use auto-complete for a few fields in the addon (mostly when entering character names).'] = true
-
+	L['Only my rank or higher'] = true
+	L['Only receive data from players with the same or higher guild rank.'] = true
 	
 	-- Core
 	L['MOTO Tracker'] = true
