@@ -175,8 +175,8 @@ end
 -- unformats dps, 1k -> 1000
 local function unformatDPS( dpsStr )
 	dpsStr = sUpper(dpsStr)
-	if sFind(dpsStr, "k") ~= nil then
-		local dps = tonumber( sSub(dpsStr, 1, sFind(dpsStr, "k")-1) )
+	if sFind(dpsStr, "K") ~= nil then
+		local dps = tonumber( sSub(dpsStr, 1, sFind(dpsStr, "K")-1) )
 		return dps and dps*1000 or 0
 	else
 		return tonumber(dpsStr)
