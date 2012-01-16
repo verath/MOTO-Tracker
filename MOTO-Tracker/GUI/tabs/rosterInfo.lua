@@ -13,6 +13,9 @@ local sLower = string.lower
 local sFind = string.find
 local sSub = string.sub
 local sFormat = string.format
+local tonumber = tonumber
+local floor = math.floor
+local sSplit = strsplit
 
 local rosterInfoDB = {}
 local searchString = ''
@@ -152,8 +155,32 @@ function handleAutoCompleteEditText( c, e, value, charName, charMainName )
 		
 		c:SetUserData('isAutoCompleting', false)
 	end
+end
 
-	
+local function round(num, idp)
+	local mult = 10^(idp or 0)
+	return floor(num * mult + 0.5) / mult
+end
+
+-- formats dps, 1000+ into k
+local function formatDPS( number )
+	if type(number) ~= "number" then return 0 end
+	if number > 1000 then
+		return "" .. round(number/1000, 1) .. "k"
+	else
+		return "" .. number
+	end
+end
+
+-- unformats dps, 1k -> 1000
+local function unformatDPS( dpsStr )
+	dpsStr = sUpper(dpsStr)
+	if sFind(dpsStr, "k") ~= nil then
+		local dps = tonumber( sSub(dpsStr, 1, sFind(dpsStr, "k")-1) )
+		return dps and dps*1000 or 0
+	else
+		return tonumber(dpsStr)
+	end
 end
 
 --###################################
@@ -340,6 +367,43 @@ local function drawMainTreeArea( treeContainer, charName )
 				charData.offSpec = val
 			end)
 			generalInfoContainer:AddChild(offSpec)
+		end
+
+		do -- DPS for main/offspec
+			local label = AceGUI:Create("Label")
+			label:SetText(L['Main Spec/Off Spec DPS'] .. ':')
+			label:SetRelativeWidth(0.3)
+			generalInfoContainer:AddChild(label)
+
+			local class = sUpper(charData.class)
+			local charMSVal = sUpper(charData.mainSpec)
+			local charOSVal = sUpper(charData.offSpec)
+			local charMSRole = charMSVal ~= "NONE" and I.classSpecs[class][charMSVal].role or nil
+			local charOSRole = charOSVal ~= "NONE" and I.classSpecs[class][charOSVal].role or nil
+
+
+			local MSEditBox = AceGUI:Create("EditBox")
+			MSEditBox:SetText( (not charMSRole or charMSRole == "HEALER") and "---" or formatDPS(charData.mainSpecDPS) )
+			MSEditBox:SetDisabled( (not charMSRole or charMSRole == "HEALER") )
+			MSEditBox:SetRelativeWidth(0.35)
+			MSEditBox:SetCallback("OnEnterPressed", function(container, event, val)
+				val = unformatDPS( val )
+				charData.mainSpecDPS = val
+				MSEditBox:SetText( formatDPS(val) )
+			end)
+			generalInfoContainer:AddChild(MSEditBox)
+
+			local OSEditBox = AceGUI:Create("EditBox")
+			OSEditBox:SetText( (not charOSRole or charOSRole == "HEALER") and "---" or formatDPS(charData.offSpecDPS) )
+			OSEditBox:SetDisabled( (not charOSRole or charOSRole == "HEALER") )
+			OSEditBox:SetRelativeWidth(0.35)
+			OSEditBox:SetCallback("OnEnterPressed", function(container, event, val)
+				val = unformatDPS( val )
+				charData.offSpecDPS = val
+				OSEditBox:SetText( formatDPS(val) )
+			end)
+			generalInfoContainer:AddChild(OSEditBox)
+
 		end
 
 		do -- Guild Note

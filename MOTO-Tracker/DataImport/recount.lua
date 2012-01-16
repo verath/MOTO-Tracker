@@ -21,8 +21,7 @@ end
 -- Returns a list of name: dps.
 function A.DataImport.recount.GetSelectedSetDPS()
 	if self:IsEnabled() == false then return nil end
+	return nil
+	--local fetchDPS = Recount.MainWindowData[ Recount:GetModeIndex("DPS") ][2]
 
-	local fetchDPS = Recount.MainWindowData[ Recount:GetModeIndex("DPS") ][2]
-
-	
 end

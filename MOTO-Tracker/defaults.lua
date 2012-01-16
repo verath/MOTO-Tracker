@@ -29,6 +29,8 @@ function A:SetupDefaults()
 							main = nil,
 							mainSpec = 'NONE',
 							offSpec = 'NONE',
+							mainSpecDPS = 0,
+							offSpecDPS = 0,
 							rank = '',
 							rankIndex = -1,
 							level = -1,
