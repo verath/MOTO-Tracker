@@ -18,4 +18,11 @@ function A.DataImport.recount:IsEnabled()
 	end 
 end
 
+-- Returns a list of name: dps.
+function A.DataImport.recount.GetSelectedSetDPS()
+	if self:IsEnabled() == false then return nil end
 
+	local fetchDPS = Recount.MainWindowData[ Recount:GetModeIndex("DPS") ][2]
+
+	
+end
