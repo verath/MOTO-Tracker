@@ -23,27 +23,26 @@ end
 
 -- Returns a list of name: dps. Calculated pretty
 -- much the same as in the damage module for Skada
-function A.DataImport.skada:GetSelectedSetDPS( window )
+function A.DataImport.skada:GetDPSForPlayer( playerName )
 	if not self:IsEnabled() then return nil end
 
-	local window = window or 1
+	local window = 1 -- Might have to add an option to choose here
 	if not Skada:GetWindows()[window] then return nil end
 
 	local set = Skada:GetWindows()[window]:get_selected_set()
 	if not set then return nil end
 	
-	local playersDPS = {}
+	local playersDPS = nil
 	for i, player in ipairs(set.players) do
-		if player.damage > 0 then
-			local totaltime = Skada:PlayerActiveTime(set, player)
-			local dps = player.damage / math.max(1, totaltime)
-			playersDPS[player.name] = dps
+		if player.name == playerName then
+			if player.damage > 0 then
+				local totaltime = Skada:PlayerActiveTime(set, player)
+				local dps = player.damage / math.max(1, totaltime)
+				playersDPS = dps
+			end
+			break
 		end
 	end
 
-	if #playersDPS >= 1 then 
-		return playersDPS 
-	else 
-		return nil
-	end
+	return playerDPS
 end
