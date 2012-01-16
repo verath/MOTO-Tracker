@@ -461,24 +461,59 @@ local function drawMainTreeArea( treeContainer, charName )
 			generalInfoContainer:AddChild(editBox)
 		end
 
-		do -- Char actions (make main)
-			if charData.main ~= nil then 
+		do -- Make main button
+			if charData.main ~= nil then -- Make main (only if char is an alr)
 				local label = AceGUI:Create("Label")
 				label:SetText(L['Roster actions'] .. ':')
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
-
 				
-				do -- Make main button
-					local makeMainBtn = AceGUI:Create("Button")
-					makeMainBtn:SetText(L['Make Main'])
-					makeMainBtn:SetRelativeWidth(0.35)
-					makeMainBtn:SetCallback('OnClick', function(container, event)
-						A:SetMainChar( charName ) 
-						A.GUI.tabs.rosterInfo:GenerateTreeStructure()
-					end)
-					generalInfoContainer:AddChild(makeMainBtn)
-				end
+				local makeMainBtn = AceGUI:Create("Button")
+				makeMainBtn:SetText(L['Make Main'])
+				makeMainBtn:SetRelativeWidth(0.35)
+				makeMainBtn:SetCallback('OnClick', function(container, event)
+					A:SetMainChar( charName )
+					drawMainTreeArea( treeContainer, charName )
+					A.GUI.tabs.rosterInfo:GenerateTreeStructure()
+				end)
+				generalInfoContainer:AddChild(makeMainBtn)
+
+				local placeholder = AceGUI:Create("Label")
+				placeholder:SetRelativeWidth(0.35)
+				generalInfoContainer:AddChild(placeholder)
+			end
+		end
+
+		do -- Import DPS from a damage tracking mod
+			if A.DataImport.skada:IsEnabled() then
+				local label = AceGUI:Create("Label")
+				label:SetText(L['DPS from current Skada view'] .. ':')
+				label:SetRelativeWidth(0.3)
+				generalInfoContainer:AddChild(label)
+
+				local skadaImportMSBtn = AceGUI:Create("Button")
+				skadaImportMSBtn:SetText(L['Import As MS'])
+				skadaImportMSBtn:SetRelativeWidth(0.35)
+				skadaImportMSBtn:SetCallback('OnClick', function(container, event)
+					local skadaDPS = A.DataImport.skada:GetDPSForPlayer( charData.name )
+					if skadaDPS then 
+						charData.mainSpecDPS = skadaDPS
+						drawMainTreeArea( treeContainer, charName )
+					end
+				end)
+				generalInfoContainer:AddChild(skadaImportMSBtn)
+
+				local skadaImportMSBtn = AceGUI:Create("Button")
+				skadaImportMSBtn:SetText(L['Import As OS'])
+				skadaImportMSBtn:SetRelativeWidth(0.35)
+				skadaImportMSBtn:SetCallback('OnClick', function(container, event)
+					local skadaDPS = A.DataImport.skada:GetDPSForPlayer( charData.name )
+					if skadaDPS then 
+						charData.offSpecDPS = skadaDPS
+						drawMainTreeArea( treeContainer, charName )
+					end
+				end)
+				generalInfoContainer:AddChild(skadaImportMSBtn)
 			end
 		end
 	end	

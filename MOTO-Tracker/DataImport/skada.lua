@@ -11,6 +11,7 @@ A.DataImport.skada = {}
 
 -- Local versions is faster
 tInsert = table.insert
+local sUpper = string.upper
 
 -- Do we have skada
 function A.DataImport.skada:IsEnabled()
@@ -32,13 +33,13 @@ function A.DataImport.skada:GetDPSForPlayer( playerName )
 	local set = Skada:GetWindows()[window]:get_selected_set()
 	if not set then return nil end
 	
-	local playersDPS = nil
+	local playerDPS = nil
 	for i, player in ipairs(set.players) do
-		if player.name == playerName then
+		if sUpper(player.name) == sUpper(playerName) then
 			if player.damage > 0 then
 				local totaltime = Skada:PlayerActiveTime(set, player)
 				local dps = player.damage / math.max(1, totaltime)
-				playersDPS = dps
+				playerDPS = dps
 			end
 			break
 		end

@@ -114,6 +114,9 @@ if L then
 	L['Make Main'] = true
 	L['Events'] = true
 	L['Main Spec/Off Spec DPS'] = true
+	L['DPS from current Skada view'] = true
+	L['Import As MS'] = true
+	L['Import As OS'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true
