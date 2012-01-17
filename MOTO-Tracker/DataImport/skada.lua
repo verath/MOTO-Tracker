@@ -36,7 +36,7 @@ function A.DataImport.skada:GetDPSForPlayer( playerName )
 	local playerDPS = nil
 	for i, player in ipairs(set.players) do
 		if sUpper(player.name) == sUpper(playerName) then
-			if player.damage > 0 then
+			if player.damage and player.damage > 0 then
 				local totaltime = Skada:PlayerActiveTime(set, player)
 				local dps = player.damage / math.max(1, totaltime)
 				playerDPS = dps
