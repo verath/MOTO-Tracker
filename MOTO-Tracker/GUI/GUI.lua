@@ -37,6 +37,23 @@ end
 
 -- Releases our frame back to the Ace GUI and unsets our reference to it
 function A.GUI:HideMainFrame()
+	-- Save pos/width/height for next time we open the frame
+	if self.mainFrame then
+		local point, relativeTo, relativePoint, xOfs, yOfs = self.mainFrame.frame:GetPoint()
+		local width = self.mainFrame.frame:GetWidth()
+		local height = self.mainFrame.frame:GetHeight()
+
+		A.db.char.GUI.savedMainFramePos = {
+			point = point,
+			relativeTo = relativeTo,
+			relativePoint = relativePoint,
+			xOfs = xOfs,
+			yOfs = yOfs,
+			width = width,
+			height = height		
+		}
+	end
+
 	A.GUI.mainFrame:Release()
 	A.GUI.mainFrame = nil
 end
@@ -50,6 +67,14 @@ function A.GUI:ShowMainFrame()
 	-- recreate it every time.
 	self:CreateMainFrame()
 	self.mainFrame:Show()
+
+	-- Load position from db
+	if A.db.char.GUI.savedMainFramePos then
+		local s = A.db.char.GUI.savedMainFramePos
+		self.mainFrame.frame:SetWidth( s.width )
+		self.mainFrame.frame:SetHeight(s.height )
+		self.mainFrame.frame:SetPoint( s.point, s.relativeTo, s.relativePoint, s.xOfs, s.yOfs );
+	end
 	
 	-- Update GuildRoster as soon as we can (min time now, max in 10 sec)
 	GuildRoster()
@@ -101,7 +126,7 @@ function A.GUI:CreateMainFrame()
 		CloseSpecialWindows = function()
 			local found = old_CloseSpecialWindows()
 			if f then
-				f:Hide()
+				A.GUI:HideMainFrame()
 				return true
 			end
 			return found

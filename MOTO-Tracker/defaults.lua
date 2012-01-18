@@ -74,6 +74,9 @@ function A:SetupDefaults()
 			settings = {
 				loadMessage = true,
 			},
+			GUI = {
+				savedMainFramePos = nil
+			}
 		},
 	}
 
