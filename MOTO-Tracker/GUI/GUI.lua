@@ -89,10 +89,25 @@ local function setMainFrameStatusBar()
 	end
 end
 
+local old_CloseSpecialWindows
 -- Creates the main frame, tabs, and other elements needed for it.
 function A.GUI:CreateMainFrame()
 	self.mainFrame = AceGUI:Create("Frame")
 	local f = self.mainFrame
+
+	-- Close frame on escape
+	if not old_CloseSpecialWindows then
+		old_CloseSpecialWindows = CloseSpecialWindows
+		CloseSpecialWindows = function()
+			local found = old_CloseSpecialWindows()
+			if f then
+				f:Hide()
+				return true
+			end
+			return found
+		end
+	end
+
 	
 	-- If there is a new update available
 	local canUpdate, newVersion = A:CheckVersion()
