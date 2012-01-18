@@ -101,6 +101,22 @@ function A:SetupOptions()
 				},
 				order = 21,
 			},
+			
+			LayoutSettings = {
+				name = L['Layout Settings'],
+				type = "group",
+				inline = true,
+				args = {
+					RestoreFrame = {
+						order = 3,
+						type = 'execute',
+						name = L['Reset Frame'],
+						desc = L['Resets the position and size of the main frame.'],
+						func = function() A.GUI:HideMainFrame(); A.db.char.GUI.savedMainFramePos = nil end,
+					},
+				},
+				order = 25,
+			}
 
 			--[[CharSpecific = {
 				name = L["Character Specific Settings"],

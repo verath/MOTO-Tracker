@@ -55,6 +55,9 @@ if L then
 	L['Use auto-complete for a few fields in the addon (mostly when entering character names).'] = true
 	L['Only my rank or higher'] = true
 	L['Only receive data from players with the same or higher guild rank.'] = true
+	L['Layout Settings'] = true
+	L['Reset Frame'] = true
+	L['Resets the position and size of the main frame.'] = true
 	
 	-- Core
 	L['MOTO Tracker'] = true

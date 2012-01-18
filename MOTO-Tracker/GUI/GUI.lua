@@ -52,10 +52,10 @@ function A.GUI:HideMainFrame()
 			width = width,
 			height = height		
 		}
-	end
 
-	A.GUI.mainFrame:Release()
-	A.GUI.mainFrame = nil
+		A.GUI.mainFrame:Release()
+		A.GUI.mainFrame = nil
+	end
 end
 
 -- Shows and creates the main frame.
@@ -71,6 +71,7 @@ function A.GUI:ShowMainFrame()
 	-- Load position from db
 	if A.db.char.GUI.savedMainFramePos then
 		local s = A.db.char.GUI.savedMainFramePos
+		self.mainFrame.frame:ClearAllPoints()
 		self.mainFrame.frame:SetWidth( s.width )
 		self.mainFrame.frame:SetHeight(s.height )
 		self.mainFrame.frame:SetPoint( s.point, s.relativeTo, s.relativePoint, s.xOfs, s.yOfs );
