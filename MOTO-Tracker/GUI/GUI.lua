@@ -125,7 +125,7 @@ function A.GUI:CreateMainFrame()
 		old_CloseSpecialWindows = CloseSpecialWindows
 		CloseSpecialWindows = function()
 			local found = old_CloseSpecialWindows()
-			if f then
+			if A.GUI.mainFrame then
 				A.GUI:HideMainFrame()
 				return true
 			end
