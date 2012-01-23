@@ -128,7 +128,7 @@ function A.sync:SendChar( charName )
 
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	-- TODO: Ask user for what to send
-	local keysToSend = {'name', 'alts', 'main', 'mainSpec', 'offSpec'}
+	local keysToSend = {'name', 'alts', 'main', 'mainSpec', 'offSpec', 'mainSpecDPS', 'offSpecDPS'}
 
 	local dataToSend = {}
 	for _, key in ipairs(keysToSend) do
