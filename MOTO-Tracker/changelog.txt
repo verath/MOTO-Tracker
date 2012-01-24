@@ -1,0 +1,34 @@
+1.0.10-beta
+* DPS data is now also shared with the characters
+
+1.0.9-beta
+* Moving some things around in the player info area
+* Addon frame is now closed on escape
+* Size and position of addon frame is saved
+* Added an option to reset the frame position in the options panel
+
+1.0.8-beta
+* Added a DPS field to the player info area
+* Added import DPS from Skada
+
+1.0.7-beta
+* Update checking with guild memebers
+
+1.0.6-beta
+* Bugfix
+
+1.0.5-beta
+* Bugfixes
+* Added option to sync only from higher or same ranked members
+
+1.0.4-beta
+* Added a button to set an alt as main
+
+1.0.3-beta
+* Sub-header of the player info area now displays where and when char was last online
+* Added buttons for whispering and inviting a player (main or alt)
+* Added "(A)" to the list of players for players that are online on an alt
+
+1.0.2-beta
+* Code changes
+
