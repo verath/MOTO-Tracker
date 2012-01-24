@@ -63,7 +63,7 @@ function A:OnCommReceived( prefix, message, distribution, sender )
 	
 	if prefix == 'MOTOTChar' then
 		A.sync.char:HandleCommChar( message, distribution, sender )	
-	elseif prefix =='MOTOCharData' then
+	elseif prefix =='MOTOTCharData' then
 		A.sync.char:HandleCommCharData( message, distribution, sender )	
 	elseif prefix == 'MOTOTInfo' then
 		if #message > 8 and sSub(message, 1, 8) == 'Version|' then 
