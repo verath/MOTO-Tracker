@@ -224,7 +224,7 @@ local function drawMainTreeArea( treeContainer, charName )
 		sendBtn:SetDisabled( not A.db.global.settings.sync.enabled )
 		sendBtn:SetRelativeWidth(0.3)
 		sendBtn:SetCallback('OnClick', function(container, event)
-			A.sync:SendChar(charData.name)
+			A.sync.char:SendChar(charData.name)
 		end)
 		container:AddChild(sendBtn)
 	end
@@ -524,6 +524,9 @@ end
 
 -- Generates the tree element, alts under mains + sorting.
 function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
+	-- Only if our frame is open
+	if A.GUI.mainFrame == nil then return end
+
 	local isSearching = (searchString ~= '') and true or false
 	searchString = isSearching and sUpper(searchString) or ''
 
@@ -624,6 +627,9 @@ end
 
 -- Draw the tab
 function A.GUI.tabs.rosterInfo:DrawTab(container)
+	-- Only if our frame is open
+	if A.GUI.mainFrame == nil then return end
+
 	rosterInfoDB = A.db.global.core.GUI.rosterInfo
 
 	searchString = ''
