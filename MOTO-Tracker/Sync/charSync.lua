@@ -94,6 +94,7 @@ end
 
 -- Called when user clicks the share button in the ui.
 function A.sync.char:SendChar( charName )
+	local syncSettings = A.db.global.settings.sync
 	if not syncSettings.enabled then return end
 
 	if isSharingChar then
@@ -154,6 +155,7 @@ end
 
 -- Someone is sharing a char, ask user if we want it
 local function charSharedWithMe( charName, sharedBy )
+	local syncSettings = A.db.global.settings.sync
 	if not syncSettings.enabled then return end
 	
 	if syncSettings.onlyHighOrSameRank == true then 
