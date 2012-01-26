@@ -38,7 +38,7 @@ do -- Popups
 		timeout = 20,
 		whileDead = true,
 		hideOnEscape = true,
-		preferredIndex = 3,
+		preferredIndex = 4,
 	}
 
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Sharing'] = {
@@ -47,7 +47,7 @@ do -- Popups
 		timeout = 20,
 		whileDead = true,
 		hideOnEscape = true,
-		preferredIndex = 3,
+		preferredIndex = 5,
 	}
 end
 
