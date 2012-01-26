@@ -21,7 +21,7 @@ local stopSharingTimer
 
 do -- Popups
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Confirm_Receive'] = {
-		text = L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'],
+		text = L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'],
 		button1 = YES,
 		button2 = NO,
 		OnAccept = function() end,
@@ -79,8 +79,7 @@ local function confirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	
 	StaticPopup_Show('MOTOTracker_Sync_Char_Confirm_Receive', 
 		colorCode(sentBy, "lightyellow"), 
-		colorCode(charName, "green"), 
-		colorCode(charName, "green") )
+		colorCode(charName, "green"))
 end
 
 

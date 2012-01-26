@@ -122,7 +122,7 @@ if L then
 	L['Import As OS'] = true
 
 	-- Sync
-	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'] = true
+	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'] = true
 	L['Already sharing a character!|n|nPlease wait at least 20 seconds after sending a character before sending another one.'] = true
 	L['Sharing %s for 20 seconds.'] = true
 	L['Sent data for %s to %s.'] = true
