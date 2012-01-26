@@ -21,7 +21,7 @@ local stopSharingTimer
 
 do -- Popups
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Confirm_Receive'] = {
-		text = '',
+		text = L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'],
 		button1 = YES,
 		button2 = NO,
 		OnAccept = function() end,
@@ -43,7 +43,7 @@ do -- Popups
 
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Sharing'] = {
 		button1 = CANCEL,
-		text = '',
+		text = L['Sharing %s for 20 seconds.'],
 		timeout = 20,
 		whileDead = true,
 		hideOnEscape = true,
@@ -56,6 +56,16 @@ end
 --   Helper Functions
 --###################################
 
+local function colorCode(str, color)
+	if color == "green" then
+		return GREEN_FONT_COLOR_CODE .. str .. FONT_COLOR_CODE_CLOSE
+	elseif color == "lightyellow" then
+		return LIGHTYELLOW_FONT_COLOR_CODE .. str .. FONT_COLOR_CODE_CLOSE
+	end
+
+	return str
+end
+
 -- Asks user for confirmation for reccieving a char from another player
 local function confirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 	-- If user only want to sync when frame is open
@@ -63,14 +73,14 @@ local function confirmReceiveChar( charName, sentBy, OnAccept, OnCancel )
 		OnCancel(); 
 		return 
 	end
-
-	-- Color codeing
-	StaticPopupDialogs['MOTOTracker_Sync_Char_Confirm_Receive'].text = format( L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for %s)?'],  LIGHTYELLOW_FONT_COLOR_CODE .. sentBy .. FONT_COLOR_CODE_CLOSE, GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE, GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE)
 	
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Confirm_Receive'].OnAccept = OnAccept
 	StaticPopupDialogs['MOTOTracker_Sync_Char_Confirm_Receive'].OnCancel = OnCancel
 	
-	StaticPopup_Show('MOTOTracker_Sync_Char_Confirm_Receive')
+	StaticPopup_Show('MOTOTracker_Sync_Char_Confirm_Receive', 
+		colorCode(sentBy, "lightyellow"), 
+		colorCode(charName, "green"), 
+		colorCode(charName, "green") )
 end
 
 
@@ -106,10 +116,9 @@ function A.sync.char:SendChar( charName )
 
 	do -- Display info pop-up while we are sharing.
 		StaticPopup_Hide('MOTOTracker_Sync_Char_Sharing')
-		StaticPopupDialogs['MOTOTracker_Sync_Char_Sharing'].text = format(L['Sharing %s for 20 seconds.'], GREEN_FONT_COLOR_CODE .. charName .. FONT_COLOR_CODE_CLOSE)
 		-- OnAccept is on button one, and we only have one button.
 		StaticPopupDialogs['MOTOTracker_Sync_Char_Sharing'].OnAccept = function() A.sync.char:StopSharingChar() end
-		StaticPopup_Show('MOTOTracker_Sync_Char_Sharing')
+		StaticPopup_Show('MOTOTracker_Sync_Char_Sharing', colorCode(charName, "green"))
 	end
 
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
