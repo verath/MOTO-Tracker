@@ -2,7 +2,7 @@
 ## Title: MOTO Tracker
 ## Notes: Utilities for Malice of the One guild.
 ## Author: Peter Eliasson (Verath)
-## Version: 1.0.13-beta
+## Version: @project-version@
 ## SavedVariables: MOTOTrackerDB
 embeds.xml
 Locales\english.lua
