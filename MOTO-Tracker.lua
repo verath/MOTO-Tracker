@@ -7,6 +7,9 @@ MOTOTracker = {
 	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
 	info = { -- Static global values
 		versionName =  GetAddOnMetadata("MOTO-Tracker", "Version"),
+		--@debug@
+		versionName = '0.0.0-dev',
+		--@end-debug@
 		addonName = 'MOTOTracker',
 	}
 }
@@ -27,9 +30,6 @@ local tonumber = tonumber
 
 -- Parses a version string (major.minor.build-status)
 local function parseVersionString( versionString )
-	--@debug@
-	versionString = versionString or '0.0.0-dev'
-	--@end-debug@
 	local versionString = versionString or I.versionName
 
 	local major, minor, buildStatus = sSplit('.', versionString)
