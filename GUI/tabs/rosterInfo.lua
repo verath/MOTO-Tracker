@@ -69,7 +69,8 @@ local function altsToString( altList, highlightOnline )
 	local s = ''
 	for _,v in ipairs(sortedAlts) do
 		if A.db.global.guilds[I.guildName].chars[v].online and highlightOnline then
-			if A.db.global.guilds[I.guildName].chars[v].status ~= '' then
+			if A.db.global.guilds[I.guildName].chars[v].status > 0 then
+				-- AFK or DND
 				v = LIGHTYELLOW_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
 			else
 				v = GREEN_FONT_COLOR_CODE .. v .. FONT_COLOR_CODE_CLOSE
@@ -94,11 +95,12 @@ local function formatOnlineStatusText( online, status, shortStatus )
 	if online then
 		str = GREEN_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
 		
-		if status and status ~= '' then
+		if status > 0 then
+			local statusStr = status == 1 and L['Away'] or L['DND']
 			if shortStatus then -- Just change color of online
 				str = LIGHTYELLOW_FONT_COLOR_CODE..L['Online']..FONT_COLOR_CODE_CLOSE
 			else -- Add status after online
-				str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. status .. FONT_COLOR_CODE_CLOSE .. ')'
+				str = str .. ' (' .. LIGHTYELLOW_FONT_COLOR_CODE .. statusStr .. FONT_COLOR_CODE_CLOSE .. ')'
 			end
 		end
 	else

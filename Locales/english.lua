@@ -120,6 +120,8 @@ if L then
 	L['DPS from current Skada view'] = true
 	L['Import As MS'] = true
 	L['Import As OS'] = true
+	L['Away'] = true
+	L['DND'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'] = true

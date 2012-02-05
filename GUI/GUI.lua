@@ -101,7 +101,7 @@ local function setMainFrameStatusBar()
 		for i = 1, numMembers do
 			local _, _, _, _, _, _, _, _, online, status = GetGuildRosterInfo(i)
 			if online then 
-				if status == '<Away>' then 
+				if status == 1 then 
 					numAfk = numAfk+1 
 				else
 					numOnline = numOnline+1
