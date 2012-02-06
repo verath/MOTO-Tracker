@@ -138,7 +138,7 @@ if L then
 	L['The officer note for the character.'] = true
 	L['Your own note for the character. This is note never shared.'] = true
 	L['Action that alters the addon\'s guild roster database.']= true
-	L[' * Make Main - Sets the selected character as the player\'s main character'] = true
+	L[' * Make Main - Sets the selected character as the player\'s main character.'] = true
 
 
 	-- Sync
