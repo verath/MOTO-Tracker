@@ -155,13 +155,15 @@ end
 -- Sets/updates a character's main and that main's alt table
 function A:ChangeCharMain( charName, newMainName )
 	local charData = self.db.global.guilds[I.guildName].chars[charName]
-	-- Remove alt from old main and main from alt
-	self:RemoveAltFromMain(charData.name, charData.main)
 
 	-- Validate new main
 	local newMain = self.db.global.guilds[I.guildName].chars[newMainName]
+	if charName == newMainName then return '' end
 	if newMain.name == '' then return '' end
 	if newMain.main ~= nil then return '' end
+
+	-- Remove alt from old main and main from alt
+	self:RemoveAltFromMain(charData.name, charData.main)
 	
 	-- Set new main-alt data
 	charData.main = newMainName
