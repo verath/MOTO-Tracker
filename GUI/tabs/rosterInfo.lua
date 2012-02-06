@@ -445,13 +445,13 @@ local function drawMainTreeArea( treeContainer, charName )
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
 
-			local editBox = AceGUI:Create("MultiLineEditBox")
+			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.privateNote)
-			editBox:SetNumLines(4)
+			--editBox:SetNumLines(3)
 			editBox:SetMaxLetters(300)
 			editBox:SetRelativeWidth(0.7)
-			editBox:DisableButton(true)
-			editBox:SetLabel('')
+			--editBox:DisableButton(true)
+			--editBox:SetLabel('')
 			editBox:SetCallback("OnTextChanged", function(container, event, val)
 					charData.privateNote = val
 				end)
@@ -480,7 +480,7 @@ local function drawMainTreeArea( treeContainer, charName )
 				generalInfoContainer:AddChild(placeholder)
 			end
 		end
-		
+
 	end	
 
 	-- Refresh the scrollFrame after all childs are loaded
