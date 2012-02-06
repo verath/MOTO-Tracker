@@ -11,5 +11,5 @@ staticValues.lua
 defaults.lua
 options.lua
 Sync\loadSync.xml
-DataImport\loadDataImport.xml
+# DataImport\loadDataImport.xml
 GUI\loadGUI.xml
