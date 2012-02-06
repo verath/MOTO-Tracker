@@ -14,6 +14,7 @@ local date = date
 -- Local vars
 local shownTab = nil
 local updateRosterTimer
+local showTooltipTimer
 
 -- Setup GUI part of the addon var
 A.GUI = { 
@@ -35,21 +36,21 @@ function SelectGroup(container, event, group)
 	end
 end
 
-
-function A.GUI:ShowTooltip( text, color )
+-- Local function to show the tooltip, displayed after delay
+local function displayTooltip(text, color)
 	local frame = A.GUI.mainFrame.frame
     GameTooltip:SetOwner(frame, "ANCHOR_CURSOR")
     GameTooltip:ClearLines()
 
-    color = color or {r = 0, g = 1, b =0}
+    color = color or {r = 0, g = 1, b = 0}
     
     if type(text) == "string" then
-    	GameTooltip:AddLine(text, color.r, color.g, color.b)
+    	GameTooltip:AddLine(text, color.r, color.g, color.b, 1)
     elseif type(text) == "table" then
     	for _,v in ipairs(text) do
     		local color = v.color or color
     		local text = v.text or v
-    		GameTooltip:AddLine(text, color.r, color.g, color.b)
+    		GameTooltip:AddLine(text, color.r, color.g, color.b, 1)
     	end
     else
     	--@debug@
@@ -61,7 +62,21 @@ function A.GUI:ShowTooltip( text, color )
     GameTooltip:Show()
 end
 
+-- Shows a tooltip with text and color after delay seconds
+function A.GUI:ShowTooltip( text, color, delay )
+	delay = delay or 0.5
+
+	AceTimer:CancelTimer(showTooltipTimer, true)
+	showTooltipTimer = AceTimer:ScheduleTimer(function()
+		displayTooltip(text, color)
+	end, delay)
+
+	
+end
+
+-- Hides our tooltip if we have one
 function A.GUI:HideTooltip()
+	AceTimer:CancelTimer(showTooltipTimer, true)
 	if GameTooltip:IsOwned(A.GUI.mainFrame.frame) then
     	GameTooltip:Hide()
     end

@@ -1,4 +1,10 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("MOTOTracker", "enUS", true)
+local L = LibStub("AceLocale-3.0"):NewLocale(
+	"MOTOTracker", 
+	"enUS"
+	--@debug@
+	,true
+	--@end-debug@
+)
 
 if L then
 	-- Static Values
@@ -122,6 +128,18 @@ if L then
 	L['Import As OS'] = true
 	L['Away'] = true
 	L['DND'] = true
+
+	-- Tooltips
+	L['Name of this character\'s main.'] = true
+	L['The character\'s alts. Edit the alts\' main-value to change this.'] = true
+	L['The character\'s main spec and off spec.'] = true
+	L['The character\'s DPS in main spec and off spec.'] = true
+	L['The guild note for the character.'] = true
+	L['The officer note for the character.'] = true
+	L['Your own note for the character. This is note never shared.'] = true
+	L['Action that alters the addon\'s guild roster database.']= true
+	L[' * Make Main - Sets the selected character as the player\'s main character'] = true
+
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'] = true

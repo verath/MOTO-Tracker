@@ -196,7 +196,7 @@ local function drawMainTreeArea( treeContainer, charName )
 
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
 	local classColor = RAID_CLASS_COLORS[charData.class]
-
+	
 	treeContainer:ReleaseChildren()
 	treeContainer:SetLayout("Fill")
 
@@ -289,7 +289,7 @@ local function drawMainTreeArea( treeContainer, charName )
 	end
 
 	do -- General info container
-		generalInfoContainer =  AceGUI:Create("InlineGroup")
+		generalInfoContainer = AceGUI:Create("InlineGroup")
 		generalInfoContainer:SetLayout("Flow")
 		generalInfoContainer:SetTitle('')
 		generalInfoContainer:SetFullWidth(true)
@@ -298,10 +298,16 @@ local function drawMainTreeArea( treeContainer, charName )
 		do -- Main or alt editbox
 			-- If char doesn't have any alts, only then can a main be choosen.
 			if charData.alts == nil or #charData.alts == 0 then
-				local label = AceGUI:Create("Label")
+				local label = AceGUI:Create("InteractiveLabel")
 				label:SetText(L['Main'] .. ':')
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
+				
+				-- Tooltip
+				label:SetCallback("OnEnter", function()
+					A.GUI:ShowTooltip(L['Name of this character\'s main.']) 
+				end)
+				label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 				local editBox = AceGUI:Create("EditBox")
 				editBox:SetText(charData.main)
@@ -321,10 +327,16 @@ local function drawMainTreeArea( treeContainer, charName )
 				
 				generalInfoContainer:AddChild(editBox)
 			else -- If the char is a main, show alts but don't allow editing.
-				local label = AceGUI:Create("Label")
+				local label = AceGUI:Create("InteractiveLabel")
 				label:SetText(L['Alts'] .. ':')
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
+
+				-- Tooltip
+				label:SetCallback("OnEnter", function()
+					A.GUI:ShowTooltip(L['The character\'s alts. Edit the alts\' main-value to change this.']) 
+				end)
+				label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 				local altsLabel = AceGUI:Create("Label")
 				altsLabel:SetText('  ' .. altsToString(charData.alts, true))
@@ -334,10 +346,16 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- Main/Offspec
-			local label = AceGUI:Create("Label")
+			local label = AceGUI:Create("InteractiveLabel")
 			label:SetText(L['Main Spec/Off Spec'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
+
+			-- Tooltip
+			label:SetCallback("OnEnter", function()
+				A.GUI:ShowTooltip(L['The character\'s main spec and off spec.']) 
+			end)
+			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 			local class = sUpper(charData.class)
 			local charMSVal = sUpper(charData.mainSpec)
@@ -367,10 +385,16 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- DPS for main/offspec
-			local label = AceGUI:Create("Label")
+			local label = AceGUI:Create("InteractiveLabel")
 			label:SetText(L['Main Spec/Off Spec DPS'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
+
+			-- Tooltip
+			label:SetCallback("OnEnter", function()
+				A.GUI:ShowTooltip(L['The character\'s DPS in main spec and off spec.']) 
+			end)
+			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 			local class = sUpper(charData.class)
 			local charMSVal = sUpper(charData.mainSpec)
@@ -404,10 +428,16 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- Guild Note
-			local label = AceGUI:Create("Label")
+			local label = AceGUI:Create("InteractiveLabel")
 			label:SetText(L['Guild Note'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
+
+			-- Tooltip
+			label:SetCallback("OnEnter", function()
+				A.GUI:ShowTooltip(L['The guild note for the character.']) 
+			end)
+			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.note)
@@ -422,10 +452,16 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- Officer Note
-			local label = AceGUI:Create("Label")
+			local label = AceGUI:Create("InteractiveLabel")
 			label:SetText(L['Officer Note'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
+
+			-- Tooltip
+			label:SetCallback("OnEnter", function()
+				A.GUI:ShowTooltip(L['The officer note for the character.']) 
+			end)
+			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.officerNote)
@@ -440,10 +476,17 @@ local function drawMainTreeArea( treeContainer, charName )
 		end
 
 		do -- Private Note
-			local label = AceGUI:Create("Label")
+			local label = AceGUI:Create("InteractiveLabel")
 			label:SetText(L['Private Note'] .. ':')
 			label:SetRelativeWidth(0.3)
 			generalInfoContainer:AddChild(label)
+
+			-- Tooltip
+			label:SetCallback("OnEnter", function()
+				A.GUI:ShowTooltip(L['Your own note for the character. This is note never shared.']) 
+			end)
+			label:SetCallback("OnLeave", A.GUI.HideTooltip)
+
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.privateNote)
@@ -460,10 +503,23 @@ local function drawMainTreeArea( treeContainer, charName )
 
 		do -- Make main button
 			if charData.main ~= nil then -- Make main (only if char is an alr)
-				local label = AceGUI:Create("Label")
+				local label = AceGUI:Create("InteractiveLabel")
 				label:SetText(L['Roster actions'] .. ':')
 				label:SetRelativeWidth(0.3)
 				generalInfoContainer:AddChild(label)
+
+				-- Tooltip
+				label:SetCallback("OnEnter", function()
+					A.GUI:ShowTooltip({
+						L['Action that alters the addon\'s guild roster database.'],
+						{ 
+							text = L[' * Make Main - Sets the selected character as the player\'s main character'],
+							color = {r = 0, g = 0.5, b = 1}
+						}
+					}) 
+				end)
+				label:SetCallback("OnLeave", A.GUI.HideTooltip)
+
 				
 				local makeMainBtn = AceGUI:Create("Button")
 				makeMainBtn:SetText(L['Make Main'])
