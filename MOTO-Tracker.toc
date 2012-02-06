@@ -4,12 +4,22 @@
 ## Author: Peter Eliasson (Verath)
 ## Version: @project-version@
 ## SavedVariables: MOTOTrackerDB
+
+# Libs
 embeds.xml
+
+# Locales
 Locales\english.lua
+
+# Main files
 MOTO-Tracker.lua
 staticValues.lua
 defaults.lua
 options.lua
+
 Sync\loadSync.xml
-# DataImport\loadDataImport.xml
 GUI\loadGUI.xml
+
+#@do-not-package@
+# DataImport\loadDataImport.xml
+#@end-do-not-package@
