@@ -35,6 +35,38 @@ function SelectGroup(container, event, group)
 	end
 end
 
+
+function A.GUI:ShowTooltip( text, color )
+	local frame = A.GUI.mainFrame.frame
+    GameTooltip:SetOwner(frame, "ANCHOR_CURSOR")
+    GameTooltip:ClearLines()
+
+    color = color or {r = 0, g = 1, b =0}
+    
+    if type(text) == "string" then
+    	GameTooltip:AddLine(text, color.r, color.g, color.b)
+    elseif type(text) == "table" then
+    	for _,v in ipairs(text) do
+    		local color = v.color or color
+    		local text = v.text or v
+    		GameTooltip:AddLine(text, color.r, color.g, color.b)
+    	end
+    else
+    	--@debug@
+		error('Invalid argument!')
+		--@end-debug@
+    	return
+    end
+    
+    GameTooltip:Show()
+end
+
+function A.GUI:HideTooltip()
+	if GameTooltip:IsOwned(A.GUI.mainFrame.frame) then
+    	GameTooltip:Hide()
+    end
+end
+
 -- Releases our frame back to the Ace GUI and unsets our reference to it
 function A.GUI:HideMainFrame()
 	-- Save pos/width/height for next time we open the frame
@@ -83,6 +115,7 @@ function A.GUI:ShowMainFrame()
 	updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 10)
 end
 
+-- Toggles the main frame
 function A.GUI:ToggleMainFrame()
 	if self.mainFrame then 
 		self:HideMainFrame()
@@ -166,8 +199,9 @@ function A.GUI:CreateMainFrame()
 
 end
 
+-- Init the UI
 function A.GUI:SetupGUI()
-	-- Set up bindings for toggeling the frame
+	-- Set up key bindings for toggeling the frame
 	BINDING_HEADER_MOTOTracker = L['MOTO Tracker']
 	BINDING_NAME_MOTOTracker_TOGGLE = L['Toggle Main Frame']
 end
