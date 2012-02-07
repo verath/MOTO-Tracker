@@ -313,9 +313,9 @@ local function drawMainTreeArea( treeContainer, charName )
 				editBox:SetCallback("OnEnterPressed", function( c, e, value ) 
 					A:ChangeCharMain(charData.name, value) -- Change main to value
 					c:SetText(charData.main)
+					c:ClearFocus()
 					A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
 				end)
-				editBox:DisableButton( A.db.global.settings.GUI.useAutoComplete )
 				
 				-- AutoComplete
 				editBox:SetUserData('prevText', editBox:GetText())
@@ -487,11 +487,8 @@ local function drawMainTreeArea( treeContainer, charName )
 
 			local editBox = AceGUI:Create("EditBox")
 			editBox:SetText(charData.privateNote)
-			--editBox:SetNumLines(3)
 			editBox:SetMaxLetters(300)
 			editBox:SetRelativeWidth(0.7)
-			--editBox:DisableButton(true)
-			--editBox:SetLabel('')
 			editBox:SetCallback("OnTextChanged", function(container, event, val)
 					charData.privateNote = val
 				end)
@@ -510,7 +507,7 @@ local function drawMainTreeArea( treeContainer, charName )
 					A.GUI:ShowTooltip({
 						L['Action that alters the addon\'s guild roster database.'],
 						{ 
-							text = L[' * Make Main - Sets the selected character as the player\'s main character'],
+							text = L[' * Make Main - Sets the selected character as the player\'s main character.'],
 							color = {r = 0, g = 0.5, b = 1}
 						}
 					}) 
