@@ -7,7 +7,48 @@ local L = LibStub("AceLocale-3.0"):NewLocale(
 )
 
 if L then
-	-- Static Values
+	-- Class Names
+	L['WARRIOR'] = true
+	L['DEATHKNIGHT'] = true
+	L['PALADIN'] = true
+	L['PRIEST'] = true
+	L['SHAMAN'] = true
+	L['DRUID'] = true
+	L['ROGUE'] = true
+	L['MAGE'] = true
+	L['WARLOCK'] = true
+	L['HUNTER'] = true
+	-- Spec names
+	L['FURY'] = true
+	L['ARMS'] = true
+	L['PROTECTION'] = true
+	L['BLOOD'] = true
+	L['FROST'] = true
+	L['UNHOLY'] = true
+	L['HOLY'] = true
+	L['RETRIBUTION'] = true
+	L['SHADOW'] = true
+	L['DISCIPLINE'] = true
+	L['ELEMENTAL'] = true
+	L['ENHANCEMENT'] = true
+	L['RESTORATION'] = true
+	L['BALANCE'] = true
+	L['FERAL COMBAT'] = true
+	L['FERAL CAT'] = true -- Our own
+	L['FERAL BEAR'] = true -- Our own
+	L['COMBAT'] = true
+	L['ASSASSINATION'] = true
+	L['SUBTLETY'] = true
+	L['FIRE'] = true
+	L['FROST'] = true
+	L['ARCANE'] = true
+	L['AFFLICTION'] = true
+	L['DEMONOLOGY'] = true
+	L['DESTRUCTION'] = true
+	L['BEAST MASTERY'] = true
+	L['SURVIVAL'] = true
+	L['MARKSMANSHIP'] = true
+	--
 	L['Fury'] = true
 	L['Arms'] = true
 	L['Protection'] = true

@@ -11,7 +11,7 @@ local tIns = table.insert
 function A:LoadStaticValues()
 	I.hasGuild = IsInGuild()
 	I.charName = select(1, UnitName("player"))
-	I.charClass = select(2, UnitClass("player")); -- Unlocalized
+	I.charClass = L[ select(2, UnitClass("player")) ];
 
 	-- For dropdown lists that sorts roster
 	I.guildSortableBy = {
@@ -28,56 +28,56 @@ function A:LoadStaticValues()
 
 	-- Specs and roles for each class
 	I.classSpecs = {
-		WARRIOR = {
-			FURY = { text = L['Fury'], role = "DAMAGER" }, 
-			ARMS = { text = L['Arms'], role = "DAMAGER" },
-			PROTECTION = { text = L['Protection'], role = "TANK" },
+		[L['WARRIOR']] = {
+			[L['FURY']] = { text = L['Fury'], role = "DAMAGER" }, 
+			[L['ARMS']] = { text = L['Arms'], role = "DAMAGER" },
+			[L['PROTECTION']] = { text = L['Protection'], role = "TANK" },
 		}, 
-		DEATHKNIGHT = { 
-			BLOOD = { text = L['Blood'], role = "TANK" },
-			FROST = { text = L['Frost'], role = "DAMAGER" },
-			UNHOLY = { text = L['Unholy'], role = "DAMAGER" }, 
+		[L['DEATHKNIGHT']] = { 
+			[L['BLOOD']] = { text = L['Blood'], role = "TANK" },
+			[L['FROST']] = { text = L['Frost'], role = "DAMAGER" },
+			[L['UNHOLY']] = { text = L['Unholy'], role = "DAMAGER" }, 
 		},
-		PALADIN = { 
-			HOLY = { text = L['Holy'], role = "HEALER" },
-			RETRIBUTION = { text = L['Retribution'], role = "DAMAGER" },
-			PROTECTION = { text = L['Protection'], role = "TANK" },
+		[L['PALADIN']] = { 
+			[L['HOLY']] = { text = L['Holy'], role = "HEALER" },
+			[L['RETRIBUTION']] = { text = L['Retribution'], role = "DAMAGER" },
+			[L['PROTECTION']] = { text = L['Protection'], role = "TANK" },
 		},
-		PRIEST = {
-			HOLY = { text = L['Holy'], role = "HEALER" },
-			SHADOW = { text = L['Shadow'], role = "DAMAGER" },
-			DISCIPLINE = { text = L['Discipline'], role = "HEALER" },
+		[L['PRIEST']] = {
+			[L['HOLY']] = { text = L['Holy'], role = "HEALER" },
+			[L['SHADOW']] = { text = L['Shadow'], role = "DAMAGER" },
+			[L['DISCIPLINE']] = { text = L['Discipline'], role = "HEALER" },
 		},
-		SHAMAN = { 
-			ELEMENTAL = { text = L['Elemental'], role = "DAMAGER" },
-			ENHANCEMENT = { text = L['Enhancement'], role = "DAMAGER" },
-			RESTORATION = { text = L['Restoration'], role = "HEALER" },
+		[L['SHAMAN']] = { 
+			[L['ELEMENTAL']] = { text = L['Elemental'], role = "DAMAGER" },
+			[L['ENHANCEMENT']] = { text = L['Enhancement'], role = "DAMAGER" },
+			[L['RESTORATION']] = { text = L['Restoration'], role = "HEALER" },
 		},
-		DRUID = { 
-			RESTORATION = { text = L['Restoration'], role = "HEALER" },
-			BALANCE = { text = L['Balance'], role = "DAMAGER" },
-			FERAL_CAT = { text = L['Feral (Cat)'], role = "DAMAGER" },
-			FERAL_BEAR = { text = L['Feral (Bear)'], role = "TANK" },
+		[L['DRUID']] = { 
+			[L['RESTORATION']] = { text = L['Restoration'], role = "HEALER" },
+			[L['BALANCE']] = { text = L['Balance'], role = "DAMAGER" },
+			[L['FERAL CAT']] = { text = L['Feral (Cat)'], role = "DAMAGER" },
+			[L['FERAL BEAR']] = { text = L['Feral (Bear)'], role = "TANK" },
 		},
-		ROGUE = { 
-			COMBAT = { text = L['Combat'], role = "DAMAGER" },
-			ASSASSINATION = { text = L['Assassination'], role = "DAMAGER" },
-			SUBTLETY = { text = L['Subtlety'], role = "DAMAGER" }, 
+		[L['ROGUE']] = { 
+			[L['COMBAT']] = { text = L['Combat'], role = "DAMAGER" },
+			[L['ASSASSINATION']] = { text = L['Assassination'], role = "DAMAGER" },
+			[L['SUBTLETY']] = { text = L['Subtlety'], role = "DAMAGER" }, 
 		},
-		MAGE = {
-			FIRE = { text = L['Fire'], role = "DAMAGER" },
-			FROST = { text = L['Frost'], role = "DAMAGER" },
-			ARCANE = { text = L['Arcane'], role = "DAMAGER" },
+		[L['MAGE']] = {
+			[L['FIRE']] = { text = L['Fire'], role = "DAMAGER" },
+			[L['FROST']] = { text = L['Frost'], role = "DAMAGER" },
+			[L['ARCANE']] = { text = L['Arcane'], role = "DAMAGER" },
 		},
-		WARLOCK = {
-			AFFLICTION = { text = L['Affliction'], role = "DAMAGER" },
-			DEMONOLOGY = { text = L['Demonology'], role = "DAMAGER" },
-			DESTRUCTION = { text = L['Destruction'], role = "DAMAGER" },
+		[L['WARLOCK']] = {
+			[L['AFFLICTION']] = { text = L['Affliction'], role = "DAMAGER" },
+			[L['DEMONOLOGY']] = { text = L['Demonology'], role = "DAMAGER" },
+			[L['DESTRUCTION']] = { text = L['Destruction'], role = "DAMAGER" },
 		},
-		HUNTER = {
-			BEAST_MASTERY = { text = L['Beast Mastery'], role = "DAMAGER" }, 
-			SURVIVAL = { text = L['Survival'], role = "DAMAGER" },
-			MARKSMANSHIP = { text = L['Marksmanship'], role = "DAMAGER" }, 
+		[L['HUNTER']] = {
+			[L['BEAST MASTERY']] = { text = L['Beast Mastery'], role = "DAMAGER" }, 
+			[L['SURVIVAL']] = { text = L['Survival'], role = "DAMAGER" },
+			[L['MARKSMANSHIP']] = { text = L['Marksmanship'], role = "DAMAGER" }, 
 		},
 	}
 

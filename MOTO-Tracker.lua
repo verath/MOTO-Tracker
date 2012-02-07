@@ -309,15 +309,27 @@ end
 -- Returns the name of the talent tree in group 
 -- (primary/secondary spec) with most points
 function A:GetTalentSpecForGroup( talentGroup, inspect )
+	inspect = inspect or false
 	if GetNumTalentGroups(inspect, false) < talentGroup then return nil end
 	
 	local mostPoints, spec = 0, nil
 	for i = 1, GetNumTalentTabs(inspect, false) do
 		local pointSpent = select(5, GetTalentTabInfo(i, inspect, false, talentGroup)) 
-		local tabName = select(2, GetTalentTabInfo(i, inspect, false, talentGroup)) -- TODO: Localize
+		local tabName = select(2, GetTalentTabInfo(i, inspect, false, talentGroup))
 		if pointSpent and pointSpent > mostPoints then 
-			spec = sUpper(tabName)
+			spec = L[sUpper(tabName)]
 			mostPoints = pointSpent
+		end
+	end
+
+	-- Druids are annoying. :)
+	if spec == L["FERAL COMBAT"] then
+		-- Pulverize should mean we have a bear, else cat
+		local _, _, _, _, currentRank = GetTalentInfo(2, 21, inspect);
+		if currentRank > 0 then
+			spec = L['FERAL BEAR']
+		else
+			spec = L['FERAL CAT']
 		end
 	end
 
