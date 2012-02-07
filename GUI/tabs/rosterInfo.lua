@@ -133,8 +133,8 @@ local function autoCompleteCharData( str, targetAttr, strModFunc )
 	return str
 end
 
--- Handles autocompletion for EditTexts
-function handleAutoCompleteEditText( c, e, value, charName, charMainName )
+-- Handles autocompletion for Main input EditText
+function handleAutoCompleteEditText( c, e, value )
 	local useAutoComplete = A.db.global.settings.GUI.useAutoComplete
 	local prevText = c:GetUserData('prevText')
 
@@ -149,10 +149,7 @@ function handleAutoCompleteEditText( c, e, value, charName, charMainName )
 		local aCResult = autoCompleteCharData(value, 'name', wordCapitalize)
 		
 		if aCResult ~= value then -- We found a match
-			local newMainName = A:ChangeCharMain(charName, aCResult) -- Change main to value
-			c:SetText(newMainName)
-			c:ClearFocus()
-			A.GUI.tabs.rosterInfo:GenerateTreeStructure() -- Update tree
+			c:SetText(aCResult)
 		end
 		
 		c:SetUserData('isAutoCompleting', false)
@@ -323,7 +320,7 @@ local function drawMainTreeArea( treeContainer, charName )
 				-- AutoComplete
 				editBox:SetUserData('prevText', editBox:GetText())
 				editBox:SetUserData('isAutoCompleting', false)
-				editBox:SetCallback("OnTextChanged", function(c, e, value) handleAutoCompleteEditText(c, e, value, charData.name, charData.main) end )
+				editBox:SetCallback("OnTextChanged", handleAutoCompleteEditText )
 				
 				generalInfoContainer:AddChild(editBox)
 			else -- If the char is a main, show alts but don't allow editing.
