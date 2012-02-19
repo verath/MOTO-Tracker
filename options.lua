@@ -112,7 +112,7 @@ function A:SetupOptions()
 						type = 'execute',
 						name = L['Reset Frame'],
 						desc = L['Resets the position and size of the main frame.'],
-						func = function() A.GUI:HideMainFrame(); A.db.char.GUI.savedMainFramePos = nil end,
+						func = function() A.GUI:HideMainFrame(); A.db.char.GUI.savedMainFramePos = nil; A:Print(L['Frame position reset.']) end,
 					},
 				},
 				order = 25,

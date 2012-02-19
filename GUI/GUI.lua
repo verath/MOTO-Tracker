@@ -162,7 +162,7 @@ end
 
 -- Updates/Sets the status bar of our main frame
 local function updateMainFrameStatusBar()
-	if I.hasGuild and I.numGuildMemebers then
+	if I.hasGuild and I.numGuildMembers then
 		A.GUI.mainFrame:SetStatusText(I.guildName .. ' - ' .. I.numGuildMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. I.numGuildOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 	else
 		A.GUI.mainFrame:SetStatusText(L['<Not in a guild>'])

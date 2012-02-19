@@ -105,6 +105,7 @@ if L then
 	L['Layout Settings'] = true
 	L['Reset Frame'] = true
 	L['Resets the position and size of the main frame.'] = true
+	L['Frame position reset.'] = true
 	
 	-- Core
 	L['MOTO Tracker'] = true
