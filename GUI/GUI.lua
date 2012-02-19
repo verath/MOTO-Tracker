@@ -142,7 +142,7 @@ end
 
 -- Updates the afk and online numbers
 local function updateAFKOnline()
-	if not hasGuild then return end
+	if not I.hasGuild then return end
 	
 	I.numGuildMembers = GetNumGuildMembers()
 	I.numGuildAFK, I.numGuildOnline = 0, 0
@@ -245,9 +245,6 @@ function A.GUI:OnRosterUpdate( event, arg1, ... )
 		
 		-- Make sure we do update it at least every minute if our window is open
 		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 60)
-
-		-- We know we have no changes, no point in updating
-		if event == 'GUILD_ROSTER_UPDATE' and arg1 == nil then return end
 
 		-- Update num afk/online memebers
 		updateAFKOnline()

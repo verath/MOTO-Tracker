@@ -430,8 +430,7 @@ function A:OnGuildRosterUpdate( event, arg1, ... )
 		removeNoLongerGuildMemebers()
 	end
 
-	-- Arg1: is 1 if something changed
-	if event == 'GUILD_ROSTER_UPDATE' and arg1 ~= nil then
+	if event == 'GUILD_ROSTER_UPDATE' then
 		A:UpdateGuildRoster()
 	end
 
