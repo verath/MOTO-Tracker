@@ -21,7 +21,8 @@ A.GUI = {
 	tabs = {
 		rosterInfo = {},
 		eventsInfo = {},
-	}, 
+	},
+	LDB = {},
 	mainFrame = nil,
 }
 
@@ -139,25 +140,30 @@ function A.GUI:ToggleMainFrame()
 	end
 end
 
--- Updates/Sets the status bar of our main frame
-local function setMainFrameStatusBar()
-	if I.hasGuild then
-		local numMembers = GetNumGuildMembers()
-
-		-- Get numOnline and numAfk
-		local numOnline, numAfk = 0, 0
-		for i = 1, numMembers do
-			local _, _, _, _, _, _, _, _, online, status = GetGuildRosterInfo(i)
-			if online then 
-				if status == 1 then 
-					numAfk = numAfk+1 
-				else
-					numOnline = numOnline+1
-				end 
-			end
+-- Updates the afk and online numbers
+local function updateAFKOnline()
+	if not hasGuild then return end
+	
+	I.numGuildMembers = GetNumGuildMembers()
+	I.numGuildAFK, I.numGuildOnline = 0, 0
+	-- Get I.numGuildOnline and I.numGuildAFK
+	for i = 1, I.numGuildMembers do
+		local _, _, _, _, _, _, _, _, online, status = GetGuildRosterInfo(i)
+		if online then 
+			if status == 1 then 
+				I.numGuildAFK = I.numGuildAFK+1 
+			else
+				I.numGuildOnline = I.numGuildOnline+1
+			end 
 		end
+	end
+end
 
-		A.GUI.mainFrame:SetStatusText(I.guildName .. ' - ' .. numMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. numOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. numAfk .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
+
+-- Updates/Sets the status bar of our main frame
+local function updateMainFrameStatusBar()
+	if I.hasGuild and I.numGuildMemebers then
+		A.GUI.mainFrame:SetStatusText(I.guildName .. ' - ' .. I.numGuildMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. I.numGuildOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 	else
 		A.GUI.mainFrame:SetStatusText(L['<Not in a guild>'])
 	end
@@ -196,8 +202,11 @@ function A.GUI:CreateMainFrame()
 	f:SetLayout("Fill")
 	f:SetCallback("OnClose", function() A.GUI:HideMainFrame() end)
 
+	-- Update online/afk numbers before setting status bar
+	updateAFKOnline()
+
 	-- Set the status bar
-	setMainFrameStatusBar()
+	updateMainFrameStatusBar()
 
 	-- Create the TabGroup
 	local tab = AceGUI:Create("TabGroup")
@@ -216,27 +225,42 @@ end
 
 -- Init the UI
 function A.GUI:SetupGUI()
-	-- Set up key bindings for toggeling the frame
+	-- Set up key bindings tooltip for toggeling the frame
 	BINDING_HEADER_MOTOTracker = L['MOTO Tracker']
 	BINDING_NAME_MOTOTracker_TOGGLE = L['Toggle Main Frame']
+
+	-- Set up our LDB feed
+	A.GUI.LDB:SetupLDB()
 end
 
 -- Will get called when an event that could affect 
 -- the roster triggers. Max once every 10 secs.
-function A.GUI:OnRosterUpdate()
+function A.GUI:OnRosterUpdate( event, arg1, ... )
+
 	-- Cancel the timer
 	if updateRosterTimer then AceTimer:CancelTimer(updateRosterTimer, true)	end
 
 	-- Update if our frame is shown
 	if self.mainFrame and self.mainFrame.IsVisible and self.mainFrame:IsVisible() then
-		-- Update status
-		setMainFrameStatusBar()
+		
+		-- Make sure we do update it at least every minute if our window is open
+		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 60)
 
+		-- We know we have no changes, no point in updating
+		if event == 'GUILD_ROSTER_UPDATE' and arg1 == nil then return end
+
+		-- Update num afk/online memebers
+		updateAFKOnline()
+
+		-- Update status
+		updateMainFrameStatusBar()
+
+		-- Update shown tab
 		if shownTab == 'rosterInfo' then
 			A.GUI.tabs.rosterInfo:OnRosterUpdate()
 		end
 
-		-- Make sure we do update it at least every minute if our window is open
-		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 60)
+		-- Update the LDB feed
+
 	end
 end

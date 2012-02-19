@@ -134,5 +134,5 @@ function A:SetupOptions()
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(I.addonName, A.options)
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(I.addonName, A.options)
-	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(I.addonName, L['MOTO Tracker'], nil)
+	A.ConfigFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(I.addonName, L['MOTO Tracker'], nil)
 end

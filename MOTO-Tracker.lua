@@ -416,7 +416,7 @@ end
 
 -- When guild roster is updated
 local firstRosterUpdate = true
-function A:OnGuildRosterUpdate( event,_ )
+function A:OnGuildRosterUpdate( event, arg1, ... )
 	if not I.hasGuild then return end
 	
 	-- Do once update on login
@@ -430,12 +430,13 @@ function A:OnGuildRosterUpdate( event,_ )
 		removeNoLongerGuildMemebers()
 	end
 
-	if event == 'GUILD_ROSTER_UPDATE' then
+	-- Arg1: is 1 if something changed
+	if event == 'GUILD_ROSTER_UPDATE' and arg1 ~= nil then
 		A:UpdateGuildRoster()
 	end
 
 	-- Pass event onto the GUI handler
-	A.GUI:OnRosterUpdate()
+	A.GUI:OnRosterUpdate(event, arg1, ...)
 
 	firstRosterUpdate = false
 
