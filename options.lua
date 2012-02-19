@@ -116,7 +116,7 @@ function A:SetupOptions()
 					},
 				},
 				order = 25,
-			}
+			},
 
 			LDBSettings = {
 				name = L['LDB Settings'],
@@ -124,9 +124,10 @@ function A:SetupOptions()
 				inline = true,
 				args = {
 					LDBExplain = {
-						type = "header",
-						name = L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. ´Make sure you also assign MOTO Tracker a field within your LDB display addon.'],
-						width = "Full",
+						order = 1,
+						type = "description",
+						name = L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. Make sure you also assign MOTO Tracker a field within your LDB display addon.'],
+						width = "full",
 					},
 					FlashLDBText = {
 						order = 3,
@@ -137,8 +138,8 @@ function A:SetupOptions()
 						set = function(info, value) A.db.global.settings.GUI.LDBShowEvents = value end,
 					},
 				},
-				order = 25,
-			}
+				order = 35,
+			},
 
 			--[[CharSpecific = {
 				name = L["Character Specific Settings"],

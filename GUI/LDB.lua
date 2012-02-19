@@ -7,7 +7,7 @@ local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceTimer = LibStub("AceTimer-3.0")
 
 local dataobj
-local flashTimer 
+local flashTimer
 
 
 local function flashLDBText( text )
@@ -43,10 +43,19 @@ function A.GUI.LDB:SetupLDB()
 	end
 
 	function dataobj:OnTooltipShow()
+		GuildRoster()
+		
 		self:AddLine(L['MOTO Tracker'])
 		self:AddLine('-----')
 		self:AddLine(L['Click to open frame.'])
 		self:AddLine(L['Ctrl + click to open options.'])
+
+		if I.numGuildAFK ~= nil and I.numGuildOnline ~= nil and I.numGuildMembers ~= nil then
+			self:AddLine('-----')
+			self:AddLine('<' .. I.guildName .. '>')
+			self:AddLine(I.numGuildMembers .. ' ' .. L['Members'])
+			self:AddLine(GREEN_FONT_COLOR_CODE .. I.numGuildOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
+		end
 	end
 end
 
