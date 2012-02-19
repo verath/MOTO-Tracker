@@ -63,6 +63,7 @@ end
 function A.GUI.LDB:Update( oldOnline, oldAFK, oldMembers, online, AFK, members )
 	if not A.db.global.settings.GUI.LDBShowEvents then return end
 	if oldMembers == nil or oldOnline == nil or oldAFK == nil then return end
+	if oldMembers == 0 then return end
 	
 	oldOnline = oldOnline + oldAFK
 	online = online + AFK

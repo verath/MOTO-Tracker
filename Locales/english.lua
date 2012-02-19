@@ -109,7 +109,7 @@ if L then
 	L['LDB Settings'] = true
 	L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. Make sure you also assign MOTO Tracker a field within your LDB display addon.'] = true
 	L['Display Events'] = true
-	L['Flashes new guild events as the LDB text.'] = true
+	L['Flashes the LDB text when a member event occurs (going online, offline, etc.'] = true
 
 	
 	-- Core

@@ -133,7 +133,7 @@ function A:SetupOptions()
 						order = 3,
 						type = 'toggle',
 						name = L['Display Events'],
-						desc = L['Flashes new guild events as the LDB text.'],
+						desc = L['Flashes the LDB text when a member event occurs (going online, offline, etc.'],
 						get = function(info) return A.db.global.settings.GUI.LDBShowEvents end,
 						set = function(info, value) A.db.global.settings.GUI.LDBShowEvents = value end,
 					},
