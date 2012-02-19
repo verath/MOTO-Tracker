@@ -56,6 +56,7 @@ function A:SetupDefaults()
 			settings = {
 				GUI = {
 					useAutoComplete = true,
+					LDBShowEvents = true,
 				},
 				sync = {
 					enabled = true,

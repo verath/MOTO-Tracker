@@ -106,6 +106,11 @@ if L then
 	L['Reset Frame'] = true
 	L['Resets the position and size of the main frame.'] = true
 	L['Frame position reset.'] = true
+	L['LDB Settings'] = true
+	L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. Make sure you also assign MOTO Tracker a field within your LDB display addon.'] = true
+	L['Display Events'] = true
+	L['Flashes new guild events as the LDB text.'] = true
+
 	
 	-- Core
 	L['MOTO Tracker'] = true
@@ -182,6 +187,12 @@ if L then
 	L['Action that alters the addon\'s guild roster database.']= true
 	L[' * Make Main - Sets the selected character as the player\'s main character.'] = true
 
+	-- LDB
+	L['Member'] = true
+	L['Members'] = true
+	L['Back'] = true
+	L['Click to open frame.'] = true
+	L['Ctrl + click to open options.'] = true
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'] = true

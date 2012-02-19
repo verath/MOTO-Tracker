@@ -118,6 +118,28 @@ function A:SetupOptions()
 				order = 25,
 			}
 
+			LDBSettings = {
+				name = L['LDB Settings'],
+				type = "group",
+				inline = true,
+				args = {
+					LDBExplain = {
+						type = "header",
+						name = L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. ´Make sure you also assign MOTO Tracker a field within your LDB display addon.'],
+						width = "Full",
+					},
+					FlashLDBText = {
+						order = 3,
+						type = 'toggle',
+						name = L['Display Events'],
+						desc = L['Flashes new guild events as the LDB text.'],
+						get = function(info) return A.db.global.settings.GUI.LDBShowEvents end,
+						set = function(info, value) A.db.global.settings.GUI.LDBShowEvents = value end,
+					},
+				},
+				order = 25,
+			}
+
 			--[[CharSpecific = {
 				name = L["Character Specific Settings"],
 				type = "group",

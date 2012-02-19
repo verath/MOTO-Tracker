@@ -236,18 +236,21 @@ end
 -- Will get called when an event that could affect 
 -- the roster triggers. Max once every 10 secs.
 function A.GUI:OnRosterUpdate( event, arg1, ... )
-
 	-- Cancel the timer
 	if updateRosterTimer then AceTimer:CancelTimer(updateRosterTimer, true)	end
 
-	-- Update if our frame is shown
+	-- Update num afk/online memebers
+	local oldNumOnline, oldNumAFK, oldNumMembers = I.numGuildOnline, I.numGuildAFK, I.numGuildMembers
+	updateAFKOnline()
+
+	-- Update the LDB feed
+	self.LDB:Update(oldNumOnline, oldNumAFK, oldNumMembers, I.numGuildOnline, I.numGuildAFK, I.numGuildMembers)
+
+	-- If our frame is shown
 	if self.mainFrame and self.mainFrame.IsVisible and self.mainFrame:IsVisible() then
 		
-		-- Make sure we do update it at least every minute if our window is open
+		-- Make sure we do an update at least every minute if our window is open
 		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 60)
-
-		-- Update num afk/online memebers
-		updateAFKOnline()
 
 		-- Update status
 		updateMainFrameStatusBar()
@@ -256,8 +259,8 @@ function A.GUI:OnRosterUpdate( event, arg1, ... )
 		if shownTab == 'rosterInfo' then
 			A.GUI.tabs.rosterInfo:OnRosterUpdate()
 		end
-
-		-- Update the LDB feed
-
+	else
+		-- Update every 2 min if not shown
+		updateRosterTimer = AceTimer:ScheduleTimer(GuildRoster, 120)
 	end
 end
