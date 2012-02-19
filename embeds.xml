@@ -25,5 +25,8 @@
 	<Include file="Libs\AceSerializer-3.0\AceHook-3.0.xml" />
 
 	<!-- LibCompress, for smaller addon sync messages -->
-	<Include file="Libs\LibCompress.lua" />
+	<Include file="Libs\LibCompress\LibCompress.lua" />
+
+	<!-- LDB -->
+	<Include file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
 </Ui>
