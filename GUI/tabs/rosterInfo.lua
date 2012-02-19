@@ -547,6 +547,9 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	-- Only if our frame is open
 	if A.GUI.mainFrame == nil then return end
 
+	-- And only if we have a guild
+	if not I.hasGuild then return end
+
 	local isSearching = (searchString ~= '') and true or false
 	searchString = isSearching and sUpper(searchString) or ''
 
