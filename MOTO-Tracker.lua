@@ -75,6 +75,19 @@ local function removeNoLongerGuildMemebers()
 
 	for charName,_ in pairs(chars) do
 		if charsInGuild[charName] ~= true then
+			-- If removed char has a main, unset alt data of that main
+			if chars[charName].main ~= nil then
+				A:RemoveAltFromMain( charName, chars[charName].main )
+			end
+
+			-- If char has alts, unset main data for all of them
+			if chars[charName].alts then
+				for i = 1, #chars[charName].alts do
+					A:RemoveAltFromMain( chars[charName].alts[i], charName )
+				end
+			end
+
+			-- Remove the char from the db
 			chars[charName] = nil
 		end
 	end
