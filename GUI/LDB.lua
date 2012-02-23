@@ -9,7 +9,7 @@ local AceTimer = LibStub("AceTimer-3.0")
 local dataobj
 local flashTimer
 
-
+-- flashes the datatext 2 times
 local function flashLDBText( text )
 	if flashTimer then AceTimer:CancelTimer(flashTimer, true) end
 
@@ -54,19 +54,25 @@ function A.GUI.LDB:SetupLDB()
 			self:AddLine('-----')
 			self:AddLine('<' .. I.guildName .. '>')
 			self:AddLine(I.numGuildMembers .. ' ' .. L['Members'])
-			self:AddLine(GREEN_FONT_COLOR_CODE .. I.numGuildOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
+			self:AddLine(GREEN_FONT_COLOR_CODE .. (I.numGuildOnline - I.numGuildAFK) .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 		end
 	end
 end
 
 -- Update our LDB feed
-function A.GUI.LDB:Update( oldOnline, oldAFK, oldMembers, online, AFK, members )
+local members, online, AFK, oldMembers, oldOnline, oldAFK
+function A.GUI.LDB:Update()
 	if not A.db.global.settings.GUI.LDBShowEvents then return end
+
+	-- Guild info not yet available or not in a guild
+	if I.numGuildMembers == 0 then return end
+
+	-- Store old values so we can compare between updates
+	oldMembers, oldOnline, oldAFK = members, online, AFK
+	members, online, AFK = I.numGuildMembers, I.numGuildOnline, I.numGuildAFK
+
+	-- Don't update if we have nothing to compare to
 	if oldMembers == nil or oldOnline == nil or oldAFK == nil then return end
-	if oldMembers == 0 then return end
-	
-	oldOnline = oldOnline + oldAFK
-	online = online + AFK
 	
 	if oldMembers ~= members then
 		if oldMembers > members then

@@ -140,30 +140,10 @@ function A.GUI:ToggleMainFrame()
 	end
 end
 
--- Updates the afk and online numbers
-local function updateAFKOnline()
-	if not I.hasGuild then return end
-	
-	I.numGuildMembers = GetNumGuildMembers()
-	I.numGuildAFK, I.numGuildOnline = 0, 0
-	-- Get I.numGuildOnline and I.numGuildAFK
-	for i = 1, I.numGuildMembers do
-		local _, _, _, _, _, _, _, _, online, status = GetGuildRosterInfo(i)
-		if online then 
-			if status == 1 then 
-				I.numGuildAFK = I.numGuildAFK+1 
-			else
-				I.numGuildOnline = I.numGuildOnline+1
-			end 
-		end
-	end
-end
-
-
 -- Updates/Sets the status bar of our main frame
 local function updateMainFrameStatusBar()
 	if I.hasGuild and I.numGuildMembers then
-		A.GUI.mainFrame:SetStatusText(I.guildName .. ' - ' .. I.numGuildMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. I.numGuildOnline .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
+		A.GUI.mainFrame:SetStatusText(I.guildName .. ' - ' .. I.numGuildMembers .. ' ' .. L['Members'].. ' - ' .. GREEN_FONT_COLOR_CODE .. (I.numGuildOnline - I.numGuildAFK) .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' ' .. LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 	else
 		A.GUI.mainFrame:SetStatusText(L['<Not in a guild>'])
 	end
@@ -202,9 +182,6 @@ function A.GUI:CreateMainFrame()
 	f:SetLayout("Fill")
 	f:SetCallback("OnClose", function() A.GUI:HideMainFrame() end)
 
-	-- Update online/afk numbers before setting status bar
-	updateAFKOnline()
-
 	-- Set the status bar
 	updateMainFrameStatusBar()
 
@@ -239,12 +216,8 @@ function A.GUI:OnRosterUpdate( event, arg1, ... )
 	-- Cancel the timer
 	if updateRosterTimer then AceTimer:CancelTimer(updateRosterTimer, true)	end
 
-	-- Update num afk/online memebers
-	local oldNumOnline, oldNumAFK, oldNumMembers = I.numGuildOnline, I.numGuildAFK, I.numGuildMembers
-	updateAFKOnline()
-
 	-- Update the LDB feed
-	self.LDB:Update(oldNumOnline, oldNumAFK, oldNumMembers, I.numGuildOnline, I.numGuildAFK, I.numGuildMembers)
+	self.LDB:Update()
 
 	-- If our frame is shown
 	if self.mainFrame and self.mainFrame.IsVisible and self.mainFrame:IsVisible() then

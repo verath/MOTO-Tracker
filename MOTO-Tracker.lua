@@ -288,7 +288,6 @@ end
 -- Updates/Adds guild memeber to our db
 function A:UpdateGuildMemeberFromRoster( index )
 	local name, rank, rankIndex, level, _, zone, note, officerNote, online, status, class = GetGuildRosterInfo(index)
-	local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(index);
 	local P = self.db.global.guilds[I.guildName].chars[name]
 
 	if not P then return end
@@ -297,6 +296,7 @@ function A:UpdateGuildMemeberFromRoster( index )
 	P.name, P.rank, P.rankIndex, P.level, P.zone, P.note, P.class, P.guildIndex, P.online, P.status = name, rank, rankIndex, level, zone, note, class, index, online, status
 
 	if not online then
+		local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(index);
 		P.offlineFor = {
 			hours = hoursOffline, 
 			days = daysOffline,
@@ -309,14 +309,21 @@ function A:UpdateGuildMemeberFromRoster( index )
 		P.officerNote = officerNote
 	end
 
+	return name, rank, rankIndex, level, zone, note, class, index, online, status, class
 end
 
--- Updates the entier guild roster (Do not use too much...)
+-- Updates the entier guild roster
 function A:UpdateGuildRoster()
-	local numGuildMembers, _ = GetNumGuildMembers()
+	I.numGuildMembers, I.numGuildOnline = GetNumGuildMembers()
+	I.numGuildAFK = 0
 
-	for i = 1, numGuildMembers do
-		self:UpdateGuildMemeberFromRoster(i)
+	for i = 1, I.numGuildMembers do
+		local status = select( 10, self:UpdateGuildMemeberFromRoster(i) )
+		
+		if status == 1 then
+			I.numGuildAFK = I.numGuildAFK + 1
+		end
+
 	end
 end
 
@@ -443,15 +450,13 @@ function A:OnGuildRosterUpdate( event, arg1, ... )
 		removeNoLongerGuildMemebers()
 	end
 
-	if event == 'GUILD_ROSTER_UPDATE' then
-		A:UpdateGuildRoster()
-	end
+	
+	A:UpdateGuildRoster()
 
 	-- Pass event onto the GUI handler
 	A.GUI:OnRosterUpdate(event, arg1, ...)
 
 	firstRosterUpdate = false
-
 end
 
 function A:OnPlayerTalentUpdate( ... )
