@@ -193,6 +193,13 @@ if L then
 	L['Back'] = true
 	L['Click to open frame.'] = true
 	L['Ctrl + click to open options.'] = true
+	L['Left: '] = true
+	L['Joined: '] = true
+	L['Online: '] = true
+	L['Offline: '] = true
+	L['Back: '] = true
+	L['Away: '] = true
+
 
 	-- Sync
 	L['%s is sharing data for %s.|n|nDo you want to recceive this data (this will overwrite your own data for this character)?'] = true

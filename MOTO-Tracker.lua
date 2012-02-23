@@ -23,6 +23,7 @@ local sSub = string.sub
 local sUpper = string.upper
 local sSplit = strsplit
 local tonumber = tonumber
+local tinsert = tinsert
 
 --###################################
 --	Helper Functions
@@ -316,12 +317,20 @@ end
 function A:UpdateGuildRoster()
 	I.numGuildMembers, I.numGuildOnline = GetNumGuildMembers()
 	I.numGuildAFK = 0
+	I.guildMembers, I.guildOnline, I.guildAFK = {}, {}, {}
 
 	for i = 1, I.numGuildMembers do
-		local status = select( 10, self:UpdateGuildMemeberFromRoster(i) )
+		local name,_,_,_,_,_,_,_, online, status = self:UpdateGuildMemeberFromRoster(i)
 		
+		tinsert(I.guildMembers, name)
+		
+		if online then
+			tinsert(I.guildOnline, name)
+		end
+
 		if status == 1 then
 			I.numGuildAFK = I.numGuildAFK + 1
+			tinsert(I.guildAFK, name)
 		end
 
 	end

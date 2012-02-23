@@ -13,8 +13,9 @@ function A:LoadStaticValues()
 	I.charName = select(1, UnitName("player"))
 	I.charClass = L[ select(2, UnitClass("player")) ];
 
-	-- These are all update by the GUI.lua file later on
+	-- These are all update later on
 	I.numGuildAFK, I.numGuildOnline, I.numGuildMembers = nil, nil, nil
+	I.guildMembers, I.guildOnline, I.guildAFK = {}, {}, {}
 
 	-- For dropdown lists that sorts roster
 	I.guildSortableBy = {
