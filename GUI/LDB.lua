@@ -36,7 +36,7 @@ local function cc( str, color )
 end
 
 -- Compare an update to the previous and sets changes
-local prevMembers, prevOnline, prevAFK
+local prevMembers, prevOnline, prevAFK, prevTimestamp
 local function updateStatusChanges()
 	local members, online, AFK = Set(I.guildMembers), Set(I.guildOnline), Set(I.guildAFK)
 
@@ -45,9 +45,14 @@ local function updateStatusChanges()
 		return false
 	end
 
+	-- Only update once every 10 sec max.
+	if prevTimestamp and (time() - prevTimestamp) < 10 then 
+		return false 
+	end
+	prevTimestamp = time()
+
 	charsNowBack, charsNowAFK, charsNowOnline = {},{},{}
 	charsNowOffline, charsNowJoined, charsNowLeft = {},{},{}
-
 	-- Chars that are back
 	for k,_ in pairs( prevAFK ) do
 		if not AFK[k] and online[k] then
@@ -153,7 +158,7 @@ function A.GUI.LDB:SetupLDB()
 			self:AddLine(I.numGuildMembers .. ' ' .. L['Members'])
 			self:AddLine(GREEN_FONT_COLOR_CODE .. (I.numGuildOnline - I.numGuildAFK) .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 		end
-		
+	
 		if #charsNowLeft > 0 or #charsNowJoined > 0 or #charsNowOnline > 0 or #charsNowOffline > 0 or #charsNowBack > 0 or #charsNowAFK > 0 then
 			self:AddLine('-----')
 			if #charsNowLeft > 0 then
