@@ -84,7 +84,7 @@ end
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
 	local class = sUpper(class)
-	local classColor = RAID_CLASS_COLORS[class]
+	local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 	if not classColor then return str end
 	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
@@ -192,7 +192,7 @@ local function drawMainTreeArea( treeContainer, charName )
 	GuildRoster()
 
 	local charData = A.db.global.guilds[I.guildName].chars[charName]
-	local classColor = RAID_CLASS_COLORS[charData.class]
+	local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[charData.class]
 	
 	treeContainer:ReleaseChildren()
 	treeContainer:SetLayout("Fill")

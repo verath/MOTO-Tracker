@@ -191,8 +191,6 @@ if L then
 	L['Member'] = true
 	L['Members'] = true
 	L['Back'] = true
-	L['Click to open frame.'] = true
-	L['Ctrl + click to open options.'] = true
 	L['Left: '] = true
 	L['Joined: '] = true
 	L['Online: '] = true

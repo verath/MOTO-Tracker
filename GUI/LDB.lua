@@ -9,6 +9,13 @@ local AceTimer = LibStub("AceTimer-3.0")
 local tinsert = tinsert
 local sSub = string.sub
 
+
+local activezone, inactivezone = {r=0.13, g=1.0, b=0.13}, {r=0.65, g=0.65, b=0.65}
+local numOnlineAwayString = GREEN_FONT_COLOR_CODE .. "%d" .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. "%d".. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away']
+local awayString = LIGHTYELLOW_FONT_COLOR_CODE .. '(' .. L['Away'] .. ')' .. FONT_COLOR_CODE_CLOSE
+local dndString = RED_FONT_COLOR_CODE .. '(' .. L['DND'] .. ')' .. FONT_COLOR_CODE_CLOSE
+local levelNameStatusString = "|cff%02x%02x%02x%d|r %s %s"
+
 local dataobj
 local flashTimer
 -- For tracking changes since last update of ldb
@@ -147,20 +154,35 @@ function A.GUI.LDB:SetupLDB()
 	function dataobj:OnTooltipShow()
 		GuildRoster()
 		
-		self:AddLine(L['MOTO Tracker'])
-		self:AddLine('-----')
-		self:AddLine(L['Click to open frame.'])
-		self:AddLine(L['Ctrl + click to open options.'])
-
 		if I.numGuildAFK ~= nil and I.numGuildOnline ~= nil and I.numGuildMembers ~= nil then
-			self:AddLine('-----')
 			self:AddLine('<' .. I.guildName .. '>')
-			self:AddLine(I.numGuildMembers .. ' ' .. L['Members'])
-			self:AddLine(GREEN_FONT_COLOR_CODE .. (I.numGuildOnline - I.numGuildAFK) .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
+			self:AddDoubleLine(I.numGuildMembers .. ' ' .. L['Members'], format(numOnlineAwayString, I.numGuildOnline - I.numGuildAFK, I.numGuildAFK) )
+		
+		end
+
+		-- This part is inspired by the guild data text in ElvUI (http://www.curse.com/addons/wow/elvui)
+		self:AddLine(' ')
+		for i,v in ipairs(I.guildOnline) do
+			-- Don't display more than 30
+			if i > 30 then
+				self:AddLine("...")
+				break
+			end
+
+			local class =  A.db.global.guilds[I.guildName].chars[v].class
+			local level = A.db.global.guilds[I.guildName].chars[v].level
+			local status = A.db.global.guilds[I.guildName].chars[v].status
+			local zone = A.db.global.guilds[I.guildName].chars[v].zone
+			
+			if GetRealZoneText() == zone then zonec = activezone else zonec = inactivezone end
+			local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
+			local status = (status == 1) and awayString or ((status == 2) and dndString or '')
+			
+			self:AddDoubleLine( format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, level, v, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b )
 		end
 	
 		if #charsNowLeft > 0 or #charsNowJoined > 0 or #charsNowOnline > 0 or #charsNowOffline > 0 or #charsNowBack > 0 or #charsNowAFK > 0 then
-			self:AddLine('-----')
+			self:AddLine(' ')
 			if #charsNowLeft > 0 then
 				self:AddLine(L['Left: '] .. cc(charsToString(charsNowLeft), 'r') )
 			end				
