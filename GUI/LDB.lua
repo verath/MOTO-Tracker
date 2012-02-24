@@ -153,6 +153,7 @@ function A.GUI.LDB:SetupLDB()
 			self:AddLine(I.numGuildMembers .. ' ' .. L['Members'])
 			self:AddLine(GREEN_FONT_COLOR_CODE .. (I.numGuildOnline - I.numGuildAFK) .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. I.numGuildAFK .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away'])
 		end
+		
 		if #charsNowLeft > 0 or #charsNowJoined > 0 or #charsNowOnline > 0 or #charsNowOffline > 0 or #charsNowBack > 0 or #charsNowAFK > 0 then
 			self:AddLine('-----')
 			if #charsNowLeft > 0 then

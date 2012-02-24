@@ -145,6 +145,7 @@ end
 function A:RemoveAltFromMain( altName, mainName )
 	-- First unset the main data of the alt
 	local altData = self.db.global.guilds[I.guildName].chars[altName]
+	if not altData or not altData.main then return end
 	altData.main = nil
 
 	-- Now remove our alt from the alt data of the main
