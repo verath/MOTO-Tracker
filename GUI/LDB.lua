@@ -14,7 +14,7 @@ local activezone, inactivezone = {r=0.13, g=1.0, b=0.13}, {r=0.65, g=0.65, b=0.6
 local numOnlineAwayString = GREEN_FONT_COLOR_CODE .. "%d" .. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Online'] .. ' - ' ..LIGHTYELLOW_FONT_COLOR_CODE .. "%d".. FONT_COLOR_CODE_CLOSE .. ' ' .. L['Away']
 local awayString = LIGHTYELLOW_FONT_COLOR_CODE .. '(' .. L['Away'] .. ')' .. FONT_COLOR_CODE_CLOSE
 local dndString = RED_FONT_COLOR_CODE .. '(' .. L['DND'] .. ')' .. FONT_COLOR_CODE_CLOSE
-local levelNameStatusString = "|cff%02x%02x%02x%d|r %s %s"
+local levelNameAltStatusString = "|cff%02x%02x%02x%d|r %s".. YELLOW_FONT_COLOR_CODE .. "%s|r %s"
 
 local dataobj
 local flashTimer
@@ -108,10 +108,14 @@ local function updateStatusChanges()
 end
 
 -- Converts a list of chars to a string
-local function charsToString( list )
+local function charsToString( list, displayMain )
 	s = ''
 
 	for _,v in pairs( list ) do
+		if displayMain then
+			v = A.db.global.guilds[I.guildName].chars[v].main or v
+		end
+		
 		s = s .. v .. ', '
 	end
 
@@ -160,8 +164,14 @@ function A.GUI.LDB:SetupLDB()
 		
 		end
 
+		-- List of online chars
 		-- This part is inspired by the guild data text in ElvUI (http://www.curse.com/addons/wow/elvui)
 		self:AddLine(' ')
+		local displayMain = A.db.global.settings.GUI.LDBDefaultMain
+		if IsShiftKeyDown() then
+			displayMain = not displayMain
+		end
+		
 		for i,v in ipairs(I.guildOnline) do
 			-- Don't display more than 30
 			if i > 30 then
@@ -169,8 +179,12 @@ function A.GUI.LDB:SetupLDB()
 				break
 			end
 
-			local class =  A.db.global.guilds[I.guildName].chars[v].class
-			local level = A.db.global.guilds[I.guildName].chars[v].level
+			local hasMain = A.db.global.guilds[I.guildName].chars[v].main and false or true
+			local name = (displayMain and hasMain) and A.db.global.guilds[I.guildName].chars[v].main or v
+			local altStatus = (displayMain and hasMain) and ' (A)' or ''
+			-- Name is alt/main, v is always the current online
+			local class =  A.db.global.guilds[I.guildName].chars[name].class
+			local level = A.db.global.guilds[I.guildName].chars[name].level
 			local status = A.db.global.guilds[I.guildName].chars[v].status
 			local zone = A.db.global.guilds[I.guildName].chars[v].zone
 			
@@ -178,28 +192,29 @@ function A.GUI.LDB:SetupLDB()
 			local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
 			local status = (status == 1) and awayString or ((status == 2) and dndString or '')
 			
-			self:AddDoubleLine( format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, level, v, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b )
+			self:AddDoubleLine( format(levelNameAltStatusString, levelc.r*255, levelc.g*255, levelc.b*255, level, name, altStatus, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b )
 		end
 	
+		-- List of recent events
 		if #charsNowLeft > 0 or #charsNowJoined > 0 or #charsNowOnline > 0 or #charsNowOffline > 0 or #charsNowBack > 0 or #charsNowAFK > 0 then
 			self:AddLine(' ')
 			if #charsNowLeft > 0 then
-				self:AddLine(L['Left: '] .. cc(charsToString(charsNowLeft), 'r') )
+				self:AddLine(L['Left: '] .. cc(charsToString(charsNowLeft, displayMain), 'r') )
 			end				
 			if #charsNowJoined > 0 then
-				self:AddLine(L['Joined: '] .. cc(charsToString(charsNowJoined), 'g') )
+				self:AddLine(L['Joined: '] .. cc(charsToString(charsNowJoined, displayMain), 'g') )
 			end	
 			if #charsNowOnline > 0 then
-				self:AddLine(L['Online: '] .. cc(charsToString(charsNowOnline), 'g') )
+				self:AddLine(L['Online: '] .. cc(charsToString(charsNowOnline, displayMain), 'g') )
 			end
 			if #charsNowOffline > 0 then
-				self:AddLine(L['Offline: '] .. cc(charsToString(charsNowOffline), 'r') )
+				self:AddLine(L['Offline: '] .. cc(charsToString(charsNowOffline, displayMain), 'r') )
 			end	
 			if #charsNowBack > 0 then
-				self:AddLine(L['Back: '] .. cc(charsToString(charsNowBack), 'g') )
+				self:AddLine(L['Back: '] .. cc(charsToString(charsNowBack, displayMain), 'g') )
 			end	
 			if #charsNowAFK > 0 then
-				self:AddLine(L['Away: '] .. cc(charsToString(charsNowAFK), 'ly') )
+				self:AddLine(L['Away: '] .. cc(charsToString(charsNowAFK, displayMain), 'ly') )
 			end
 		end
 	end

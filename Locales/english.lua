@@ -109,7 +109,9 @@ if L then
 	L['LDB Settings'] = true
 	L['LDB (LibDataBroker) is used by many addons to display data and provide shortcuts. Make sure you also assign MOTO Tracker a field within your LDB display addon.'] = true
 	L['Display Events'] = true
-	L['Flashes the LDB text when a member event occurs (going online, offline, etc.'] = true
+	L['Flashes the LDB text when a member event occurs (going online, offline, etc.).'] = true
+	L['Main by default'] = true
+	L['Show the character\'s main in the tooltip by default. Holding shift will reverse this setting.'] = true
 
 	
 	-- Core

@@ -1,6 +1,6 @@
 ## Interface: 40300
 ## Title: MOTO Tracker
-## Notes: Utilities for Malice of the One guild.
+## Notes: A simple way to view and manage a guild and its members.
 ## Author: Peter Eliasson (Verath)
 ## Version: @project-version@
 ## SavedVariables: MOTOTrackerDB
