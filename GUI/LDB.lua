@@ -181,7 +181,7 @@ function A.GUI.LDB:SetupLDB()
 
 			local hasMain = A.db.global.guilds[I.guildName].chars[v].main and false or true
 			local name = (displayMain and hasMain) and A.db.global.guilds[I.guildName].chars[v].main or v
-			local altStatus = (displayMain and hasMain) and ' (A)' or ''
+			local altStatus = (name ~= v) and ' (A)' or ''
 			-- Name is alt/main, v is always the current online
 			local class =  A.db.global.guilds[I.guildName].chars[name].class
 			local level = A.db.global.guilds[I.guildName].chars[name].level
