@@ -383,8 +383,6 @@ function A:UpdatePlayerTalents()
 	local mainSpec = self:GetTalentSpecForGroup( 1, false )
 	local offSpec = self:GetTalentSpecForGroup( 2, false )
 
-	-- For now I got no good way to handle localized talent names,
-	-- so if not in table they will not get updated. Sorry.
 	if mainSpec and I.classSpecs[class][mainSpec] then
 		self.db.global.guilds[I.guildName].chars[I.charName].mainSpec = mainSpec
 	end

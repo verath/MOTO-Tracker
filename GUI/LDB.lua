@@ -157,6 +157,11 @@ function A.GUI.LDB:SetupLDB()
 
 	function dataobj:OnTooltipShow()
 		GuildRoster()
+
+		if not I.hasGuild then
+			self:AddLine(L['<Not in a guild>'])
+			return
+		end
 		
 		if I.numGuildAFK ~= nil and I.numGuildOnline ~= nil and I.numGuildMembers ~= nil then
 			self:AddLine('<' .. I.guildName .. '>')

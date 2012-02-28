@@ -71,8 +71,6 @@ function A.GUI:ShowTooltip( text, color, delay )
 	showTooltipTimer = AceTimer:ScheduleTimer(function()
 		displayTooltip(text, color)
 	end, delay)
-
-	
 end
 
 -- Hides our tooltip if we have one
@@ -168,7 +166,6 @@ function A.GUI:CreateMainFrame()
 		end
 	end
 
-	
 	-- If there is a new update available
 	local canUpdate, newVersion = A:CheckVersion()
 
