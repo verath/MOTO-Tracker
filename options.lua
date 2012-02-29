@@ -1,4 +1,6 @@
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+--local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
 
 -- Options
 function A:SetupOptions()

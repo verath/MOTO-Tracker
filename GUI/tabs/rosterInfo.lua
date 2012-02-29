@@ -2,7 +2,9 @@
 --	Roster Info tab
 --###################################
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
+
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Local versions of global functions are faster

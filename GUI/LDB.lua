@@ -2,8 +2,9 @@
 --	LibDataBroker Feed
 --###################################
 
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
 local AceTimer = LibStub("AceTimer-3.0")
 
 local tinsert = tinsert

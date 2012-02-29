@@ -2,18 +2,32 @@
 --   Core setups and functions
 --###################################
 
-MOTOTracker = {
-	addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0"),
-	locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true),
-	info = { -- Static global values
-		versionName =  GetAddOnMetadata("MOTO-Tracker", "Version"),
-		--@debug@
-		versionName = '0.0.0-dev',
-		--@end-debug@
-		addonName = 'MOTOTracker',
-	}
+-- The "..." passed by wow is explained over at
+-- http://www.wowinterface.com/forums/showthread.php?t=36308
+local addonName, addonTable = ...
+
+local addon = LibStub("AceAddon-3.0"):NewAddon("MOTOTracker", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0")
+local locale = LibStub("AceLocale-3.0"):GetLocale("MOTOTracker", true)
+local info = { -- Static global values
+	versionName = GetAddOnMetadata(addonName, "Version"),
+	--@debug@
+	versionName = '0.0.0-dev',
+	--@end-debug@
+	addonName = addonName,
 }
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+
+print(addonName)
+
+addonTable[1] = addon
+addonTable[2] = locale
+addonTable[3] = info
+
+-- Make methods accessible from outside of addon.
+_G[addonName] = addonTable
+
+-- addon, locale, info
+local A,L,I = addon, locale, info--unpack(select(2, ...))
+
 local AceTimer = LibStub("AceTimer-3.0")
 
 -- Local versions are faster

@@ -2,7 +2,8 @@
 --	Static Values
 --###################################
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
 
 local tIns = table.insert
 

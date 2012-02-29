@@ -2,7 +2,9 @@
 --	Main Frame
 --###################################
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
+
 local AceGUI = LibStub("AceGUI-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local AceHook = LibStub("AceHook-3.0")

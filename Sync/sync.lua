@@ -2,7 +2,8 @@
 --   Main sync file, register prefixes etc.
 --###################################
 
-local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+-- addon, locale, info
+local A,L,I = unpack(select(2, ...))
 
 -- Init our sync object
 A.sync = {}
