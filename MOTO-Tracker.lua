@@ -16,7 +16,6 @@ local info = { -- Static global values
 	addonName = addonName,
 }
 
-print(addonName)
 
 addonTable[1] = addon
 addonTable[2] = locale

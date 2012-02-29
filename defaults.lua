@@ -1,3 +1,7 @@
+--###################################
+--	Default Stored Settings
+--###################################
+
 -- addon, locale, info
 local A,L,I = unpack(select(2, ...))
 

@@ -1,4 +1,7 @@
---local L,A,I = MOTOTracker.locale, MOTOTracker.addon, MOTOTracker.info
+--###################################
+--	Options GUI Setup
+--###################################
+
 -- addon, locale, info
 local A,L,I = unpack(select(2, ...))
 
