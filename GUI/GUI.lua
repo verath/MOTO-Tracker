@@ -133,12 +133,14 @@ end
 
 -- Toggles the main frame
 function A.GUI:ToggleMainFrame()
-	if self.mainFrame then 
-		self:HideMainFrame()
+	if A.GUI.mainFrame then 
+		A.GUI:HideMainFrame()
 	else
-		self:ShowMainFrame()
+		A.GUI:ShowMainFrame()
 	end
 end
+-- Global reference used in bindings.xml
+ToggleMOTOTFrame = A.GUI.ToggleMainFrame
 
 -- Updates/Sets the status bar of our main frame
 local function updateMainFrameStatusBar()
