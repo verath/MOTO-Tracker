@@ -172,7 +172,6 @@ if L then
 	L['Make Main'] = true
 	L['Events'] = true
 	L['Main Spec/Off Spec DPS'] = true
-	L['DPS from current Skada view'] = true
 	L['Import As MS'] = true
 	L['Import As OS'] = true
 	L['Away'] = true
@@ -185,7 +184,7 @@ if L then
 	L['The character\'s DPS in main spec and off spec.'] = true
 	L['The guild note for the character.'] = true
 	L['The officer note for the character.'] = true
-	L['Your own note for the character. This is note never shared.'] = true
+	L['Your own note for the character. This note is never shared.'] = true
 	L['Action that alters the addon\'s guild roster database.']= true
 	L[' * Make Main - Sets the selected character as the player\'s main character.'] = true
 

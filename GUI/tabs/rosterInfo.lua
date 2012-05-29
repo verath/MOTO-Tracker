@@ -482,7 +482,7 @@ local function drawMainTreeArea( treeContainer, charName )
 
 			-- Tooltip
 			label:SetCallback("OnEnter", function()
-				A.GUI:ShowTooltip(L['Your own note for the character. This is note never shared.']) 
+				A.GUI:ShowTooltip(L['Your own note for the character. This note is never shared.']) 
 			end)
 			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
