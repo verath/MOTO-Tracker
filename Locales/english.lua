@@ -18,6 +18,7 @@ if L then
 	L['MAGE'] = true
 	L['WARLOCK'] = true
 	L['HUNTER'] = true
+	L['MONK'] = true
 	-- Spec names
 	L['FURY'] = true
 	L['ARMS'] = true
