@@ -19,37 +19,8 @@ if L then
 	L['WARLOCK'] = true
 	L['HUNTER'] = true
 	L['MONK'] = true
+	
 	-- Spec names
-	L['FURY'] = true
-	L['ARMS'] = true
-	L['PROTECTION'] = true
-	L['BLOOD'] = true
-	L['FROST'] = true
-	L['UNHOLY'] = true
-	L['HOLY'] = true
-	L['RETRIBUTION'] = true
-	L['SHADOW'] = true
-	L['DISCIPLINE'] = true
-	L['ELEMENTAL'] = true
-	L['ENHANCEMENT'] = true
-	L['RESTORATION'] = true
-	L['BALANCE'] = true
-	L['FERAL COMBAT'] = true
-	L['FERAL CAT'] = true -- Our own
-	L['FERAL BEAR'] = true -- Our own
-	L['COMBAT'] = true
-	L['ASSASSINATION'] = true
-	L['SUBTLETY'] = true
-	L['FIRE'] = true
-	L['FROST'] = true
-	L['ARCANE'] = true
-	L['AFFLICTION'] = true
-	L['DEMONOLOGY'] = true
-	L['DESTRUCTION'] = true
-	L['BEAST MASTERY'] = true
-	L['SURVIVAL'] = true
-	L['MARKSMANSHIP'] = true
-	--
 	L['Fury'] = true
 	L['Arms'] = true
 	L['Protection'] = true
@@ -64,8 +35,8 @@ if L then
 	L['Enhancement'] = true
 	L['Restoration'] = true
 	L['Balance'] = true
-	L['Feral (Cat)'] = true
-	L['Feral (Bear)'] = true
+	L['Feral'] = true
+	L['Guardian'] = true
 	L['Combat'] = true
 	L['Assassination'] = true
 	L['Subtlety'] = true
@@ -78,6 +49,10 @@ if L then
 	L['Beast Mastery'] = true
 	L['Survival'] = true
 	L['Marksmanship'] = true
+	L['Brewmaster'] = true
+	L['Mistweaver'] = true
+	L['Windwalker'] = true
+
 	L['NONE'] = true
 
 
@@ -139,7 +114,7 @@ if L then
 	L['Something Else'] = true
 	L['Primary sort by'] = true
 	L['Secondary sort by'] = true
-	L['Only 85s'] = true
+	L['Only 90s'] = true
 	L['Hide offline'] = true
 	L['Search'] = true
 	L['General'] = true

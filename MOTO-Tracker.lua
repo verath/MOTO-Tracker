@@ -190,16 +190,21 @@ function A:ChangeCharMain( charName, newMainName )
 
 	-- Validate new main
 	if charName == newMainName then return '' end
+
+	-- If adding to an alt, add to the alt's main
 	local newMain = self.db.global.guilds[I.guildName].chars[newMainName]
+	if newMain.main ~= nil then 
+		newMain = self.db.global.guilds[I.guildName].chars[newMain.main] 
+	end
+	
 	if newMain.name == '' then return '' end
-	if newMain.main ~= nil then return '' end
 	
 	-- Set new main-alt data
-	charData.main = newMainName
+	charData.main = newMain.name
 	if newMain.alts == nil then newMain.alts = {} end
 	tInsert(newMain.alts, charData.name)
 
-	return newMainName
+	return newMain.name
 end
 
 -- Sets/Changes the main of a player
@@ -350,36 +355,6 @@ function A:UpdateGuildRoster()
 	end
 end
 
--- Returns the name of the talent tree in group 
--- (primary/secondary spec) with most points
-function A:GetTalentSpecForGroup( talentGroup, inspect )
-	inspect = inspect or false
-	if GetNumTalentGroups(inspect, false) < talentGroup then return nil end
-	
-	local mostPoints, spec = 0, nil
-	for i = 1, GetNumTalentTabs(inspect, false) do
-		local pointSpent = select(5, GetTalentTabInfo(i, inspect, false, talentGroup)) 
-		local tabName = select(2, GetTalentTabInfo(i, inspect, false, talentGroup))
-		if pointSpent and pointSpent > mostPoints then 
-			spec = L[sUpper(tabName)]
-			mostPoints = pointSpent
-		end
-	end
-
-	-- Druids are annoying. :)
-	if spec == L["FERAL COMBAT"] then
-		-- Pulverize should mean we have a bear, else cat
-		local _, _, _, _, currentRank = GetTalentInfo(2, 21, inspect);
-		if currentRank > 0 then
-			spec = L['FERAL BEAR']
-		else
-			spec = L['FERAL CAT']
-		end
-	end
-
-	return spec
-end
-
 -- Updates the current characters main spec and off spec by
 -- looking at talent trees
 function A:UpdatePlayerTalents()
@@ -391,18 +366,19 @@ function A:UpdatePlayerTalents()
 		AceTimer:ScheduleTimer((function() that:UpdatePlayerTalents() end), 2) 
 		return
 	end
-	
-	local class = I.charClass
-	local mainSpec = self:GetTalentSpecForGroup( 1, false )
-	local offSpec = self:GetTalentSpecForGroup( 2, false )
 
-	if mainSpec and I.classSpecs[class][mainSpec] then
-		self.db.global.guilds[I.guildName].chars[I.charName].mainSpec = mainSpec
-	end
-	if offSpec and I.classSpecs[class][offSpec] then
-		self.db.global.guilds[I.guildName].chars[I.charName].offSpec = offSpec
+	local mainSpecGroup = GetSpecialization(false, false, 1)
+	local offSpecGroup = GetSpecialization(false, false, 2)
+
+	if mainSpecGroup ~= nil then
+		local id, n, d, i, b, r = GetSpecializationInfo(mainSpecGroup)
+		self.db.global.guilds[I.guildName].chars[I.charName].mainSpec = id
 	end
 
+	if offSpecGroup ~= nil then
+		local id, n, d, i, b, r = GetSpecializationInfo(offSpecGroup)
+		self.db.global.guilds[I.guildName].chars[I.charName].offSpec = id
+	end
 end
 
 --###################################

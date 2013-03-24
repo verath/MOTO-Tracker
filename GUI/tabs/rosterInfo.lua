@@ -8,16 +8,16 @@ local A,L,I = unpack(select(2, ...))
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Local versions of global functions are faster
-local tInsert = table.insert
-local tRemove = table.remove
-local sUpper = string.upper
-local sLower = string.lower
-local sFind = string.find
-local sSub = string.sub
-local sFormat = string.format
+local tableInsert = table.insert
+local tableRemove = table.remove
+local stringUpper = string.upper
+local stringLower = string.lower
+local stringFind = string.find
+local stringSub = string.sub
+local stringFormat = string.format
 local tonumber = tonumber
 local floor = math.floor
-local sSplit = strsplit
+local stringSplit = strsplit
 
 local rosterInfoDB = {}
 local searchString = ''
@@ -60,7 +60,7 @@ end
 -- Word capitalizes a string (every word will start with a big letter)
 local function wordCapitalize( str )
 	return str:gsub("(%a)([%w_']*)", function( first, rest )
-		return sUpper(first)..sLower(rest)
+		return stringUpper(first)..stringLower(rest)
 	end)
 end
 
@@ -80,15 +80,15 @@ local function altsToString( altList, highlightOnline )
 		end
 		s = s .. v .. ', '
 	end
-	return sSub(s, 1, -3)
+	return stringSub(s, 1, -3)
 end
 
 -- Returns a hex version of the class color codes provided by blizz
 local function formatClassColor( str, class )
-	local class = sUpper(class)
+	local class = stringUpper(class)
 	local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 	if not classColor then return str end
-	return "|c" .. sFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
+	return "|c" .. stringFormat("ff%.2x%.2x%.2x", classColor.r * 255, classColor.g * 255, classColor.b * 255) .. str .. FONT_COLOR_CODE_CLOSE;
 end
 
 -- Returns a color coded Online/Offline (Status)
@@ -124,8 +124,8 @@ local function autoCompleteCharData( str, targetAttr, strModFunc )
 	local matches = {}
 
 	for _, char in pairs(chars) do		
-		if sSub(char[targetAttr], 1, searchStrLen) == searchStr then
-			tInsert(matches, char[targetAttr])
+		if stringSub(char[targetAttr], 1, searchStrLen) == searchStr then
+			tableInsert(matches, char[targetAttr])
 		end
 	end
 
@@ -175,9 +175,9 @@ end
 
 -- unformats dps, 1k -> 1000
 local function unformatDPS( dpsStr )
-	dpsStr = sUpper(dpsStr)
-	if sFind(dpsStr, "K") ~= nil then
-		local dps = tonumber( sSub(dpsStr, 1, sFind(dpsStr, "K")-1) )
+	dpsStr = stringUpper(dpsStr)
+	if stringFind(dpsStr, "K") ~= nil then
+		local dps = tonumber( stringSub(dpsStr, 1, stringFind(dpsStr, "K")-1) )
 		return dps and dps*1000 or 0
 	else
 		return tonumber(dpsStr)
@@ -213,7 +213,7 @@ local function drawMainTreeArea( treeContainer, charName )
 
 	do -- Header and send player (sync)
 		-- Rank Name (level level)
-		local headerText = sFormat('%s %s (%s %d)', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level)
+		local headerText = stringFormat('%s %s (%s %d)', charData.rank, formatClassColor(charData.name, charData.class), L['Level'], charData.level)
 		local headerLabel = AceGUI:Create("Label")
 		headerLabel:SetFontObject(SystemFont_Large)
 		headerLabel:SetText(headerText)
@@ -233,11 +233,12 @@ local function drawMainTreeArea( treeContainer, charName )
 	do -- SubHeader
 		-- Zone info
 		local headerText = formatOnlineStatusText(charData.online, charData.status)
+		local zone = YELLOW_FONT_COLOR_CODE .. (charData.zone and charData.zone or "N/A") .. FONT_COLOR_CODE_CLOSE
 		if charData.online then
-			headerText = headerText .. ' - ' .. L['Currently in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE .. '.'
+			headerText = headerText .. ' - ' .. L['Currently in'] .. ' ' .. zone .. '.'
 		else
 			local offFor = charData.offlineFor
-			headerText = headerText .. ' - ' .. L['Last seen in'] .. ' ' .. YELLOW_FONT_COLOR_CODE .. charData.zone .. FONT_COLOR_CODE_CLOSE
+			headerText = headerText .. ' - ' .. L['Last seen in'] .. ' ' .. zone
 			
 			if offFor.years and offFor.years > 0 then
 				headerText = headerText .. ', ' .. offFor.years .. ' ' .. (offFor.years>1 and L['years'] or L['year']) .. ' ' .. L['ago'] .. '.'
@@ -356,11 +357,11 @@ local function drawMainTreeArea( treeContainer, charName )
 			end)
 			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
-			local class = sUpper(charData.class)
-			local charMSVal = sUpper(charData.mainSpec)
-			local charOSVal = sUpper(charData.offSpec)
-			local charMSText = I.classSpecDropdownList[class][charMSVal].text
-			local charOSText = I.classSpecDropdownList[class][charOSVal].text
+			local class = stringUpper(charData.class)
+			local charMSVal = charData.mainSpec
+			local charOSVal = charData.offSpec
+			local charMSText = I.classSpecDropdownList[class][charMSVal]
+			local charOSText = I.classSpecDropdownList[class][charOSVal]
 
 			local mainSpec = AceGUI:Create("Dropdown")
 			mainSpec:SetList(I.classSpecDropdownList[class], I.classSpecDropdownListOrder[class])
@@ -395,16 +396,15 @@ local function drawMainTreeArea( treeContainer, charName )
 			end)
 			label:SetCallback("OnLeave", A.GUI.HideTooltip)
 
-			local class = sUpper(charData.class)
-			local charMSVal = sUpper(charData.mainSpec)
-			local charOSVal = sUpper(charData.offSpec)
-			local charMSRole = charMSVal ~= "NONE" and I.classSpecs[class][charMSVal].role or nil
-			local charOSRole = charOSVal ~= "NONE" and I.classSpecs[class][charOSVal].role or nil
 
+			local charMSRole = GetSpecializationRoleByID(charData.mainSpec)
+			local charOSRole = GetSpecializationRoleByID(charData.offSpec)
+			local MSNoDPS = (not charMSRole or charMSRole == "HEALER")
+			local OSNoDPS = (not charOSRole or charOSRole == "HEALER")
 
 			local MSEditBox = AceGUI:Create("EditBox")
-			MSEditBox:SetText( (not charMSRole or charMSRole == "HEALER") and "---" or formatDPS(charData.mainSpecDPS) )
-			MSEditBox:SetDisabled( (not charMSRole or charMSRole == "HEALER") )
+			MSEditBox:SetText(MSNoDPS and "---" or formatDPS(charData.mainSpecDPS) )
+			MSEditBox:SetDisabled(MSNoDPS)
 			MSEditBox:SetRelativeWidth(0.35)
 			MSEditBox:SetCallback("OnEnterPressed", function(container, event, val)
 				val = unformatDPS( val )
@@ -414,8 +414,8 @@ local function drawMainTreeArea( treeContainer, charName )
 			generalInfoContainer:AddChild(MSEditBox)
 
 			local OSEditBox = AceGUI:Create("EditBox")
-			OSEditBox:SetText( (not charOSRole or charOSRole == "HEALER") and "---" or formatDPS(charData.offSpecDPS) )
-			OSEditBox:SetDisabled( (not charOSRole or charOSRole == "HEALER") )
+			OSEditBox:SetText( OSNoDPS and "---" or formatDPS(charData.offSpecDPS) )
+			OSEditBox:SetDisabled(OSNoDPS)
 			OSEditBox:SetRelativeWidth(0.35)
 			OSEditBox:SetCallback("OnEnterPressed", function(container, event, val)
 				val = unformatDPS( val )
@@ -553,7 +553,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 	if not I.hasGuild then return end
 
 	local isSearching = (searchString ~= '') and true or false
-	searchString = isSearching and sUpper(searchString) or ''
+	searchString = isSearching and stringUpper(searchString) or ''
 
 	-- Sorting
 	-- Needs to be numeric keys to sort
@@ -597,7 +597,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 							(alt.online and ' - ' .. formatOnlineStatusText(true, alt.status, true) or ''),
 				}
 
-				tInsert(charEntry.children, altEntry)
+				tableInsert(charEntry.children, altEntry)
 				mainHasAltOnline = (alt.online and true or mainHasAltOnline)
 				mainHasAltStatus = (alt.online and alt.status or mainHasAltStatus)
 			end
@@ -609,14 +609,14 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			if charData.name == '' then return false end
 
 			-- showOnlyMaxLvl
-			if (rosterInfoDB.showOnlyMaxLvl and charData.level < 85) then return false end
+			if (rosterInfoDB.showOnlyMaxLvl and charData.level < 90) then return false end
 					
 			-- Searching
 			if isSearching then
 				-- HideOffline, when searching alt-main relations are disregarded
 				if ( rosterInfoDB.hideOffline and not(charData.online) ) then return false end
 				-- SearchString in name
-				return ( sFind(sUpper(charData.name), searchString) ~= nil )
+				return ( stringFind(stringUpper(charData.name), searchString) ~= nil )
 			end
 
 			-- hideOffline, include online status of adds
@@ -643,7 +643,7 @@ function A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 				end
 			end
 
-			tInsert(treeTable, charEntry)
+			tableInsert(treeTable, charEntry)
 		end
 	end
 
@@ -689,8 +689,8 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		primarySortDropdown:SetText(I.guildSortableBy[selPrim])
 		primarySortDropdown:SetList(I.guildSortableBy, I.guidSortableByOrder)
 		primarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
-				rosterInfoDB.sortByPrimaryInvert = sFind(val, 'INVERT') and true or false
-				rosterInfoDB.sortByPrimary = sFind(val, 'INVERT') and sSub(val, 7) or val
+				rosterInfoDB.sortByPrimaryInvert = stringFind(val, 'INVERT') and true or false
+				rosterInfoDB.sortByPrimary = stringFind(val, 'INVERT') and stringSub(val, 7) or val
 				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(primarySortDropdown)
@@ -704,8 +704,8 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 		secondarySortDropdown:SetText(I.guildSortableBy[selSec])
 		secondarySortDropdown:SetList(I.guildSortableBy, I.guidSortableByOrder)
 		secondarySortDropdown:SetCallback("OnValueChanged", function(container, event, val)
-				rosterInfoDB.sortBySecondaryInvert = sFind(val, 'INVERT') and true or false
-				rosterInfoDB.sortBySecondary = sFind(val, 'INVERT') and sSub(val, 7) or val
+				rosterInfoDB.sortBySecondaryInvert = stringFind(val, 'INVERT') and true or false
+				rosterInfoDB.sortBySecondary = stringFind(val, 'INVERT') and stringSub(val, 7) or val
 				A.GUI.tabs.rosterInfo:GenerateTreeStructure()
 			end)
 		container:AddChild(secondarySortDropdown)
@@ -713,7 +713,7 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 
 	do -- Hide below 85 checkbox
 		local onlyMaxCheckbox = AceGUI:Create("CheckBox")
-		onlyMaxCheckbox:SetLabel(L['Only 85s'])
+		onlyMaxCheckbox:SetLabel(L['Only 90s'])
 		onlyMaxCheckbox:SetValue(rosterInfoDB.showOnlyMaxLvl)
 		onlyMaxCheckbox:SetCallback("OnValueChanged", function(container, event, val)
 				rosterInfoDB.showOnlyMaxLvl = val
@@ -737,8 +737,8 @@ function A.GUI.tabs.rosterInfo:DrawTab(container)
 	container:AddChild(treeGroupFrame)
 
 	treeGroupFrame:SetCallback("OnGroupSelected", function(container, event, group)
-		local isSubLvl = sFind(group, "\001")
-		local charName = isSubLvl and sSub(group, isSubLvl+1) or group
+		local istringSubLvl = stringFind(group, "\001")
+		local charName = istringSubLvl and stringSub(group, istringSubLvl+1) or group
 		drawMainTreeArea(container, charName)
 	end)
 	
