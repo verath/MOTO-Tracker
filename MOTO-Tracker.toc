@@ -1,4 +1,4 @@
-## Interface: 50000
+## Interface: 50200
 ## Title: MOTO Tracker
 ## Notes: A simple way to view and manage a guild and its members.
 ## Author: Peter Eliasson (Verath)
@@ -19,7 +19,3 @@ options.lua
 
 Sync\loadSync.xml
 GUI\loadGUI.xml
-
-#@do-not-package@
-# DataImport\loadDataImport.xml
-#@end-do-not-package@
