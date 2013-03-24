@@ -6,7 +6,7 @@
 ## SavedVariables: MOTOTrackerDB
 
 # Libs
-embeds.xml
+libs.xml
 
 # Locales
 Locales\english.lua
